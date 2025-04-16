@@ -1,41 +1,60 @@
 import React, { useState } from "react";
-import { database } from "../firebase/firebaseConfig";
-import { ref, set } from "firebase/database";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
 
-function WriteTest() {
-  const [input, setInput] = useState("");
+function WriteUser() {
+  const [user, setUser] = useState({
+    email: "",
+    first_name: "",
+    last_name: "",
+    friends: [] // optionally pre-fill or leave empty
+  });
 
-  const handleWrite = () => {
-    if (!input) return;
-
-    set(ref(database, "test/entry"), { // the test/entry is the collection name in the database
-      value: input,  // the value being inputed into the database
-      timestamp: new Date().toISOString(),
-    })
-      .then(() => {
-        alert("Data written successfully!");
-      })
-      .catch((error) => {
-        alert("Failed to write data.");
-        console.error(error);
-      });
+  const handleChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
   };
-  // going to handle reading from the database
-  
+
+  const handleSubmit = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "User"), {
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        friends: user.friends,
+      });
+      alert(`User added with ID: ${docRef.id}`);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>Firebase Write Test</h2>
+      <h2>Add User to Firestore</h2>
       <input
-        type="text"
-        placeholder="Enter a dish name"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        name="first_name"
+        placeholder="First Name"
+        value={user.first_name}
+        onChange={handleChange}
         style={{ marginRight: "1rem" }}
       />
-      <button onClick={handleWrite}>Submit</button>
+      <input
+        name="last_name"
+        placeholder="Last Name"
+        value={user.last_name}
+        onChange={handleChange}
+        style={{ marginRight: "1rem" }}
+      />
+      <input
+        name="email"
+        placeholder="Email"
+        value={user.email}
+        onChange={handleChange}
+        style={{ marginRight: "1rem" }}
+      />
+      <button onClick={handleSubmit}>Submit</button>
     </div>
   );
 }
 
-export default WriteTest;
+export default WriteUser;
