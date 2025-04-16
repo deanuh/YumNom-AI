@@ -91,6 +91,17 @@ Then visit: [http://localhost:3000](http://localhost:3000)
 
 ## Git Commands to Stay Updated
 
+To save, commit your work, push to own branch, then to main once approved:
+```bash
+git add .
+git commit -m "message"
+git push origin your-branch-name
+git checkout main
+git pull origin main
+git merge your-branch-name
+git push origin main
+```
+
 To pull the latest changes from the main into your personal branch:
 
 ```bash
