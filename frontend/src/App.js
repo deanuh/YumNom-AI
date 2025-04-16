@@ -1,5 +1,5 @@
 import React from "react";
-import WriteUser from "./components/WriteUser";
+import WriteUser from "./components/WriteTest";
 
 function App() {
   return (
