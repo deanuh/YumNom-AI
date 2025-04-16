@@ -4,8 +4,10 @@ import { db } from "../firebase/firebaseConfig";
 
 function WriteUser() {
   const [user, setUser] = useState({
-    name: "",
-    email: ""
+    email: "",
+    first_name: "",
+    last_name: "",
+    friends: [] // optionally pre-fill or leave empty
   });
 
   const handleChange = (e) => {
@@ -14,10 +16,11 @@ function WriteUser() {
 
   const handleSubmit = async () => {
     try {
-      const docRef = await addDoc(collection(db, "users"), {
-        name: user.name,
+      const docRef = await addDoc(collection(db, "User"), {
         email: user.email,
-        createdAt: new Date().toISOString()
+        first_name: user.first_name,
+        last_name: user.last_name,
+        friends: user.friends,
       });
       alert(`User added with ID: ${docRef.id}`);
     } catch (e) {
@@ -29,9 +32,16 @@ function WriteUser() {
     <div style={{ padding: "2rem" }}>
       <h2>Add User to Firestore</h2>
       <input
-        name="name"
-        placeholder="Name"
-        value={user.name}
+        name="first_name"
+        placeholder="First Name"
+        value={user.first_name}
+        onChange={handleChange}
+        style={{ marginRight: "1rem" }}
+      />
+      <input
+        name="last_name"
+        placeholder="Last Name"
+        value={user.last_name}
         onChange={handleChange}
         style={{ marginRight: "1rem" }}
       />
