@@ -1,0 +1,1 @@
+// privacy policy - simple page of info
