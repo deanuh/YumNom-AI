@@ -20,7 +20,7 @@ function WriteUser() {
         email: user.email,
         first_name: user.first_name,
         last_name: user.last_name,
-        friends: user.friends,
+        friends: user.friends,  // leaving it empty for right now this will be later on
       });
       alert(`User added with ID: ${docRef.id}`);
     } catch (e) {
