@@ -10,7 +10,6 @@ import {
   doc         // to reference a specific document by ID (look @ delete function to see in the works)
 } from "firebase/firestore";   
 import { db } from "../firebase/firebaseConfig";
-import "../styles/settings.css";
 
 function WriteUser() {
   // state to store what we type on the webpage as input values
