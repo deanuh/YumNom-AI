@@ -1,0 +1,79 @@
+.settings-wrapper {
+    padding: 4rem 1rem;
+    background-color: #f7f4fb;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  
+  .settings-card {
+    background-color: #D0C9EB;
+    padding: 2rem;
+    border-radius: 20px;
+    max-width: 750px;
+    width: 100%;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1.5px solid #3d2074
+
+  }
+  
+  .settings-title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    background-color: #ffffff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 14px;
+    width: fit-content;
+    margin: 0 auto 2rem;
+    text-align: center;
+    color: #190352;
+  }
+  
+  .settings-section {
+    margin-bottom: 2rem;
+  }
+  
+  .section-heading {
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-family: 'Trebuchet MS', monospace, sans-serif;
+    margin-bottom: 1rem;
+    color: #190352;
+  }
+  
+  .settings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .settings-list li {
+    background-color: #ffffff;
+    border-radius: 12px;
+    margin-bottom: 0.1rem;
+    padding: 1rem;
+    /* transition: 0.2s;  idk what element should be inside bc its supposed to change background color */
+    transition: background 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1.5px solid #190352
+  }
+  
+  .settings-list li:hover {
+    background-color: #b9a6e0;
+  }
+  
+  .settings-list li a {
+    text-decoration: none;
+    color: #190352;
+    font-weight: 500;
+    flex: 1;
+  }
+  
+.settings-list li::after {
+    content: "›";
+    font-size: 1.2rem;
+    color: #190352;
+  }
+  
