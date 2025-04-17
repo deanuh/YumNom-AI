@@ -12,9 +12,9 @@ function Settings() {
         <div className="settings-section">
           <h3 className="section-heading">General Settings</h3>
           <ul className="settings-list">
-            <li><Link to="#">Change password</Link></li>
-            <li><Link to="#">Email</Link></li>
-            <li><Link to="#">Location Preferences</Link></li>
+            <li><Link to="/changePass">Change Password</Link></li>
+            <li><Link to="/emailSettings">Email</Link></li>
+            <li><Link to="/locationPref">Location Preferences</Link></li>
             <li><Link to="#">Notifications</Link></li>
             <li><Link to="#">Display</Link></li>
           </ul>
