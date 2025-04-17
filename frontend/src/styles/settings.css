@@ -34,8 +34,8 @@
   }
   
   .section-heading {
-    font-size: 1.5rem;
-    font-weight: 900;
+    font-size: 1.6rem;
+    font-weight: bolder;
     font-family: 'Trebuchet MS', monospace, sans-serif;
     margin-bottom: 1rem;
     color: #190352;
@@ -50,7 +50,7 @@
   .settings-list li {
     background-color: #ffffff;
     border-radius: 12px;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.09rem;
     padding: 1rem;
     /* transition: 0.2s;  idk what element should be inside bc its supposed to change background color */
     transition: background 0.2s;
