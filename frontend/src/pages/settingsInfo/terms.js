@@ -6,7 +6,7 @@ function Terms() {
     return <div className="settings-card"><h3>Terms & Conditions</h3>
     <p>All about terms...</p></div>;
   }
-  export default Terms;
+export default Terms;
   
 
   
