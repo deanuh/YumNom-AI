@@ -6,10 +6,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Settings from "./pages/settings";
 import Terms from "./pages/settingsInfo/terms";
 import ChangePassword from "./pages/settingsInfo/changePass";
-// import DeleteAccount from "./pages/settingsInfo/deleteAccount";
+import DeleteAccount from "./pages/settingsInfo/deleteAccount";
 import EmailSettings from "./pages/settingsInfo/emailSettings";
-// import Help from "./pages/settingsInfo/help";
-// import PrivacyPolicy from "./pages/settingsInfo/privacyPolicy";
+import Help from "./pages/settingsInfo/help";
+import PrivacyPolicy from "./pages/settingsInfo/privacyPolicy";
 import LocationPref from "./pages/settingsInfo/locationPref";
 
 
@@ -25,6 +25,9 @@ function SettingsTest() {
         <Route path="/changePass" element={<ChangePassword />} />
         <Route path="/emailSettings" element={<EmailSettings />} /> 
         <Route path="/locationPref" element={<LocationPref />} />
+        <Route path="/deleteAccount" element={<DeleteAccount />} /> 
+        <Route path="/help" element={<Help />} /> 
+        <Route path="/privacyPolicy" element={<PrivacyPolicy />} /> 
          
       </Routes>
     </BrowserRouter>

@@ -15,7 +15,7 @@ function Settings() {
             <li><Link to="/changePass">Change Password</Link></li>
             <li><Link to="/emailSettings">Email</Link></li>
             <li><Link to="/locationPref">Location Preferences</Link></li>
-            <li><Link to="#">Notifications</Link></li>
+            <li><Link to="/notifications">Notifications</Link></li>
             <li><Link to="#">Display</Link></li>
           </ul>
         </div>
@@ -24,7 +24,7 @@ function Settings() {
           <h3 className="section-heading">Legal</h3>
           <ul className="settings-list">
             <li><Link to="/terms">Terms</Link></li>
-            <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+            <li><Link to="/privacyPolicy">Privacy Policy</Link></li>
           </ul>
         </div>
 
@@ -33,7 +33,7 @@ function Settings() {
           <ul className="settings-list">
             <li><Link to="/help">Help</Link></li>
             <li><Link to="#">Report Abuse</Link></li>
-            <li><Link to="#">Delete Account</Link></li>
+            <li><Link to="/deleteAccount">Delete Account</Link></li>
             <li><Link to="#">Log out</Link></li>
           </ul>
         </div>
