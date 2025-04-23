@@ -19,7 +19,7 @@ const Sidebar = () => {
           Dashboard
         </Link>
 
-        <Link to="/search" className={`nav-item ${location.pathname === "/search" ? "active" : ""}`}>
+        <Link to="/restaurantSearch" className={`nav-item ${location.pathname === "/search" ? "active" : ""}`}>
           <img
             src={location.pathname === "/search" ? "/search_rest_white.png" : "/search_resturant_purple.png"}
             alt="Search"
