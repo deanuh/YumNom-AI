@@ -151,3 +151,4 @@ const handleDeleteUser = async () => {
 }
 
 export default WriteUser;
+
