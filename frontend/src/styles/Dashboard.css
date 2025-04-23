@@ -1,0 +1,185 @@
+.dashboard-container {
+    padding: 2rem;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 28px;
+  }
+  
+  .dashboard-banner {
+    background: #e6dfff;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+  }
+  
+  .banner-button {
+    background: #6a41c1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+  }
+  
+  .edit-note {
+    margin-bottom: 1.5rem;
+    color: #777;
+    display: flex;
+    justify-content: space-between;
+  }
+  .edit-note h3{
+    font-weight: 200;
+    }
+  .edit-note img{
+    width: 20px;
+    height: 20px;
+  }
+
+  .friends-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .friends-scroll-wrapper {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    max-width: 100%;
+  }
+
+  .friend-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f1f1f1;
+  }
+  .scroll-arrow {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6a41c1;
+    cursor: pointer;
+    padding: 0 1rem;
+    user-select: none;
+  }
+  
+  .friends-section h2 {
+    font-size: 20px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .friends-list {
+    display: flex;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    justify-content: center; 
+    padding: 1rem;
+    gap: 1rem;
+    align-items: center;
+    overflow-x: auto;
+  }
+
+  .friends-list-wrapper {
+  flex: 1;
+  overflow-x: auto;
+}
+  
+  .friend-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }
+  .friends-box {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-shadow: 0 0 0 1px #eee;
+
+    flex-direction: column;
+    align-items: center;
+  }
+  .add-friends {
+    margin-top: 0.5rem;
+    text-align: center;
+    width: 100%;
+  }
+  .add-friend-btn {
+    background: none;
+    border: none;
+    color: #6f4ed3;
+    cursor: pointer;
+  }
+  
+  .dashboard-section {
+    margin-top: 2rem;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .dish-list {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  
+  .dish-card {
+    width: 160px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    background: white;
+  }
+  
+  .dish-img {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  .menu-button {
+    margin-top: 0.5rem;
+    background-color: #6a41c1;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+  }
+  
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+  .your-dash h1{
+    font-size: 30px;
+    margin-bottom: 2 rem;
+    color: #6a41c1;
+    text-align: center;
+
+  }
+
+  .view-all-btn{
+    background: none;
+    border: none;
+    color: #6f4ed3;
+    cursor: pointer;
+  }
