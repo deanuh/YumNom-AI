@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "../styles/restaurantSearch.css";
+import DashboardSection from "../components/Dashboard/DashboardSection";
+import DishCard from "../components/Dashboard/DishCard";
+import Category from "../components/restaurantCategories";
 
 
 function RestaurantSearch() {
@@ -73,47 +76,13 @@ function RestaurantSearch() {
       </div>
 
       {/* Categories */}
-      <h3 className="section-title">Category</h3>
-      <div className="category-grid">
-        {["Bakery", "Burger", "Beverage", "Chicken", "Pizza", "Seafood"].map((name) => (
-          <div key={name} className="category-card">
-            <div className="category-icon">🍽️</div>
-            <p>{name}</p>
-          </div>
-        ))}
-      </div>
+      <Category/>
 
       {/* Applied Filters */}
-      <div className="section-header">
-        <h3>Applied Filters</h3>
-        <span className="view-all">View all 〉</span>
-      </div>
-      <div className="restaurant-grid">
-        {[1, 2, 3].map((_, idx) => (
-          <div key={idx} className="restaurant-card">
-            <img src="/pizza.png" alt="Pizza" />
-            <h4>Restaurant Name</h4>
-            <p className="location-text">Location</p>
-            <p className="details-text">4.97 km • 21 min</p>
-          </div>
-        ))}
-      </div>
+      <DashboardSection title="Applied Filters" />
 
       {/* Recently Searched */}
-      <div className="section-header">
-        <h3>Recently Searched</h3>
-        <span className="view-all">View all 〉</span>
-      </div>
-      <div className="restaurant-grid">
-        {[4, 5, 6].map((_, idx) => (
-          <div key={idx} className="restaurant-card">
-            <img src="/pizza.png" alt="Pizza" />
-            <h4>Restaurant Name</h4>
-            <p className="location-text">Location</p>
-            <p className="details-text">4.97 km • 21 min</p>
-          </div>
-        ))}
-      </div>
+      <DashboardSection title="Your Recent AI Dish Recommendation!" />
     </div>
   );
 }
