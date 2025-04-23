@@ -1,0 +1,94 @@
+.sidebar {
+    width: 250px;
+    min-height: 100vh;
+    background: #f5f1fc;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-family: 'Poppins', sans-serif;
+    border-right: 1px solid #e5e3f3;
+  }
+  
+  .logo {
+    font-weight: 800;
+    font-size: 24px;
+    color: #2e1461;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 16px;
+    text-decoration: none;
+    color: #3a2b77;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    margin: 0.4rem 0;
+    transition: 0.2s ease;
+  }
+
+  .nav-item.active {
+    background-color: #6a41c1;
+    color: white;
+  }
+  
+  .nav-item.active .nav-icon {
+    filter: brightness(0) invert(1); 
+  }
+  
+  .nav-item:hover {
+    color: rgb(153, 128, 235);
+    font-weight: 500;
+  }
+  
+  .group-party-box {
+    background: linear-gradient(145deg, #7164a5, #e1ddee);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+    margin: 2rem 0;
+  }
+  
+  .invite-btn {
+    background-color: #2e1461;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .invite-btn:hover {
+    background-color: #4526a5;
+  }
+  
+  .report-issue {
+    font-size: 12px;
+    color: #8f80b5;
+    text-align: center;
+    margin-top: auto;
+  }
+  
+  .nav-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .logo-icon {
+    width: 220px;
+    margin: 2rem 0;
+    display: block;
+  }
+  
