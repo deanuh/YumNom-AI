@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import RestaurantSearch from "./pages/restaurantSearch";
+import Settings from "./pages/settings";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/restaurantSearch" element={<RestaurantSearch />} />
+            <Route path="/settings" element={<Settings />} /> 
           </Routes>
         </div>
       </div>

@@ -19,10 +19,10 @@ const Sidebar = () => {
           Dashboard
         </Link>
 
-        <Link to="/restaurantSearch" className={`nav-item ${location.pathname === "/search" ? "active" : ""}`}>
+        <Link to="/restaurantSearch" className={`nav-item ${location.pathname === "/restaurantSearch" ? "active" : ""}`}>
           <img
             src={location.pathname === "/search" ? "/search_rest_white.png" : "/search_resturant_purple.png"}
-            alt="Search"
+            alt="restaurantSearch"
             className="nav-icon"
           />
           Search restaurant?
