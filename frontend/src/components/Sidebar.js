@@ -28,9 +28,9 @@ const Sidebar = () => {
           Search restaurant?
         </Link>
 
-        <Link to="/favorites" className={`nav-item ${location.pathname === "/favorites" ? "active" : ""}`}>
+        <Link to="/favorite" className={`nav-item ${location.pathname === "/favorite" ? "active" : ""}`}>
           <img
-            src={location.pathname === "/favorites" ? "/fav_white.png" : "/fav_purple.png"}
+            src={location.pathname === "/favorite" ? "/fav_white.png" : "/fav_purple.png"}
             alt="Favorite"
             className="nav-icon"
           />
