@@ -1,6 +1,5 @@
 import React from "react";
 import "../styles/restaurantSearch.css"; // make sure it’s the correct path
-import "../styles/Dashboard.css";
 
 const categories = [
   { name: "Bakery", img: "../Baked.png" },
@@ -13,17 +12,20 @@ const categories = [
 
 const Category = () => {
   return (
+    <div>
+      <h3>Category</h3>
     <div className="category-grid">
       {categories.map((item) => (
         <div key={item.name} className="category-card">
           <img
             src={`/assets/${item.img}`} // ⬅️ assumes images are in public/assets/
             alt={item.name}
-            className="dish-img"
+            className="category-dish-img"
           />
           <p>{item.name}</p>
         </div>
       ))}
+    </div>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import RestaurantSearch from "./pages/restaurantSearch";
 import Settings from "./pages/settings";
+import Favorite from "./pages/Favorite";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/restaurantSearch" element={<RestaurantSearch />} />
             <Route path="/settings" element={<Settings />} /> 
+            <Route path="/favorite" element={<Favorite />} />
           </Routes>
         </div>
       </div>
