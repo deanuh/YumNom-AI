@@ -6,6 +6,15 @@ import RestaurantSearch from "./pages/restaurantSearch";
 import Settings from "./pages/settings";
 import Favorite from "./pages/Favorite";
 
+// Settings Pages
+import Terms from "./pages/settingsInfo/terms";
+import ChangePassword from "./pages/settingsInfo/changePass";
+import DeleteAccount from "./pages/settingsInfo/deleteAccount";
+import EmailSettings from "./pages/settingsInfo/emailSettings";
+import Help from "./pages/settingsInfo/help";
+import PrivacyPolicy from "./pages/settingsInfo/privacyPolicy";
+import LocationPref from "./pages/settingsInfo/locationPref";
+
 
 function App() {
   return (
@@ -19,6 +28,13 @@ function App() {
             <Route path="/restaurantSearch" element={<RestaurantSearch />} />
             <Route path="/settings" element={<Settings />} /> 
             <Route path="/favorite" element={<Favorite />} />
+            <Route path="/terms" element={<Terms />} />  
+            <Route path="/changePass" element={<ChangePassword />} />
+            <Route path="/emailSettings" element={<EmailSettings />} /> 
+            <Route path="/locationPref" element={<LocationPref />} />
+            <Route path="/deleteAccount" element={<DeleteAccount />} /> 
+            <Route path="/help" element={<Help />} /> 
+            <Route path="/privacyPolicy" element={<PrivacyPolicy />} /> 
           </Routes>
         </div>
       </div>

@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/settings.css";
 
+
 function Settings() {
   return (
     <div className="settings-wrapper">

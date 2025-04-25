@@ -60,7 +60,7 @@ function RestaurantSearch() {
       <div className="filter-pill1">Filters: </div>
       
         <div className="filter-dropdown">
-          <button className="filter-pill" onClick={toggleDistance}>Distance{selectedDistance ? `: ${selectedDistance} `: ""}  
+          <button className="filter-pill" onClick={toggleDistance}>Distance {selectedDistance ? `: ${selectedDistance} `: ""}  
             <img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" /></button>
           {showDistanceDropdown && (
             <div className="dropdown-menu">
@@ -72,7 +72,7 @@ function RestaurantSearch() {
         </div>
 
         <div className="filter-dropdown">
-          <button className="filter-pill" onClick={togglePrice}>Price{selectedPrice ? `: ${selectedPrice}` : ""}<img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" /></button>
+          <button className="filter-pill" onClick={togglePrice}>Price {selectedPrice ? `: ${selectedPrice}` : ""}<img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" /></button>
           {showPriceDropdown && (
             <div className="dropdown-menu">
               {/* TODO: fix up the buttons like Distance */}
