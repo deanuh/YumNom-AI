@@ -2,7 +2,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-// Pages
+// Settings Pages
 import Settings from "./pages/settings";
 import Terms from "./pages/settingsInfo/terms";
 import ChangePassword from "./pages/settingsInfo/changePass";
