@@ -1,6 +1,6 @@
 .settings-wrapper {
     padding: 4rem 1rem;
-    background-color: #f7f4fb;
+    background-color: #ffffff;
     display: flex;
     justify-content: center;
     /* min-height: 100vh; */
@@ -51,6 +51,7 @@
     margin: 0 auto 2rem;
     text-align: center;
     color: #190352;
+    border: 1.5px solid #3d2074
   }
   
   .settings-section {
