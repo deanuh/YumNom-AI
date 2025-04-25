@@ -46,9 +46,9 @@ const Sidebar = () => {
           AI Recommendation
         </Link>
 
-        <Link to="/profile" className={`nav-item ${location.pathname === "/profile" ? "active" : ""}`}>
+        <Link to="/userprofile" className={`nav-item ${location.pathname === "/userprofile" ? "active" : ""}`}>
           <img
-            src={location.pathname === "/profile" ? "/user_white.png" : "/user_purple.png"}
+            src={location.pathname === "/userprofile" ? "/user_white.png" : "/user_purple.png"}
             alt="User Profile"
             className="nav-icon"
           />

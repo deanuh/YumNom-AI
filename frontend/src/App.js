@@ -4,7 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import RestaurantSearch from "./pages/restaurantSearch";
 import Settings from "./pages/settings";
-
+import UserProfilePage from "./pages/UserProfilePage";
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/restaurantSearch" element={<RestaurantSearch />} />
             <Route path="/settings" element={<Settings />} /> 
+            <Route path="/userprofile" element={<UserProfilePage />} />
           </Routes>
         </div>
       </div>
