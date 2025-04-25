@@ -4,10 +4,11 @@
   
   .dashboard-header h1 {
     font-size: 28px;
+    color: #190352
   }
   
   .dashboard-banner {
-    background: #e6dfff;
+    background: #D0C9EB;
     border-radius: 12px;
     padding: 1rem 2rem;
     display: flex;
@@ -75,6 +76,7 @@
   .friends-section h2 {
     font-size: 20px;
     margin-bottom: 0.5rem;
+    color: #190352
   }
   
   .friends-list {
@@ -104,9 +106,9 @@
     padding: 1rem;
     margin-top: 1rem;
     box-shadow: 0 0 0 1px #eee;
-
     flex-direction: column;
     align-items: center;
+    box-shadow: 0 2px 5px #65558F;
   }
   .add-friends {
     margin-top: 0.5rem;
@@ -129,7 +131,9 @@
     justify-content: space-between;
     align-items: center;
   }
-  
+  .section-header h3{
+    color: #190352
+  }
   .dish-list {
     display: flex;
     gap: 1.5rem;
@@ -143,6 +147,7 @@
     padding: 1rem;
     text-align: center;
     background: white;
+    box-shadow: 0 2px 5px #65558F;
   }
   
   .dish-img {

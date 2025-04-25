@@ -12,7 +12,7 @@ const categories = [
 
 const Category = () => {
   return (
-    <div>
+    <div className="main-body">
       <h3>Category</h3>
     <div className="category-grid">
       {categories.map((item) => (
