@@ -2,7 +2,7 @@
     padding: 2rem;
     font-family: "Poppins", sans-serif;
     min-height: 100vh;
-    background-color: #f7f4fb;
+    background-color: #ffffff;
     border-radius: 20px;
   }
 
@@ -30,7 +30,7 @@
   .favorite-header {
     display: flex;
     align-items: center;
-    gap: 1rem; /* ✅ Controls spacing between title and buttons */
+    gap: 1rem; /* Controls spacing between title and buttons */
     margin-bottom: 2rem;
     flex-wrap: wrap; /* optional, for smaller screens */
   }
