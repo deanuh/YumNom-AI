@@ -6,7 +6,7 @@ import "../styles/settings.css";
 
 function Settings() {
   return (
-    <div className="settings-wrapper">
+    <div>
       <div className="settings-card">
         <h2 className="settings-title">Settings & Activity</h2>
 

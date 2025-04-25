@@ -38,6 +38,7 @@ function RestaurantSearch() {
 
   return (
     <div className="Restaurant-container">
+      <h3 className="Restaurant-container-title">Restaurant Search</h3>
       <div>
         
       {/* LOCATION */}
@@ -72,14 +73,13 @@ function RestaurantSearch() {
         </div>
 
         <div className="filter-dropdown">
-          <button className="filter-pill" onClick={togglePrice}>Price {selectedPrice ? `: ${selectedPrice}` : ""}<img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" /></button>
+          <button className="filter-pill" onClick={togglePrice}>Price {selectedPrice ? `: ${selectedPrice}` : ""} <img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" /></button>
           {showPriceDropdown && (
             <div className="dropdown-menu">
-              {/* TODO: fix up the buttons like Distance */}
-              <label><input type="radio" name="distance" /> 5 mi</label>
-              <label><input type="radio" name="distance" /> 10 mi</label>
-              <label><input type="radio" name="distance" /> 15 mi</label>
-            </div>
+            <label><input type="radio" name="price" value="$" checked={selectedPrice === "$"} onChange={(e) => setSelectedPrice(e.target.value)}/> $ </label>
+            <label><input type="radio" name="price" value="$$" checked={selectedPrice === "$$"} onChange={(e) => setSelectedPrice(e.target.value)}/> $$ </label>
+            <label><input type="radio" name="price" value="$$$" checked={selectedPrice === "$$$"} onChange={(e) => setSelectedPrice(e.target.value)}/> $$$ </label>
+          </div>
           )}
       
         </div>
@@ -93,7 +93,7 @@ function RestaurantSearch() {
       <DashboardSection title="Applied Filters" />
 
       {/* Recently Searched */}
-      <DashboardSection title="Your Recent AI Dish Recommendation!" />
+      <DashboardSection title="Your Recent Searches" />
     </div>
   );
 }
