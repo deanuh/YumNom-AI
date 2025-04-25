@@ -5,9 +5,9 @@ import Dashboard from "./pages/Dashboard";
 import RestaurantSearch from "./pages/restaurantSearch";
 import Settings from "./pages/settings";
 import UserProfilePage from "./pages/UserProfilePage";
+import Favorite from "./pages/Favorite";
 
 // Settings Pages
-import Settings from "./pages/settings";
 import Terms from "./pages/settingsInfo/terms";
 import ChangePassword from "./pages/settingsInfo/changePass";
 import DeleteAccount from "./pages/settingsInfo/deleteAccount";
@@ -28,6 +28,8 @@ function App() {
             <Route path="/restaurantSearch" element={<RestaurantSearch />} />
             <Route path="/settings" element={<Settings />} /> 
             <Route path="/userprofile" element={<UserProfilePage />} />
+            <Route path="/restaurantSearch" element={<RestaurantSearch />} /> 
+            <Route path="/favorite" element={<Favorite />} /> 
             <Route path="/terms" element={<Terms />} />  
             <Route path="/changePass" element={<ChangePassword />} />
             <Route path="/emailSettings" element={<EmailSettings />} /> 
