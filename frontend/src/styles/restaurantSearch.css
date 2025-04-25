@@ -16,7 +16,7 @@
     margin-bottom: 1.5rem;
   }
   
-  
+
   .location-display {
     display: inline-block;
     font-weight: 600;
@@ -251,7 +251,23 @@
     border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
+    border: none;
+    outline: none;
+    box-shadow: none;
   }
+  /* .enter-button {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background-color: #3c2b7f; 
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+   */
   
   .section-header {
     display: flex;
@@ -267,15 +283,20 @@
     padding: 0.6rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-top: 0.3rem;
+    /* margin-top: 0.3rem; */
     color: #190352;
     border: 0.5px solid #65558F;
     position:fixed;
     font-size: 1rem;
+    position:absolute;
+    top: 100%;
+    left: 0;
+    z-index: 999;
   }
   
   .filter-dropdown {
     position: relative;
+    display:inline-block
   }
 /*   
   .filter-dropdown:hover .dropdown-menu {
@@ -316,5 +337,12 @@
 .Restaurant-container input[type="radio"] {
   accent-color: #6d4dc3;  /* or any hex color you want */
 
+}
+
+.Restaurant-container-title {
+  color: #190352;
+  font-size:xx-large;
+  font-weight: 900;
+  
 }
   
