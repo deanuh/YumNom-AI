@@ -137,7 +137,7 @@
   }
   
   .category-card {
-    background: rgb(248, 246, 255);
+    background: rgb(251, 250, 255);
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
@@ -244,10 +244,11 @@
   }
   
   .enter-button {
-    background-color: #3c2b7f;
+    background: #6a41c1;
     color: white;
     padding: 0.7rem 1.5rem;
     /* border: 2px solid #c4b2f6; */
+    border: none;
     border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -317,4 +318,6 @@
   accent-color: #6d4dc3;  /* or any hex color you want */
 
 }
-  
+.main-body h3{
+  color: #190352
+}  
