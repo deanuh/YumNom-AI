@@ -11,10 +11,10 @@ const Fields = () => {
 
     return(
 
-        <div className="fieldsColumn">
+        <div className="contactUsFieldsColumn">
             <h5>Name</h5>
             <input
-                className="field"
+                className="contactUsField"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -22,14 +22,14 @@ const Fields = () => {
 
             <h5>Email</h5>
             <input
-                className="field"
+                className="contactUsField"
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
             <h5>Subject</h5>
             <div className="subject-dropdown">
-                <button className="subject-pill" onClick={toggleSubject}>Select query type{selectedSubject ? `: ${selectedSubject} `: ""}</button>
+                <button className="contactUsSubjectPill" onClick={toggleSubject}>Select query type{selectedSubject ? `: ${selectedSubject} `: ""}</button>
                 {showSubjectDropdown && (
                     <div className="dropdown-menu">
                         <label><input type="radio" name="distance" value="query placeholder 1" checked={selectedSubject === "query placeholder 1"} onChange={(e) => setSelectedSubject(e.target.value)}/>query placeholder 1</label>
@@ -40,13 +40,13 @@ const Fields = () => {
             </div>
             <h5>Message</h5>
             <textarea
-                className="messageBox"
+                className="contactUsMessageBox"
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
             />
             <div>
-                <button className="submitButton">Submit</button>
+                <button className="contactUssubmitButton">Submit</button>
             </div>
         </div>
     );

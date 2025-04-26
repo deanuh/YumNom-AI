@@ -5,39 +5,36 @@
                 flexDirection: "row";
 }
 
-.contactUs {
-}
-
-.detailsColumn {
+.contactUsDetailsColumn {
     width: 400px;
 }
 
-.detailsColumn h1 {
+.contactUsDetailsColumn h1 {
     font-family: "Chivo";
     font-size:64px;    
     font-weight:700;
 }
 
-.detailsColumn h2 {
+.contactUsDetailsColumn h2 {
     font-family: "Chivo";
     font-size:32px;
     font-weight:700;
 }
-.detailsColumn h3 {
+.contactUsDetailsColumn h3 {
     font-family: "Poppins";
     font-size:24px;
     font-weight:700;
 }
-.detailsColumn p {
+.contactUsDetailsColumn p {
     font-family: "Poppins";
     font-size:24px;
     font-weight:400;
 }
 
-.fieldsColumn {
+.contactUsFieldsColumn {
     margin-left: 5rem;
 }
-.fieldsColumn h5 {
+.contactUsFieldsColumn h5 {
     font-family: "Poppins";
     font-size:13px;
     font-weight:700;
@@ -45,7 +42,7 @@
 
 
 
-.subject-pill {
+.contactUsSubjectPill {
     position:relative;
     background-color: white;
     background: transparent url("/public/Vector.jpeg") no-repeat right;
@@ -64,12 +61,12 @@
     text-align: left;
 
 }
-.subject-dropdown-arrow {
+.contactUsSubjectDropdownArrow {
     position:absolute;
     top:50%;
     left:0%;
 }
-.field {
+.contactUsField {
     height: 40px;
     width: 535px;
     padding: 15px;
@@ -82,7 +79,7 @@
     font-family: "Poppins";
     font-size:14px;
 }
-.messageBox {
+.contactUsMessageBox {
     height: 200px;
     width: 535px;
     padding: 15px;
@@ -97,7 +94,7 @@
     font-size:14px;
 }
 
-.submitButton {
+.contactUsSubmitButton {
     font-family: "Poppins";
     font-weight:500;
     font-size:14px;
