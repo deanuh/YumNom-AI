@@ -4,8 +4,18 @@
     font-family: 'Poppins', sans-serif;
     background-color: #FFFFFF;
   } */
+
+  @import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');
+
   .Restaurant-container {
     padding: 2rem;
+  }
+
+  .Restaurant-container-title {
+    font-family: Chivo;
+    font-size: xx-large;
+    /* font-weight: bolder; */
+    color: #3c2b7f;
   }
   /* ===== LOCATION + SEARCH ===== */
   .search-row {
@@ -16,7 +26,7 @@
     margin-bottom: 1.5rem;
   }
   
-  
+
   .location-display {
     display: inline-block;
     font-weight: 600;
@@ -28,9 +38,9 @@
     /* box-shadow: 0 2px 6px #65558F; */
     border: .5px solid #65558F;
 
-    margin-right: 30rem;
+    /* margin-right: 30rem; */
     margin-bottom: 1.5rem;
-    color:#190352;
+    color:#3c2b7f;
   }
 
   
@@ -81,6 +91,7 @@
     border-radius: 12px;
     font-size: 0.9rem;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    color: #3c2b7f;
   }
   .filter-pill {
     background: #fff;
@@ -90,6 +101,7 @@
     font-size: 0.9rem;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    color: #3c2b7f;
   }
   .filter-pill:hover {
     background-color: #ebe4fd;
@@ -215,7 +227,7 @@
     margin-bottom: 1.2rem;
   } */
   
-  .search-bar-wrapper {
+  .Restaurant-search-bar-wrapper {
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -224,9 +236,9 @@
     
   }
   
-  .search-bar {
+  .Restaurant-search-bar {
     background: white;
-    padding: 0.6rem 1rem;
+    padding: .3rem 1rem;
     border-radius: 15px;
     display: flex;
     align-items: center;
@@ -235,7 +247,7 @@
     margin: auto;
   }
   
-  .search-bar input {
+  .Restaurant-search-bar input {
     border: none;
     outline: none;
     flex: 1;
@@ -243,16 +255,32 @@
     padding-left: 0.5rem;
   }
   
-  .enter-button {
+  .Restaurant-search-enter-button {
     background: #6a41c1;
     color: white;
-    padding: 0.7rem 1.5rem;
+    padding: 0.5rem 1rem;
     /* border: 2px solid #c4b2f6; */
-    border: none;
     border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin-bottom: 0rem;  
   }
+  /* .enter-button {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background-color: #3c2b7f; 
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+   */
   
   .section-header {
     display: flex;
@@ -268,15 +296,20 @@
     padding: 0.6rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-top: 0.3rem;
+    /* margin-top: 0.3rem; */
     color: #190352;
     border: 0.5px solid #65558F;
     position:fixed;
     font-size: 1rem;
+    position:absolute;
+    top: 100%;
+    left: 0;
+    z-index: 999;
   }
   
   .filter-dropdown {
     position: relative;
+    display:inline-block
   }
 /*   
   .filter-dropdown:hover .dropdown-menu {

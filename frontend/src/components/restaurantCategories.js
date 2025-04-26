@@ -18,7 +18,7 @@ const Category = () => {
       {categories.map((item) => (
         <div key={item.name} className="category-card">
           <img
-            src={`/assets/${item.img}`} // ⬅️ assumes images are in public/assets/
+            src={`/assets/${item.img}`} // assumes images are in public/assets/
             alt={item.name}
             className="category-dish-img"
           />

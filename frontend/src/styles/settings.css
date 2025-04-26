@@ -1,13 +1,16 @@
-.settings-wrapper {
-    padding: 4rem 1rem;
+.Set-settings-wrapper {
+    /* padding: 4rem 1rem; */
     background-color: #ffffff;
     display: flex;
     justify-content: center;
     /* min-height: 100vh; */
     flex-direction: column;
+    margin-top: 0rem;
+    
+
   }
 
-  .settings-button-wrapper {
+  .Set-settings-button-wrapper {
     padding: 4rem 1rem;
     background-color: #f7f4fb;
     display: flex;
@@ -16,7 +19,7 @@
     flex-direction: column;
   }
   
-  .settings-button-wrapper li {
+  .Set-settings-button-wrapper li {
     background-color: #ffffff;
     border-radius: 12px;
     margin-bottom: 1rem;
@@ -30,7 +33,7 @@
     border: 1.5px solid #190352
 }
   
-  .settings-card {
+  .Set-settings-card {
     background-color: #D0C9EB;
     padding: 2rem;
     border-radius: 20px;
@@ -41,7 +44,7 @@
 
   }
   
-  .settings-title {
+  .Set-settings-title {
     font-size: 1.6rem;
     font-weight: bold;
     background-color: #ffffff;
@@ -54,11 +57,11 @@
     border: 1.5px solid #3d2074
   }
   
-  .settings-section {
+  .Set-settings-section {
     margin-bottom: 2rem;
   }
   
-  .section-heading {
+  .Set-section-heading {
     font-size: 1.6rem;
     font-weight: bolder;
     font-family: 'Trebuchet MS', monospace, sans-serif;
@@ -66,13 +69,13 @@
     color: #190352;
   }
   
-  .settings-list {
+  .Set-settings-list {
     list-style: none;
     padding: 0;
     margin: 0;
   }
   
-  .settings-list li {
+  .Set-settings-list li {
     background-color: #ffffff;
     border-radius: 12px;
     margin-bottom: 0.09rem;
@@ -85,18 +88,18 @@
     border: 1.5px solid #190352
   }
   
-  .settings-list li:hover {
+  .Set-settings-list li:hover {
     background-color: #b9a6e0;
   }
   
-  .settings-list li a {
+  .Set-settings-list li a {
     text-decoration: none;
     color: #190352;
     font-weight: 500;
     flex: 1;
   }
   
-.settings-list li::after {
+.Set-settings-list li::after {
     content: "›";
     font-size: 1.2rem;
     color: #190352;
@@ -104,3 +107,5 @@
 
 
   
+
+  /* THIS IS PLACE HOLDER FOR THE POPUP CSS --> transport to AI rec once done */

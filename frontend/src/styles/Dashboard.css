@@ -148,6 +148,7 @@
     text-align: center;
     background: white;
     box-shadow: 0 2px 5px #65558F;
+    position: relative;
   }
   
   .dish-img {
@@ -188,3 +189,21 @@
     color: #6f4ed3;
     cursor: pointer;
   }
+
+.heart-container {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+  
+.heart-icon {
+    width: 25px;
+    height: 20px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+.heart-icon:active {
+    transform: scale(1.2);
+  }
+  
