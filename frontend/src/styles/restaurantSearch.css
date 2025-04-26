@@ -38,9 +38,9 @@
     /* box-shadow: 0 2px 6px #65558F; */
     border: .5px solid #65558F;
 
-    margin-right: 30rem;
+    /* margin-right: 30rem; */
     margin-bottom: 1.5rem;
-    color:#190352;
+    color:#3c2b7f;
   }
 
   
@@ -91,6 +91,7 @@
     border-radius: 12px;
     font-size: 0.9rem;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    color: #3c2b7f;
   }
   .filter-pill {
     background: #fff;
@@ -100,6 +101,7 @@
     font-size: 0.9rem;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    color: #3c2b7f;
   }
   .filter-pill:hover {
     background-color: #ebe4fd;

@@ -49,3 +49,26 @@ export default Settings;
 
 
 
+// function AIRec() {
+//   const [showChat, setShowChat] = useState(false);
+
+//   const toggleChat = () => {
+//     setShowChat(prev => !prev);
+//   };
+
+//   return (
+//     <div>
+//       <button onClick={toggleChat} className="chat-toggle-button">
+//         {showChat ? "Close Chat" : "Chat with NomBot"}
+//       </button>
+
+//       {showChat && (
+//         <div className="chat-popup-container">
+//           <ChatBot />
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default AIRec;

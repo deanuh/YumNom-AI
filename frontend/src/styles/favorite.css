@@ -3,7 +3,7 @@
 
 .favorite-page {
     padding: 2rem;
-    font-family: "Poppins", sans-serif;
+    font-family: "Chivo";
     min-height: 100vh;
     background-color: #ffffff;
     border-radius: 20px;
@@ -101,6 +101,8 @@
     font-weight:bolder;
     color: #3c2b7f;
     margin: 0;
+    font-family: "Chivo";
+
   }
   
   .tab-row {
