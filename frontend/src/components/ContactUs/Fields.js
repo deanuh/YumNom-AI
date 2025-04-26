@@ -17,7 +17,7 @@ const Fields = () => {
                 className="field"
                 type="text"
                 value={name}
-                onChange={() => setName}
+                onChange={(e) => setName(e.target.value)}
             />
 
             <h5>Email</h5>
@@ -25,7 +25,7 @@ const Fields = () => {
                 className="field"
                 type="text"
                 value={email}
-                onChange={() => setEmail}
+                onChange={(e) => setEmail(e.target.value)}
             />
             <h5>Subject</h5>
             <div className="subject-dropdown">
@@ -39,11 +39,11 @@ const Fields = () => {
                 )}
             </div>
             <h5>Message</h5>
-            <input 
+            <textarea
                 className="messageBox"
                 type="text"
                 value={message}
-                onChange={() => setMessage}
+                onChange={(e) => setMessage(e.target.value)}
             />
             <div>
                 <button className="submitButton">Submit</button>
