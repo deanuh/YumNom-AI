@@ -4,8 +4,18 @@
     font-family: 'Poppins', sans-serif;
     background-color: #FFFFFF;
   } */
+
+  @import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');
+
   .Restaurant-container {
     padding: 2rem;
+  }
+
+  .Restaurant-container-title {
+    font-family: Chivo;
+    font-size: xx-large;
+    /* font-weight: bolder; */
+    color: #3c2b7f;
   }
   /* ===== LOCATION + SEARCH ===== */
   .search-row {

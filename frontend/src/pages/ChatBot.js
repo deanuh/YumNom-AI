@@ -50,7 +50,7 @@ function ChatBot() {
     <div className="chatbot-wrapper">
       <h2 className="chatbot-header">CHATTING WITH NOMBOT</h2>
       <div className="chat-window">
-        <div className="message-container" ref={chatEndRef}>
+        <div className="message-container">
             {messages.map((msg, i) => (
                 <div key={i} className={`message-row ${msg.sender}`}>
                 <div className={`bubble ${msg.sender}`}>{msg.text}</div>

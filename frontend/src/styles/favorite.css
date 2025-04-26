@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');
+
+
 .favorite-page {
     padding: 2rem;
     font-family: "Poppins", sans-serif;
@@ -38,13 +41,15 @@
   
   .favorite-title {
     font-size: 1.8rem;
-    color: #190352;
+    color: #3c2b7f;
     margin: 0;
+    font-family: Chivo;
   }
   
   .dropdown-wrapper {
     position: relative;
     display: inline-block;
+    
   }
   
   .dropdown-toggle {
@@ -54,7 +59,7 @@
     padding: 0.5rem 1rem;
     border-radius: 999px;
     background-color: white;
-    color: #190352;
+    color: #3c2b7f;
     border: 1.5px solid #65558F;
     font-weight: 600;
     cursor: pointer;
