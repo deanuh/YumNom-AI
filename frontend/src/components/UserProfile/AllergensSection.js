@@ -25,18 +25,18 @@ const AllergensSection = () => {
     <div className="inline-section">
         <h4>Dietary Prefrences</h4>
     <div className="white-box">
-      <div className="two-column">
-        <div className="column">
+      <div className="dietary-two-column">
+        <div className="dietary-column">
           <p>Allergens</p>
-          <div className="pill-container">
+          <div className="dietary-pill-container">
             {allergens.map((item) => (
-              <div className="pill-icon" key={item.name}>
+              <div className="dietary-pill-icon" key={item.name}>
                 <img src={`/${item.file}`} alt={item.name} />
                 <span>{item.name}</span>
               </div>
             ))}
             {addAllergen.map((item) => (
-                <div className="pill-icon" key={item.name}>
+                <div className="dietary-pill-icon" key={item.name}>
                     <img src={`/${item.file}`} alt={item.name} />
                     <span>{item.name}</span>
                 </div>
@@ -44,18 +44,18 @@ const AllergensSection = () => {
           </div>
         </div>
 
-    <div className="divider" />
-        <div className="column">
+    <div className="dietary-divider" />
+        <div className="dietary-column">
             <p>Dietary Preference</p>
-            <div className="pill-container">
+            <div className="dietary-pill-container">
                 {dietaryPrefs.map((item) => (
-                <div className="pill-icon" key={item.name}>
+                <div className="dietary-pill-icon" key={item.name}>
                     <img src={`/${item.file}`} alt={item.name} />
                     <span>{item.name}</span>
                 </div>
                 ))}
                 {editPref.map((item) => (
-                <div className="pill-icon" key={item.name}>
+                <div className="dietary-pill-icon" key={item.name}>
                     <img src={`/${item.file}`} alt={item.name} />
                     <span>{item.name}</span>
                 </div>
