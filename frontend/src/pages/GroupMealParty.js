@@ -14,8 +14,8 @@ const friendsList = [
     { username: "banana_gato", image: "ban_gato.png" },
     { username: "cattt", image: "gato.png" },
   ];
-  
 const restaurantOptions = ["Chipotle", "Chick-fil-a", "Pizza Hut", "WingStop"];
+
 
 function GroupMealParty() {
   const [selectedFriends, setSelectedFriends] = useState([]);
@@ -23,6 +23,12 @@ function GroupMealParty() {
   const [chosenRestaurant, setChosenRestaurant] = useState("");
 
   const handleRestaurantSelect = (rest) => setChosenRestaurant(rest);
+
+    // BUILD selectedFriendObjects HERE (right before return)
+  const selectedFriendObjects = selectedFriends
+    .map(username => friendsList.find(friend => friend.username === username))
+    .filter(Boolean);
+
 
   return (
     <div className="group-meal-wrapper">
@@ -41,6 +47,7 @@ function GroupMealParty() {
         <div className="right-side">
             <HowItWorksInstructions />
         </div>
+        
         </div>
 
 
@@ -50,8 +57,9 @@ function GroupMealParty() {
         setSearch={setSearch}
         handleRestaurantSelect={handleRestaurantSelect}
       />
+      
 
-      <SelectedRestaurantDisplay chosenRestaurant={chosenRestaurant} />
+      <SelectedRestaurantDisplay chosenRestaurant={chosenRestaurant} selectedFriendObjects={ selectedFriendObjects}/>
     </div>
   );
 }
