@@ -28,9 +28,8 @@ const Fields = () => {
                 onChange={() => setEmail}
             />
             <h5>Subject</h5>
-            <div className="filter-dropdown">
-                <button className="filter-pill" onClick={toggleSubject}>Select query type{selectedSubject ? `: ${selectedSubject} `: ""}  
-                <img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" /></button>
+            <div className="subject-dropdown">
+                <button className="subject-pill" onClick={toggleSubject}>Select query type{selectedSubject ? `: ${selectedSubject} `: ""}</button>
                 {showSubjectDropdown && (
                     <div className="dropdown-menu">
                         <label><input type="radio" name="distance" value="query placeholder 1" checked={selectedSubject === "query placeholder 1"} onChange={(e) => setSelectedSubject(e.target.value)}/>query placeholder 1</label>
@@ -41,13 +40,13 @@ const Fields = () => {
             </div>
             <h5>Message</h5>
             <input 
-                className="message"
+                className="messageBox"
                 type="text"
                 value={message}
                 onChange={() => setMessage}
             />
             <div>
-                <button>Submit</button>
+                <button className="submitButton">Submit</button>
             </div>
         </div>
     );
