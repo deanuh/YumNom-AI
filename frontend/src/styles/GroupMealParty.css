@@ -158,19 +158,21 @@
     margin-top: 2rem;
   }
   
-.search-bar {
+.group-search-bar {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
+    border: none;
+    outline: none;
   }
   
-.search-bar input {
+.group-search-bar input {
     flex: 1;
     padding: 0.5rem;
     border-radius: 0.5rem;
   }
   
-.search-bar button {
+.group-search-bar button {
     padding: 0.5rem 1rem;
     background-color: #8f5ad3;
     color: white;
@@ -187,7 +189,7 @@
     border-radius: 0.5rem;
     cursor: pointer;
 }
-.search-results {
+.group-search-results {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;

@@ -7,6 +7,8 @@ import Settings from "./pages/settings";
 import UserProfilePage from "./pages/UserProfilePage";
 import Favorite from "./pages/Favorite";
 import GroupMealParty from "./pages/GroupMealParty";
+import AIRecommendationPage from "./pages/AIRecommendationPage";
+import AIRecommendationResult from './pages/AIRecommendationResult';
 
 
 // Settings Pages
@@ -33,6 +35,9 @@ function App() {
             <Route path="/restaurantSearch" element={<RestaurantSearch />} /> 
             <Route path="/favorite" element={<Favorite />} /> 
             <Route path="/group-meal" element={<GroupMealParty />} />
+            <Route path="/ai-recommendation" element={<AIRecommendationPage />} />
+            <Route path="/ai-result" element={<AIRecommendationResult />} />
+
 
             <Route path="/terms" element={<Terms />} />  
             <Route path="/changePass" element={<ChangePassword />} />
