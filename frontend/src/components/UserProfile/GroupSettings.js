@@ -18,15 +18,15 @@ const GroupSettings = () => {
     <div className="inline-section">
         <h4>Group Settings</h4>
     <div className="white-box">
-          <div className="pill-container">
+          <div className="dietary-pill-container">
             {friends.map((item) => (
-              <div className="pill-icon" key={item.name}>
+              <div className="dietary-pill-icon" key={item.name}>
                 <img src={`/${item.file}`} alt={item.name} />
                 <span>{item.name}</span>
               </div>
             ))}
             {addFriend.map((item) => (
-                <div className="pill-icon" key={item.name}>
+                <div className="dietary-pill-icon" key={item.name}>
                     <img src={`/${item.file}`} alt={item.name} />
                     <span>{item.name}</span>
                 </div>

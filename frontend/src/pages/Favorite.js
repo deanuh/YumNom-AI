@@ -11,7 +11,7 @@ function Favorite() {
   return (
     <div className="favorite-page">
       <div className="favorite-header">
-        <h2 className="favorite-title">Favorites</h2>
+        <h3 className="favorite-title">Favorites</h3>
 
         <div className="dropdown-wrapper">
         <button className="dropdown-toggle" onClick={toggleDropdown}>

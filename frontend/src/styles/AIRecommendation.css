@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap');
+
+.title {
+    font-family: 'Cherry Bomb One', cursive;
+    font-size: 40px;
+    text-align: center;
+    color: #3c2a66;
+    background: none;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+
+  }
+  
+.ai-recommendation-container {
+    background: linear-gradient(0deg, transparent 0%, white 60%),
+    linear-gradient(90deg, #ffffff 0%, #febdee 33%, #c7defc 66%, #ffffff 100%);
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+.user-preferences {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+  
+.preference-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    padding: 0.5rem;
+    object-fit: contain;
+  }
+.preferences-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 200px;
+    box-shadow: 0 2px 5px #65558F;
+}
+
+.preferences-card h3{
+    color: #65558F;
+}
+.preference-icon h3{
+    color: #65558F;
+}
+.pill-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #4b2883;
+    width: 64px;
+    margin-top: 0.25rem;
+  }
+  
+.pill-icon img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    padding: 0.5rem;
+    object-fit: contain;
+  }
+
+.preference-icons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.preference-icon {
+    font-size: 2rem;
+}
+
+.add-button {
+    font-size: 1.5rem;
+    background: #e7dbf8;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+}
+
+.craving-section {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.craving-input-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background: rgb(255, 255, 255);
+    border-radius: 1rem;
+    padding: 0.5rem;
+    width: 60%;
+    margin: 0 auto;
+    box-shadow: 0 2px 5px #65558F;
+}
+
+.craving-input-box input {
+    flex: 1;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+}
+
+.craving-input-box button {
+    background: transparent;
+    font-size: 1.5rem;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+}
+.recommendation-results {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.recommendation-list {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.recommendation-item {
+    background: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 180px;
+    text-align: center;
+}
+
+.recommendation-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 1rem;
+}
+
+.subtitle{
+    text-align: center;
+    font-size: 24px;
+    color: #190352
+}
+.craving-section h2{
+    margin-top: 3rem;
+    color: #190352
+}
+.craving-icon {
+    width: 40px;
+    height: 40px;
+    margin: 2rem auto;
+    display: block;
+  }
+.an-craving-icon{
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin: 0;
+    pointer-events: none;
+    animation: sparkleFade 2s ease-in-out infinite;
+}
+@keyframes sparkleFade {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+.craving-input-box input {
+    color: #65558F;
+  }
+.craving-input-box input::placeholder {
+    color: #65558F;
+    opacity: 1; }
+
+
+/* THIS IS FOR THE POPUP */
+.chat-toggle-button {
+  background-color: #65558F;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  margin-top: 2rem; /* adds space from the last element */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.chat-popup {
+  position: fixed; /* <== important */
+  bottom: 80px;    /* adjust how high it floats */
+  right: 20px;     /* distance from right edge */
+  width: 300px;
+  background: #fefefe;
+  border: 2px solid #7D5BA6;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  z-index: 1000; /* make sure it's on top of everything */
+  overflow: hidden;
+}
+
+
+
+.chat-popup-header {
+  background-color: #7D5BA6;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.chat-popup-body {
+  padding: 15px;
+  font-size: 1rem;
+  color: #333;
+}

@@ -6,13 +6,13 @@ import "../styles/settings.css";
 
 function Settings() {
   return (
-    <div className="settings-wrapper">
-      <div className="settings-card">
-        <h2 className="settings-title">Settings & Activity</h2>
+    <div className="Set-settings-wrapper">
+      <div className="Set-settings-card">
+        <h2 className="Set-settings-title">Settings & Activity</h2>
 
-        <div className="settings-section">
-          <h3 className="section-heading">General Settings</h3>
-          <ul className="settings-list">
+        <div className="Set-settings-section">
+          <h3 className="Set-section-heading">General Settings</h3>
+          <ul className="Set-settings-list">
             <li><Link to="/changePass">Change Password</Link></li>
             <li><Link to="/emailSettings">Email</Link></li>
             <li><Link to="/locationPref">Location Preferences</Link></li>
@@ -21,21 +21,22 @@ function Settings() {
           </ul>
         </div>
 
-        <div className="settings-section">
-          <h3 className="section-heading">Legal</h3>
-          <ul className="settings-list">
+        <div className="Set-settings-section">
+          <h3 className="Set-section-heading">Legal</h3>
+          <ul className="Set-settings-list">
             <li><Link to="/terms">Terms</Link></li>
             <li><Link to="/privacyPolicy">Privacy Policy</Link></li>
           </ul>
         </div>
 
-        <div className="settings-section">
-          <h3 className="section-heading">Account</h3>
-          <ul className="settings-list">
+        <div className="Set-settings-section">
+          <h3 className="Set-section-heading">Account</h3>
+          <ul className="Set-settings-list">
             <li><Link to="/help">Help</Link></li>
             <li><Link to="#">Report Abuse</Link></li>
             <li><Link to="/deleteAccount">Delete Account</Link></li>
             <li><Link to="#">Log out</Link></li>
+            <li><Link to="/ChatBot">ChatBot</Link></li>
           </ul>
         </div>
       </div>
@@ -47,3 +48,26 @@ export default Settings;
 
 
 
+// function AIRec() {
+//   const [showChat, setShowChat] = useState(false);
+
+//   const toggleChat = () => {
+//     setShowChat(prev => !prev);
+//   };
+
+//   return (
+//     <div>
+//       <button onClick={toggleChat} className="chat-toggle-button">
+//         {showChat ? "Close Chat" : "Chat with NomBot"}
+//       </button>
+
+//       {showChat && (
+//         <div className="chat-popup-container">
+//           <ChatBot />
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default AIRec;
