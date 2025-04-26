@@ -47,12 +47,12 @@ function RestaurantSearch() {
       </div>
 
       {/* SEARCH BAR */}
-      <div className="search-bar-wrapper">
-        <div className="search-bar">
+      <div className="Restaurant-search-bar-wrapper">
+        <div className="Restaurant-search-bar">
           <span className="search-icon"> <img src="/search.png" alt="arrow" className="search-glass" /></span>
           <input type="text" placeholder="Search YumNom" />
         </div>
-        <button className="enter-button">Enter</button>
+        <button className="Restaurant-search-enter-button">Enter</button>
       </div>
 
       {/* FILTERS */}
