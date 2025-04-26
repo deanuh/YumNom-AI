@@ -37,7 +37,7 @@ function App() {
       {!hideSidebar && <Sidebar />}
       <div className="main-content">
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/restaurantSearch" element={<RestaurantSearch />} />
