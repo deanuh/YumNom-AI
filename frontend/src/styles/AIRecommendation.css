@@ -189,3 +189,60 @@ pill-icon {
 .craving-input-box input::placeholder {
     color: #65558F;
     opacity: 1; }
+
+
+/* THIS IS FOR THE POPUP */
+.chat-toggle-button {
+  background-color: #65558F;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  margin-top: 2rem; /* adds space from the last element */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.chat-popup {
+  position: fixed; /* <== important */
+  bottom: 80px;    /* adjust how high it floats */
+  right: 20px;     /* distance from right edge */
+  width: 300px;
+  background: #fefefe;
+  border: 2px solid #7D5BA6;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  z-index: 1000; /* make sure it's on top of everything */
+  overflow: hidden;
+}
+
+
+
+.chat-popup-header {
+  background-color: #7D5BA6;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.chat-popup-body {
+  padding: 15px;
+  font-size: 1rem;
+  color: #333;
+}
