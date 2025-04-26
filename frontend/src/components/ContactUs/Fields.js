@@ -46,7 +46,7 @@ const Fields = () => {
                 onChange={(e) => setMessage(e.target.value)}
             />
             <div>
-                <button className="contactUssubmitButton">Submit</button>
+                <button className="contactUsSubmitButton">Submit</button>
             </div>
         </div>
     );
