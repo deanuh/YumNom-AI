@@ -9,6 +9,8 @@ import Favorite from "./pages/Favorite";
 import ChatBot from "./pages/ChatBot";
 import VotingPage from "./pages/RealTimeVoting";
 import GroupMealParty from "./pages/GroupMealParty";
+import AIRecommendationPage from "./pages/AIRecommendationPage";
+import AIRecommendationResult from './pages/AIRecommendationResult';
 
 
 // Settings Pages
@@ -39,6 +41,9 @@ function App() {
 
 
             <Route path="/group-meal" element={<GroupMealParty />} />
+            <Route path="/ai-recommendation" element={<AIRecommendationPage />} />
+            <Route path="/ai-result" element={<AIRecommendationResult />} />
+
 
             <Route path="/terms" element={<Terms />} />  
             <Route path="/changePass" element={<ChangePassword />} />
