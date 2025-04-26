@@ -6,7 +6,7 @@
 }
 
 .contactUsDetailsColumn {
-    width: 400px;
+    width: 22rem;
 }
 
 .contactUsDetailsColumn h1 {
@@ -33,6 +33,7 @@
 
 .contactUsFieldsColumn {
     margin-left: 5rem;
+    width:25rem;
 }
 .contactUsFieldsColumn h5 {
     font-family: "Poppins";
@@ -51,7 +52,7 @@
     font-weight: 400;
     font-size: 14px;
     color: #190352;
-    padding: 5px 395px 5px 15px;
+    padding: 5px 16rem 5px 1rem;
     border-color: black;
     border-radius: 20px;
     border-width: 2px;
@@ -68,7 +69,7 @@
 }
 .contactUsField {
     height: 40px;
-    width: 535px;
+    width: 25rem;
     padding: 15px;
     border-color: black;
     border-radius: 20px;
@@ -81,7 +82,7 @@
 }
 .contactUsMessageBox {
     height: 200px;
-    width: 535px;
+    width: 25rem;
     padding: 15px;
     border-color: black;
     border-radius: 20px;
@@ -100,7 +101,7 @@
     font-size:14px;
     background-color: #190352;
     color: white;
-    padding: 10px 243px;
+    padding: 10px 3.5rem;
     border-radius: 10px;
     border: none;
 }
