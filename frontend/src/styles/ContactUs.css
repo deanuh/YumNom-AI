@@ -35,4 +35,66 @@
 }
 
 .fieldsColumn {
+    margin-left: 5rem;
 }
+.fieldsColumn h5 {
+    font-family: "Poppins";
+    font-size:13px;
+    font-weight:700;
+}
+
+
+
+.subject-pill {
+    position:relative;
+    background-color: white;
+    background: transparent url("/public/Vector.jpeg") no-repeat right;
+    background-position: 97% 50%;
+    font-family: "Poppins";
+    font-weight: 400;
+    font-size: 14px;
+    color: #190352;
+    padding: 5px 395px 5px 15px;
+    border-color: black;
+    border-radius: 20px;
+    border-width: 2px;
+    border-style: solid;
+    box-sizing: border-box;
+    margin-bottom: 1.5rem;
+    text-align: left;
+
+}
+.subject-dropdown-arrow {
+    position:absolute;
+    top:50%;
+    left:0%;
+}
+.field {
+    padding: 15px 180px;
+    border-color: black;
+    border-radius: 20px;
+    border-style: solid;
+    box-sizing: border-box;
+    margin-bottom: 1.5rem;
+}
+.messageBox {
+    padding: 70px 180px;
+    border-color: black;
+    border-radius: 20px;
+    border-style: solid;
+    box-sizing: border-box;
+    margin-bottom: 1.5rem;
+}
+
+.submitButton {
+    font-family: "Poppins";
+    font-weight:500;
+    font-size:14px;
+    background-color: #190352;
+    color: white;
+    padding: 10px 243px;
+    border-radius: 10px;
+    border: none;
+}
+
+
