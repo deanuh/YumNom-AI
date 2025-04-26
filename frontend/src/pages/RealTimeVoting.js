@@ -8,12 +8,12 @@ const restaurants = [
   { id: 3, name: "Wingstop", image: "wingstop.png" },
 ];
 
-const partyMembers = [
-  { name: "Banana", role: "Host", image: "/ban_gato.png" },
-  { name: "LeBron", image: "/lebron.png" },
-  { name: "Apple", image: "/apple.png" },
-  { name: "Miku", image: "/miku.png" },
-];
+// const partyMembers = [
+//   { name: "Banana", role: "Host", image: "/ban_gato.png" },
+//   { name: "LeBron", image: "/lebron.png" },
+//   { name: "Apple", image: "/apple.png" },
+//   { name: "Miku", image: "/miku.png" },
+// ];
 
 
 
@@ -21,13 +21,16 @@ export default function VotingPage() {
 
 
     const location = useLocation();
-    const { chosenRestaurant } = location.state || {}; 
+    const { chosenRestaurant, selectedFriendObjects } = location.state || {}; 
     // pull it safely (in case state is missing)
     const [selectedId, setSelectedId] = useState(null);
     const [votes, setVotes] = useState({ 1: 0, 2: 0, 3: 0, 4: 0 });
 
+    const partyMembers = selectedFriendObjects || [];
+
     const MAX_VOTES = partyMembers.length; // e.g., 4
     const [totalVotes, setTotalVotes] = useState(0);
+
     
 
     const handleVote = () => {
@@ -38,6 +41,7 @@ export default function VotingPage() {
 
     // create a "finalRestaurants" array to display
     const finalRestaurants = [...restaurants];
+    
 
     // If the chosenRestaurant is NOT already in the list, add it
     if (chosenRestaurant && !restaurants.some(r => r.name.toLowerCase() === chosenRestaurant.toLowerCase())) {
@@ -58,11 +62,11 @@ export default function VotingPage() {
 
       <div className="voting-section">
         <div className="party-column">
-          <h4>Party Members</h4>
-          {partyMembers.map((member, i) => (
+        <h4>Party Members</h4>
+            {partyMembers.map((member, i) => (
             <div key={i} className="party-avatar">
-              <img src={member.image} alt={member.name} />
-              <div>{member.role || ""}</div>
+              <img src={`/${member.image}`} alt={member.username} />
+              <div>{member.username}</div>
             </div>
           ))}
         </div>

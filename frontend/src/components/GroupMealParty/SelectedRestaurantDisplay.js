@@ -3,11 +3,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 
-function SelectedRestaurantDisplay({ chosenRestaurant }) {
+function SelectedRestaurantDisplay({ chosenRestaurant, selectedFriendObjects }) {
   const navigate = useNavigate();
 
   const handleContinue = () => {
-    navigate("/RealTimeVoting", { state: { chosenRestaurant } }); 
+    navigate("/RealTimeVoting", { state: { chosenRestaurant, selectedFriendObjects } }); 
     // Pass the restaurant name (or object) as state
   };
 
