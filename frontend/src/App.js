@@ -8,6 +8,8 @@ import UserProfilePage from "./pages/UserProfilePage";
 import Favorite from "./pages/Favorite";
 import ChatBot from "./pages/ChatBot";
 import VotingPage from "./pages/RealTimeVoting";
+import GroupMealParty from "./pages/GroupMealParty";
+
 
 // Settings Pages
 import Terms from "./pages/settingsInfo/terms";
@@ -36,6 +38,7 @@ function App() {
             <Route path="/RealTimeVoting" element={<VotingPage />} /> 
 
 
+            <Route path="/group-meal" element={<GroupMealParty />} />
 
             <Route path="/terms" element={<Terms />} />  
             <Route path="/changePass" element={<ChangePassword />} />
