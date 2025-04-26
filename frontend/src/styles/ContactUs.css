@@ -1,0 +1,38 @@
+.contactUs {
+                color: #190352;
+                margin-top: 2.5rem;
+                display: flex;
+                flexDirection: "row";
+}
+
+.contactUs {
+}
+
+.detailsColumn {
+    width: 400px;
+}
+
+.detailsColumn h1 {
+    font-family: "Chivo";
+    font-size:64px;    
+    font-weight:700;
+}
+
+.detailsColumn h2 {
+    font-family: "Chivo";
+    font-size:32px;
+    font-weight:700;
+}
+.detailsColumn h3 {
+    font-family: "Poppins";
+    font-size:24px;
+    font-weight:700;
+}
+.detailsColumn p {
+    font-family: "Poppins";
+    font-size:24px;
+    font-weight:400;
+}
+
+.fieldsColumn {
+}
