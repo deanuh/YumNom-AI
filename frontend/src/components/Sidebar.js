@@ -1,9 +1,11 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate(); 
+
 
   return (
     <div className="sidebar">
@@ -76,7 +78,7 @@ const Sidebar = () => {
 
       <div className="group-party-box">
         <p>Start A Group Party</p>
-        <button className="invite-btn">Send Invite</button>
+        <button className="invite-btn" onClick={() => navigate("/group-meal")}>Get Started</button>
       </div>
 
       <p className="report-issue">Report an issue</p>
