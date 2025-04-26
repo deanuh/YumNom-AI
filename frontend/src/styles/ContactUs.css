@@ -34,6 +34,7 @@
 .contactUsFieldsColumn {
     margin-left: 5rem;
     width:25rem;
+
 }
 .contactUsFieldsColumn h5 {
     font-family: "Poppins";
@@ -101,7 +102,7 @@
     font-size:14px;
     background-color: #190352;
     color: white;
-    padding: 10px 3.5rem;
+    padding: 10px 11rem;
     border-radius: 10px;
     border: none;
 }
