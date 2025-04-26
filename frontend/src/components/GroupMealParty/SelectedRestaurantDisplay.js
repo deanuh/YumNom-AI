@@ -1,6 +1,16 @@
 import React from "react";
+// for the votin page to receive the iamge of the restaurant chosen
+import { useNavigate } from "react-router-dom";
+
 
 function SelectedRestaurantDisplay({ chosenRestaurant }) {
+  const navigate = useNavigate();
+
+  const handleContinue = () => {
+    navigate("/RealTimeVoting", { state: { chosenRestaurant } }); 
+    // Pass the restaurant name (or object) as state
+  };
+
   return (
     <div className="display-wrapper">
       <h3>You Chose:</h3>
@@ -13,7 +23,7 @@ function SelectedRestaurantDisplay({ chosenRestaurant }) {
                 alt={chosenRestaurant}
               />
             </div>
-            <button className="voting-button">Continue to Voting</button>
+            <button className="voting-button" onClick={handleContinue}>Continue to Voting</button>
           </>
         )}
       </div>

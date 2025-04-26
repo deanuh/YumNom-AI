@@ -227,7 +227,7 @@
     margin-bottom: 1.2rem;
   } */
   
-  .search-bar-wrapper {
+  .Restaurant-search-bar-wrapper {
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -236,9 +236,9 @@
     
   }
   
-  .search-bar {
+  .Restaurant-search-bar {
     background: white;
-    padding: 0.6rem 1rem;
+    padding: .3rem 1rem;
     border-radius: 15px;
     display: flex;
     align-items: center;
@@ -247,7 +247,7 @@
     margin: auto;
   }
   
-  .search-bar input {
+  .Restaurant-search-bar input {
     border: none;
     outline: none;
     flex: 1;
@@ -255,18 +255,18 @@
     padding-left: 0.5rem;
   }
   
-  .enter-button {
+  .Restaurant-search-enter-button {
     background: #6a41c1;
     color: white;
-    padding: 0.7rem 1.5rem;
+    padding: 0.5rem 1rem;
     /* border: 2px solid #c4b2f6; */
-    border: none;
     border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
     border: none;
     outline: none;
     box-shadow: none;
+    margin-bottom: 0rem;  
   }
   /* .enter-button {
     border: none;
