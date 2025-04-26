@@ -37,6 +37,7 @@ function Settings() {
             <li><Link to="/deleteAccount">Delete Account</Link></li>
             <li><Link to="#">Log out</Link></li>
             <li><Link to="/ChatBot">ChatBot</Link></li>
+            <li><Link to="/RealTimeVoting">VotingPage</Link></li>
           </ul>
         </div>
       </div>

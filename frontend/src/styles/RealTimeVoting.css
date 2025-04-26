@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');
+.voting-page {
+    padding: 2rem;
+    background: #f7f7f7;
+    font-family: sans-serif;
+    border-radius: 10px;
+    border: 1px solid #DDD8EF;
+    
+  }
+  .voting-title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Optional if you want vertical centering too */
+  }
+  
+  
+  .voting-title {
+    background-color: #DDD8EF;
+    text-align: center;
+    font-weight: bold;
+    padding: 0.6rem 5rem ;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    box-shadow: 0 5px 2px rgba(35, 5, 85, 0.4);
+    font-family: "Cherry Bomb One";
+    color:#3d2b6d;
+    display: inline-block;
+
+  }
+  
+  
+  .round-title {
+    margin-top: 2rem;
+    color: #3d2b6d;
+    margin-left: 170px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .voting-section {
+    display: flex;
+    /* margin-top: 0rem; */
+  }
+  
+  .party-column {
+    flex: 0 0 120px;
+    background: #DDD8EF;
+    padding: 1rem;
+    border-radius: 10px;
+    color: #3d2b6d;
+  }
+  
+  .party-avatar {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .party-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #ffffff;
+  }
+  
+  .restaurant-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-left: 1rem;
+    background-color: #DDD8EF;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .restaurant-option {
+    background: white;
+    border: 2px solid transparent;
+    padding: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .restaurant-option.selected {
+    border-color: #3d2b6d;
+  }
+  
+  .restaurant-option img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border: 2px solid #DDD8EF;
+    border-radius: 100px
+  }
+  
+  .submit-button {
+    grid-column: span 2;
+    background: #6a41c1;
+    color: white;
+    border: none;
+    padding: 0.2rem;
+    border-radius: 10px;
+    font-weight: bolder;
+    font-size: large;
+    cursor: pointer;
+  }
+  
+  .results-title {
+    text-align: center;
+    color: #3d2b6d;
+    margin-top: 2rem;
+    margin-bottom: 0rem;
+  }
+  
+  .results-section {
+    margin-top: 0.5rem;
+    background: #DDD8EF;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  
+  .result-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+  
+  .result-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 1rem;
+  }
+  
+  .result-bar-container {
+    flex: 1;
+    background: #ffffff;
+    border-radius: 8px;
+    height: 12px;
+    margin-right: 1rem;
+    overflow: hidden;
+  }
+  
+  .result-bar {
+    background: #5b41a8;
+    height: 100%;
+    border-radius: 8px;
+  }
+  
+  .vote-count {
+    font-weight: bold;
+  }
+  
