@@ -3,9 +3,10 @@ import React from "react";
 function SearchRestaurant({ restaurantOptions, search, setSearch, handleRestaurantSelect }) {
   return (
     <div className="restaurant-wrapper">
-      <h3>Select Restaurant</h3>
+
     <div className="restaurant-section">
-      <div className="search-bar">
+      <h3>Select Restaurant</h3>
+      <div className="group-search-bar">
         <input
           type="text"
           value={search}
@@ -15,7 +16,7 @@ function SearchRestaurant({ restaurantOptions, search, setSearch, handleRestaura
         <button onClick={() => handleRestaurantSelect(search)}>Enter</button>
       </div>
 
-      <div className="search-results">
+      <div className="group-search-results">
         {restaurantOptions
           .filter((r) => r.toLowerCase().includes(search.toLowerCase()))
           .map((r) => (
