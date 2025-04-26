@@ -17,15 +17,15 @@ const RestaurantPreferences = () => {
     <div className="inline-section">
         <h4>Do not recommend these restaurants</h4>
     <div className="white-box">
-          <div className="pill-container">
+          <div className="dietary-pill-container">
             {restaurants.map((item) => (
-              <div className="pill-icon" key={item.name}>
+              <div className="dietary-pill-icon" key={item.name}>
                 <img src={`/${item.file}`} alt={item.name} />
                 <span>{item.name}</span>
               </div>
             ))}
             {addRes.map((item) => (
-                <div className="pill-icon" key={item.name}>
+                <div className="dietary-pill-icon" key={item.name}>
                     <img src={`/${item.file}`} alt={item.name} />
                     <span>{item.name}</span>
                 </div>

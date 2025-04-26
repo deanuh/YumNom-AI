@@ -16,16 +16,16 @@ const FoodPreferences = () => {
     <div className="inline-section">
         <h4>Do not recommend these ingredients</h4>
     <div className="white-cont">
-          <div className="pill-container">
+          <div className="dietary-pill-container">
             {ingredients.map((item) => (
-              <div className="pill-icon" key={item.name}>
+              <div className="dietary-pill-icon" key={item.name}>
                 <img src={`/${item.file}`} alt={item.name} />
                 <span>{item.name}</span>
               </div>
             ))}
 
             {addIng.map((item) => (
-                <div className="pill-icon" key={item.name}>
+                <div className="dietary-pill-icon" key={item.name}>
                     <img src={`/${item.file}`} alt={item.name} />
                     <span>{item.name}</span>
                 </div>
