@@ -1,0 +1,133 @@
+/* this is the css file for the chatBot */
+@import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');
+
+.chatbot-wrapper {
+    width: 80%;
+    max-width: 500px;
+    margin: auto;
+    padding: 1rem;
+    background: #f5f0fb;
+    border-radius: 12px;
+    border: 4px solid #65558F;
+  }
+  
+  .chatbot-header {
+    background-color: #6d4dc3;
+    color: white;
+    padding: 0.6rem;
+    font-size: 2rem;
+    text-align: center;
+    /* font-weight:bolder; */
+    font-family: 'Cherry Bomb One', monospace;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 0;
+  }
+  
+  .chat-window {
+    padding: 20px;
+    /* height: calc(100% - 170px); */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-color: #ffffff;
+    border-radius: 0 0 12px 12px;
+    top: 100%;
+    border: 2px solid #65558F;
+    
+    
+  }
+  .message-container {
+    display: flex;
+    flex-direction: column;
+    padding-right: 1.5rem;
+    flex-grow: 1;
+    overflow-y: auto;
+    height: 320px; /* adjust as needed */
+  }
+
+  
+  
+  .message-row {
+    display: flex;
+    margin-bottom: 0.4rem;
+  }
+  
+  .message-row.bot {
+    justify-content: flex-start;
+    font-family: 'Chivo', monospace;
+    font-weight:bold;
+  }
+  
+  .message-row.user {
+    justify-content: flex-end;
+    font-family: 'Chivo', monospace;
+    font-weight:bold;
+
+  }
+  .bubble {
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.1rem;
+    max-width: 60%;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    word-break: break-word;
+    display: inline-block;
+    line-height: 1.4;
+  }
+  
+  .bubble.bot {
+    background-color: #D0C9EB;
+    color: #190352;
+    align-self: flex-start;
+    text-align: left;
+  }
+  
+  .bubble.user {
+    background-color: #65558F;
+    color: white;
+    align-self:flex-end;
+    text-align: left;
+    /* font-family: 'Andale Mono', monospace;
+    font-weight:bold; */
+  }
+  
+  .input-area {
+    display: flex;
+    margin-top: 1rem;
+    gap: 0.5rem;
+  }
+  
+  .input-area input {
+    flex: 1;
+    padding: 0.6rem;
+    border-radius: 20px;
+    border: 2px solid #65558F;
+  }
+  
+  .input-area button {
+    background-color: #6d4dc3;
+    color: white;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Chivo', monospace;
+    font-weight: bold;
+  }
+  
+  .exit-button {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    background-color: #6d4dc3;
+    color: white;
+    border-radius: 12px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Chivo', monospace;
+    font-weight:bold;
+  }
+  

@@ -6,6 +6,7 @@ import RestaurantSearch from "./pages/restaurantSearch";
 import Settings from "./pages/settings";
 import UserProfilePage from "./pages/UserProfilePage";
 import Favorite from "./pages/Favorite";
+import ChatBot from "./pages/ChatBot";
 
 // Settings Pages
 import Terms from "./pages/settingsInfo/terms";
@@ -30,6 +31,9 @@ function App() {
             <Route path="/userprofile" element={<UserProfilePage />} />
             <Route path="/restaurantSearch" element={<RestaurantSearch />} /> 
             <Route path="/favorite" element={<Favorite />} /> 
+            <Route path="/chatbot" element={<ChatBot />} /> 
+
+
             <Route path="/terms" element={<Terms />} />  
             <Route path="/changePass" element={<ChangePassword />} />
             <Route path="/emailSettings" element={<EmailSettings />} /> 
@@ -37,6 +41,7 @@ function App() {
             <Route path="/deleteAccount" element={<DeleteAccount />} /> 
             <Route path="/help" element={<Help />} /> 
             <Route path="/privacyPolicy" element={<PrivacyPolicy />} /> 
+            
           </Routes>
         </div>
       </div>
