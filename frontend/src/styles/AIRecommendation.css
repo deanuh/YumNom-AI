@@ -48,7 +48,7 @@
 .preference-icon h3{
     color: #65558F;
 }
-pill-icon {
+.pill-icon {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -71,7 +71,6 @@ pill-icon {
     justify-content: center;
     flex-wrap: wrap;
     gap: 1rem;
-    margin-top: 1rem;
 }
 
 .preference-icon {
