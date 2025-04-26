@@ -1,6 +1,6 @@
 // the js file for the chatbot...going to try just putting a place holder about the app
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import "../styles/ChatBot.css";
 
@@ -17,7 +17,7 @@ const responses = {
   "3": "Here’s a guide on how to get started..."
 };
 
-function ChatBot() {
+function ChatBot({toggleChat}) {
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const chatEndRef = useRef(null);
@@ -39,10 +39,10 @@ function ChatBot() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleExit = () => {
-    navigate("/settings"); // change to the route to AI REC
+    toggleChat(); // change to the route to AI REC
   };
 
 
@@ -62,7 +62,7 @@ function ChatBot() {
         <div className="input-area">
           <input
             type="text"
-            placeholder="Enter Your Response Here"
+            placeholder="Type Here"
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />

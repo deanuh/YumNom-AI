@@ -1,9 +1,17 @@
 import React from "react";
+import { useState } from "react";
 import "../styles/AIRecommendation.css";
 import UserPreferences from '../components/AIRecommendation/UserPreferences';
 import CravingInput from '../components/AIRecommendation/CravingInput';
+import ChatBot from "./ChatBot";
+
 
 export default function AIRecommendationPage() {
+  const [showChat, setShowChat] = useState(false);
+
+  const toggleChat = () => {
+    setShowChat(prev => !prev);
+  };
 
   return (
     <div className="ai-recommendation-container">
@@ -15,7 +23,14 @@ export default function AIRecommendationPage() {
       </div>
 
       <CravingInput />
+      {/* Button inside normal page flow */}
+      <button className="chat-toggle-button" onClick={toggleChat}>
+        Chat with YumNom AI
+      </button>
 
+
+      {/* Show ChatBot component if open */}
+      {showChat && <ChatBot toggleChat={toggleChat} />}
     </div>
   );
 }
