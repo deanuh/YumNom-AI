@@ -13,10 +13,16 @@
   }
   
 .ai-recommendation-container {
-    background: linear-gradient(0deg, transparent 0%, white 60%),
-    linear-gradient(90deg, #ffffff 0%, #febdee 33%, #c7defc 66%, #ffffff 100%);
+  background: radial-gradient(
+    ellipse 60% 80% at center 60%,
+    #ffe9fb 10%,
+    #e1eefc 30%, 
+    rgb(251, 250, 255)  50%,
+    rgb(251, 250, 255)  70% 
+  );
     min-height: 100vh;
     padding: 2rem;
+    font-family: "Poppins";
   }
   
 .user-preferences {
@@ -192,6 +198,9 @@
 
 /* THIS IS FOR THE POPUP */
 .chat-toggle-button {
+  position: fixed; /* <<< Make it float on the screen */
+  bottom: 20px; /* <<< Distance from bottom */
+  right: 20px;  /* <<< Distance from right */
   background-color: #65558F;
   color: white;
   border: none;
@@ -200,10 +209,10 @@
   font-size: 1rem;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  margin-top: 2rem; /* adds space from the last element */
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  z-index: 1000; /* <<< make sure it floats above content */
+  display: flex; /* <<< flex to align text + icon */
+  align-items: center; /* <<< center icon and text vertically */
+  gap: 8px; /* <<< space between icon and text */
 }
 
 
@@ -244,4 +253,10 @@
   padding: 15px;
   font-size: 1rem;
   color: #333;
+}
+
+.nombot-icon {
+  width: 25px; /* adjust size as needed */
+  height: 20px;
+  vertical-align: middle;
 }

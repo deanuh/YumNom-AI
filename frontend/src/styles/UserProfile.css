@@ -5,19 +5,19 @@
   max-width: 750px;
   width: 100%;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1.5px solid #3d2074
-
+  border: 1.5px solid #3d2074;
+  font-family: "Poppins";
   }
 .profile-tabs {
   margin-bottom: 1.5rem;
 }
 
 .profile-container h2{
-  color: #190352
+  color: #190352;
 }
 
 .profile-container h4{
-  color: #190352
+  color: #190352;
   }
 .tab-buttons {
   display: flex;
