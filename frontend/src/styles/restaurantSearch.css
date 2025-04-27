@@ -9,10 +9,11 @@
 
   .Restaurant-container {
     padding: 2rem;
+    background-color: rgb(251, 250, 255);
   }
 
   .Restaurant-container-title {
-    font-family: Chivo;
+    font-family: "Poppins";
     font-size: xx-large;
     /* font-weight: bolder; */
     color: #3c2b7f;
@@ -31,6 +32,7 @@
     display: inline-block;
     font-weight: 600;
     font-size: 1rem;
+    background-color: rgb(251, 250, 255);
     /* background: rgb(247, 243, 255); */
     
     border-radius: 12px;
@@ -85,7 +87,7 @@
   }
   
   .filter-pill1 {
-    background: #fff;
+    background: rgb(251, 250, 255);
     border: .5px solid #3c2b7f;
     padding: 0.5rem 1rem;
     border-radius: 12px;
@@ -94,7 +96,7 @@
     color: #3c2b7f;
   }
   .filter-pill {
-    background: #fff;
+    background: rgb(251, 250, 255);
     border: .5px solid #3c2b7f;
     padding: 0.5rem 1rem;
     border-radius: 999px;
@@ -233,11 +235,12 @@
     align-items: center;
     margin-bottom: .6rem;
     margin-right: 15rem;
+    background: rgb(245, 242, 255);
     
   }
   
   .Restaurant-search-bar {
-    background: white;
+    background: rgb(251, 250, 255);
     padding: .3rem 1rem;
     border-radius: 15px;
     display: flex;
@@ -253,6 +256,7 @@
     flex: 1;
     font-size: 1rem;
     padding-left: 0.5rem;
+    background-color: rgb(251, 250, 255);
   }
   
   .Restaurant-search-enter-button {

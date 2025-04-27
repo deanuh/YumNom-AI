@@ -1,18 +1,18 @@
 .Set-settings-wrapper {
     /* padding: 4rem 1rem; */
-    background-color: #ffffff;
+    background-color: rgb(251, 250, 255);
     display: flex;
     justify-content: center;
     /* min-height: 100vh; */
     flex-direction: column;
     margin-top: 0rem;
-    
+    font-family: "Poppins";
 
   }
 
   .Set-settings-button-wrapper {
     padding: 4rem 1rem;
-    background-color: #f7f4fb;
+    background-color: rgb(251, 250, 255);
     display: flex;
     justify-content: center;
     /* min-height: 100vh; */
@@ -104,6 +104,9 @@
     font-size: 1.2rem;
     color: #190352;
   }
+.main-content{
+  background-color: rgb(251, 250, 255);
+}
 
 
   

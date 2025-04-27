@@ -25,7 +25,8 @@ export default function AIRecommendationPage() {
       <CravingInput />
       {/* Button inside normal page flow */}
       <button className="chat-toggle-button" onClick={toggleChat}>
-        Chat with YumNom AI
+        Chat with NOMBOT
+        <img src="/nombot_white.png" alt="NOMBOT Icon" className="nombot-icon" />
       </button>
 
 

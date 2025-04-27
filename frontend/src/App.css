@@ -36,4 +36,22 @@
     transform: rotate(360deg);
   }
 }
+html, body, #root, .app-layout {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f3ff;
+}
+
+.main-content {
+  flex: 1;
+  min-height: 100vh;
+  background-color: #f7f3ff;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar {
+  background-color: white; /* If you want Sidebar white */
+}
 
