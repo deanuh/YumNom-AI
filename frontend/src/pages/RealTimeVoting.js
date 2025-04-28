@@ -46,7 +46,8 @@ export default function VotingPage() {
     // If the chosenRestaurant is NOT already in the list, add it
     if (chosenRestaurant && !restaurants.some(r => r.name.toLowerCase() === chosenRestaurant.toLowerCase())) {
     finalRestaurants.push({
-        id: restaurants.length + 1,  // unique id
+        // id: restaurants.length + 1,  // unique id
+        id: 4,
         name: chosenRestaurant,
         image: `${chosenRestaurant.toLowerCase()}.png`
     });
@@ -89,7 +90,7 @@ export default function VotingPage() {
 
       <h2 className="Voting-results-title">Results</h2>
       <div className="Voting-results-section">
-        {restaurants.map((r, i) => (
+        {finalRestaurants.map((r, i) => (
           <div key={i} className="result-row">
             <img src={r.image} alt={r.name} className="result-icon" />
             <div className="result-bar-container">
