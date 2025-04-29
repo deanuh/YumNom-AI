@@ -1,11 +1,11 @@
 .Set-settings-body {
-    background-color: rgb(118, 111, 145);
+    background-color: rgb(251, 250, 255);
     display: flex;
     justify-content: center;
     flex-direction: column;
     margin-top: 0rem;
     font-family: "Poppins";
-    border-radius: 20px;
+    /* border-radius: 20px; */
 
   }
 
@@ -31,10 +31,11 @@
 } */
   
   .Set-settings-card {
+    margin: 2rem 2rem 2rem 2rem;
     background-color: #D0C9EB;
     padding: 2rem;
     border-radius: 20px;
-    /* max-width: 750px; */
+    max-width: 750px;
     /* width: 100%; */
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
     border: 1.5px solid #3d2074
