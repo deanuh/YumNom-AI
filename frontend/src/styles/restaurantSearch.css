@@ -9,7 +9,10 @@
 
   .Restaurant-container {
     padding: 2rem;
-    background-color: rgb(251, 250, 255);
+    background-color: rgb(227, 222, 244);
+    box-sizing: border-box;
+    margin: 0;            /* important */
+    border: none;  
   }
 
   .Restaurant-container-title {
@@ -235,7 +238,8 @@
     align-items: center;
     margin-bottom: .6rem;
     margin-right: 15rem;
-    background: rgb(245, 242, 255);
+    /* background: rgb(245, 242, 255); */
+    border-radius: 20px;
     
   }
   
@@ -355,6 +359,7 @@
   accent-color: #6d4dc3;  /* or any hex color you want */
 
 }
-.main-body h3{
+
+/* .main-body h3{
   color: #190352
-}  
+}   */
