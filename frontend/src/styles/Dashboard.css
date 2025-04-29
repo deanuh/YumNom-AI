@@ -180,6 +180,8 @@ html body{
     flex: 1;
     padding: 0rem;
     overflow-y: auto;
+    background-color: rgb(251, 250, 255);
+
   }
   .your-dash h1{
     font-size: 30px;
