@@ -11,6 +11,7 @@ import Sidebar from "./components/Sidebar";
 
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import RestaurantSearch from "./pages/restaurantSearch";
 import Settings from "./pages/settings";
@@ -34,7 +35,9 @@ import LocationPref from "./pages/settingsInfo/locationPref";
 function App() {
   const location = useLocation();
   const hideSidebar =
-    location.pathname === "/" || location.pathname === "/login";
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/signup";
 
   return (
     <div className="app-layout">
@@ -44,6 +47,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/restaurantSearch" element={<RestaurantSearch />} />
           <Route path="/settings" element={<Settings />} />
