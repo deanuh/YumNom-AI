@@ -17,6 +17,7 @@ import RestaurantSearch from "./pages/restaurantSearch";
 import Settings from "./pages/settings";
 import UserProfilePage from "./pages/UserProfilePage";
 import Favorite from "./pages/Favorite";
+import ContactUs from "./pages/ContactUs";
 import ChatBot from "./pages/ChatBot";
 import VotingPage from "./pages/RealTimeVoting";
 import GroupMealParty from "./pages/GroupMealParty";
@@ -53,6 +54,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/userprofile" element={<UserProfilePage />} />
           <Route path="/favorite" element={<Favorite />} />
+          <Route path="/contact" element={<ContactUs />} />
           <Route path="/chatbot" element={<ChatBot />} />
           <Route path="/RealTimeVoting" element={<VotingPage />} />
           <Route path="/group-meal" element={<GroupMealParty />} />
