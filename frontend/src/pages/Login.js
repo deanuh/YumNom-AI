@@ -1,13 +1,13 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate, Link } from "react-router-dom"; // ← added Link
 import "../styles/Login.css";
 
 function Login() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault(); 
-    navigate("/dashboard"); 
+    e.preventDefault();
+    navigate("/dashboard");
   };
 
   return (
@@ -66,7 +66,7 @@ function Login() {
           </div>
 
           <p className="signup-prompt">
-            Don’t have an account? <a href="#">Create One</a>
+            Don’t have an account? <Link to="/signup">Create One</Link>
           </p>
         </div>
       </div>
