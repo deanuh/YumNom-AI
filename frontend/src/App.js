@@ -6,14 +6,18 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+
 import Sidebar from "./components/Sidebar";
+
+import LandingPage from "./pages/LandingPage";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import RestaurantSearch from "./pages/restaurantSearch";
 import Settings from "./pages/settings";
 import UserProfilePage from "./pages/UserProfilePage";
 import Favorite from "./pages/Favorite";
 import ContactUs from "./pages/ContactUs";
-import Login from "./pages/Login";
 import ChatBot from "./pages/ChatBot";
 import VotingPage from "./pages/RealTimeVoting";
 import GroupMealParty from "./pages/GroupMealParty";
@@ -31,21 +35,26 @@ import LocationPref from "./pages/settingsInfo/locationPref";
 
 function App() {
   const location = useLocation();
-  const hideSidebar = location.pathname === "/login";
+  const hideSidebar =
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/signup";
 
   return (
     <div className="app-layout">
       {!hideSidebar && <Sidebar />}
+
       <div className="main-content">
         <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/restaurantSearch" element={<RestaurantSearch />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/userprofile" element={<UserProfilePage />} />
           <Route path="/favorite" element={<Favorite />} />
-          <Route path="/contact" element={<ContactUs />} /> 
+          <Route path="/contact" element={<ContactUs />} />
           <Route path="/chatbot" element={<ChatBot />} />
           <Route path="/RealTimeVoting" element={<VotingPage />} />
           <Route path="/group-meal" element={<GroupMealParty />} />
@@ -61,7 +70,7 @@ function App() {
         </Routes>
       </div>
     </div>
-    
+
     // <div>
     //   <h1>YumNom AI – Firestore User Test</h1>
     //   <WriteUser />
