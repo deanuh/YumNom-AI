@@ -1,55 +1,68 @@
+// frontend/src/pages/LandingPage.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/LandingPage.css";
+
+import IconStack   from "../pages/images/LandingIcons.png";
+import StarIcon    from "../pages/images/star.png";
+import GroupIcon   from "../pages/images/group.png";
+import SearchIcon  from "../pages/images/search.png";
 
 function LandingPage() {
   const navigate = useNavigate();
 
   return (
     <div className="landing-wrapper">
+
+      {/* HERO */}
       <section className="hero">
-        <header className="landing-logo">YUMNOM AI</header>
 
-        <div className="landing-text">
-          <h1>AI-POWERED DISH<br />RECOMMENDATIONS</h1>
+        {/* LEFT SIDE  ─ logo + copy ───────────────────────────── */}
+        <div className="hero-left">
+          <h1 className="landing-logo">YUMNOM AI</h1>
 
-          <h2>Start your Personalized<br />Food Journey!</h2>
-          <p>Discover dishes tailored to your taste and needs.</p>
+          <div className="landing-text">
+            <h2>
+              AI‑POWERED DISH<br />
+              RECOMMENDATIONS
+            </h2>
 
-          <button
-            className="get-started"
-            onClick={() => navigate("/login")}
-          >
-            Get Started
-          </button>
+            <h3>
+              Start your Personalized<br />
+              Food Journey!
+            </h3>
+
+            <p>Discover dishes tailored to your taste and needs.</p>
+
+            <button
+              className="get-started"
+              onClick={() => navigate("/login")}
+            >
+              Get Started
+            </button>
+          </div>
         </div>
 
-        <div className="landing-icons">
-          <span className="icon pizza" />
-          <span className="icon burger" />
-          <span className="icon fish" />
-          <span className="icon plate" />
-          <span className="icon menu" />
-          <span className="icon diet" />
+        {/* RIGHT SIDE  ─ icon cluster ─────────────────────────── */}
+        <div className="icon-stack">
+          <img src={IconStack} alt="Feature bubbles" />
         </div>
-
       </section>
 
-
+      {/* FEATURE CARDS */}
       <section className="landing-features">
         <div className="feature-card">
-          <span className="card-icon star" />
+          <img src={StarIcon}   alt="" className="feature-icon" />
           <p>Personalized Dish<br />Recommendations</p>
         </div>
         <div className="feature-card">
-          <span className="card-icon group" />
+          <img src={GroupIcon}  alt="" className="feature-icon" />
           <p>Group Party!</p>
         </div>
         <div className="feature-card">
-          <span className="card-icon search" />
+          <img src={SearchIcon} alt="" className="feature-icon" />
           <p>Restaurant Search</p>
         </div>
-
       </section>
     </div>
   );

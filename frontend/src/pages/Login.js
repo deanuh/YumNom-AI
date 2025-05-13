@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, Link } from "react-router-dom"; // ← added Link
+import { useNavigate, Link } from "react-router-dom"; 
 import "../styles/Login.css";
 
 function Login() {
