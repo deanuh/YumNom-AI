@@ -13,10 +13,8 @@ function SignUp() {
 
   return (
     <div className="signupPage-container">
-      {/* ── Logo ───────────────────────────────────────────── */}
       <div className="signup-logo">YUMNOM&nbsp;AI</div>
 
-      {/* ── Card ───────────────────────────────────────────── */}
       <form onSubmit={handleSubmit} className="signup-card">
         <h2>Sign Up</h2>
 
