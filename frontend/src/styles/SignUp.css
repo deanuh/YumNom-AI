@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Poppins:wght@400;700&display=swap');
+
+.signupPage-container {
+  position: relative;            
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'><path fill='%23e6dfff' fill-opacity='1' d='M0,192L80,165.3C160,139,320,85,480,90.7C640,96,800,160,960,160C1120,160,1280,96,1360,64L1440,32L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z'></path></svg>")
+    no-repeat center / cover;
+}
+
+.signup-logo {
+  position: absolute;
+  top: 2rem;
+  left: 1.5rem;
+  font-family: 'Cherry Bomb One', cursive;
+  font-size: 4rem;       
+  color: #190352;
+  user-select: none;
+}
+
+.signup-card {
+  background: #fff;
+  border: 2px solid #190352;
+  border-radius: 16px;
+  box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.1);
+  padding: 3rem 3.5rem;
+  width: 100%;
+  max-width: 560px;          
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.signup-card h2 {
+  font-size: 2.5rem;
+  color: #190352;
+  margin-bottom: 2.5rem;
+}
+
+.info-rows {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.info-rows input { flex: 1; }
+
+.signup-card input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  border: 2px solid #190352;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.signup-card button {
+  width: 100%;
+  padding: 1rem 0;
+  margin-top: 0.5rem;
+  background: #190352;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.signup-card button:hover {
+  background: #321877;
+  transform: scale(1.02);
+}
+
+.returnToLogin-prompt {
+  font-size: 0.9rem;
+  margin-top: 2rem;
+}
+
+.returnToLogin-prompt a {
+  color: #190352;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.returnToLogin-prompt a:hover { text-decoration: underline; }
