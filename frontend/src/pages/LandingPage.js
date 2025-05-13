@@ -1,4 +1,3 @@
-// frontend/src/pages/LandingPage.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/LandingPage.css";
@@ -14,10 +13,8 @@ function LandingPage() {
   return (
     <div className="landing-wrapper">
 
-      {/* HERO */}
       <section className="hero">
 
-        {/* LEFT SIDE  ─ logo + copy ───────────────────────────── */}
         <div className="hero-left">
           <h1 className="landing-logo">YUMNOM AI</h1>
 
@@ -43,13 +40,11 @@ function LandingPage() {
           </div>
         </div>
 
-        {/* RIGHT SIDE  ─ icon cluster ─────────────────────────── */}
         <div className="icon-stack">
           <img src={IconStack} alt="Feature bubbles" />
         </div>
       </section>
 
-      {/* FEATURE CARDS */}
       <section className="landing-features">
         <div className="feature-card">
           <img src={StarIcon}   alt="" className="feature-icon" />
