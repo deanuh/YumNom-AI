@@ -23,7 +23,7 @@ async function getAuthToken() {
 	   headers: { 'content-type': 'application/x-www-form-urlencoded'},
 	   data: new URLSearchParams({
 	      'grant_type': 'client_credentials',
-	      'scope' : 'premier'
+	      'scope' : ''
 	   }),
 	};
 	
@@ -54,12 +54,29 @@ async function getRestaurant(req, res, next) {
 	const response = await axios(options);
 	return res.json(response.data);
 
-
 }
 
+async function getFood(req, res, next) {
+	const token = await getAuthToken();
 
-
+	var options = {
+		method: "GET",
+		url: "https://platform.fatsecret.com/rest/foods/search/v3",
+		headers: {
+			'Authorization': `Bearer ${token}`
+		},
+		params: new URLSearchParams({
+			search_expression: "McDonalds",
+			max_results: 20,
+			include_food_images: 1,
+			format: "json"
+		}),
+	};
+	const response = await axios(options);
+	return res.json(response.data);
+}
 app.get('/restaurant', getRestaurant);
+app.get('/food', getFood);
 
 app.listen(5000, () => {
 console.log('listening on port 5000')});
