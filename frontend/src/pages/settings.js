@@ -1,10 +1,21 @@
 // // this will be the display for the settings page
 import React from "react";
 import { Link } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from  "../firebase/firebaseConfig";
 import "../styles/settings.css";
 
 
 function Settings() {
+	const handleLogOut = () => {
+		signOut(auth).then(() => {
+		  // Sign-out successful.
+
+		}).catch((error) => {
+		  // An error happened.
+			console.log(error);
+		});
+	}
   return (
     <div className="Set-settings-body">
       <div className="Set-settings-card">
@@ -35,7 +46,7 @@ function Settings() {
             <li><Link to="/help">Help</Link></li>
             <li><Link to="#">Report Abuse</Link></li>
             <li><Link to="/deleteAccount">Delete Account</Link></li>
-            <li><Link to="#">Log out</Link></li>
+            <li><Link to="/login" onClick={handleLogOut}>Log out</Link></li>
           </ul>
         </div>
       </div>
