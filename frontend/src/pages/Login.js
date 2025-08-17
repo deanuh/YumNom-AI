@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; 
 import "../styles/Login.css";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
 function Login() {
   const navigate = useNavigate();
-
+	const [email, setEmail] = useState(null);
+	const [password, setPassword] = useState(null);
   const handleSubmit = (e) => {
     e.preventDefault();
+	
+  //must run in terminal: firebase emulators:start --only auth --project (project id)
+	signInWithEmailAndPassword(auth, email, password)
+	  .then((userCredential) => {
+	    // Signed in 
+	    const user = userCredential.user;
+			console.log(userCredential);
+	    // ...
+	  })
+	  .catch((error) => {
+	    const errorCode = error.code;
+	    const errorMessage = error.message;
+			console.log(errorCode + ": " + errorMessage);
+	  });
     navigate("/dashboard");
   };
 
@@ -28,8 +44,8 @@ function Login() {
           <h2>Sign In</h2>
 
           <form onSubmit={handleSubmit}>
-            <input type="email" placeholder="Email" required />
-            <input type="password" placeholder="Password" required />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
 
             <div className="forgot-password">
               <p style={{ color: "#190352" }}>Forgot Password?</p>
