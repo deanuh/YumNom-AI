@@ -1,82 +1,21 @@
 import express from 'express';
 import axios from 'axios';
+import cors from 'cors';
 import 'dotenv/config';
-
+import { getFoodFatSecret, getRestaurantFatSecret} from './api/fatsecret.js';
+import { getRestaurantTripAdvisor } from './api/tripadvisor.js';
+import { getUserCityOpenCage } from './api/opencage.js';
 let app = express();
 
 let accessToken = null;
 let expirationDate = Date.now();
 
-async function getAuthToken() {
-	if (expirationDate > Date.now()) {
-		console.log('token still valid...');
-		return accessToken;
-	}
+//allow requests from development origin
+app.use(cors({origin: 'http://localhost:3000'}));
 
-	var options = {
-	   method: 'POST',
-	   url: 'https://oauth.fatsecret.com/connect/token',
-	   auth: {
-	      username : process.env.FATSECRET_CLIENT_ID,
-	      password : process.env.FATSECRET_CLIENT_SECRET
-	   },
-	   headers: { 'content-type': 'application/x-www-form-urlencoded'},
-	   data: new URLSearchParams({
-	      'grant_type': 'client_credentials',
-	      'scope' : ''
-	   }),
-	};
-	
-	const response = await axios(options);
-	
-	accessToken = response.data.access_token;
-	expirationDate = Date.now() + (response.data.expires_in * 1000)
-	return accessToken; 
-};
-
-async function getRestaurant(req, res, next) {
-
-	const token = await getAuthToken();
-
-	var options = {
-		method: "GET",
-		url: "https://platform.fatsecret.com/rest/brands/v2",
-		headers: {
-			'Authorization': `Bearer ${token}`
-		},
-		params: new URLSearchParams({
-			starts_with: "McDonald",
-			brand_type: "restaurant",
-			format: "json"
-		}),
-	};
-
-	const response = await axios(options);
-	return res.json(response.data);
-
-}
-
-async function getFood(req, res, next) {
-	const token = await getAuthToken();
-
-	var options = {
-		method: "GET",
-		url: "https://platform.fatsecret.com/rest/foods/search/v3",
-		headers: {
-			'Authorization': `Bearer ${token}`
-		},
-		params: new URLSearchParams({
-			search_expression: "McDonalds",
-			max_results: 20,
-			include_food_images: 1,
-			format: "json"
-		}),
-	};
-	const response = await axios(options);
-	return res.json(response.data);
-}
-app.get('/restaurant', getRestaurant);
-app.get('/food', getFood);
+app.get('/restaurant', getRestaurantTripAdvisor);
+app.get('/food', getFoodFatSecret);
+app.get('/city', getUserCityOpenCage);
 
 app.listen(5000, () => {
 console.log('listening on port 5000')});

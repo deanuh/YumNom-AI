@@ -1,6 +1,9 @@
 // this is the code for the user location, for when using restSearcg, and backend stuff
 // src/utils/getUserLocation.js
 
+// location might not work on linux + firefox , chrome works :)
+const base_url = process.env.REACT_APP_BACKEND_URL;
+
 export const getUserCity = async () => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
@@ -10,12 +13,12 @@ export const getUserCity = async () => {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          const key = process.env.REACT_APP_OPENCAGE_API_KEY;
+					console.log(base_url + `city?latitude=${latitude}&longitude=${longitude}`);
   
           try {
             const res = await fetch(
-              `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${key}`
-            );
+              base_url + `city?latitude=${latitude}&longitude=${longitude}`
+						);
             const data = await res.json();
   
             const components = data.results[0].components;
