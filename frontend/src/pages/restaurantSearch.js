@@ -4,6 +4,8 @@ import DashboardSection from "../components/Dashboard/DashboardSection";
 // import DishCard from "../components/Dashboard/DishCard";
 import Category from "../components/restaurantCategories";
 import { getUserCity } from "../components/GetUserLoc";
+import { getRestaurant } from "../components/GetRestaurant";
+
 
 
 function RestaurantSearch() {
