@@ -18,7 +18,7 @@ async function getRestaurantTripAdvisor(req, res, next) {
 			searchQuery: 'mcdonalds',
 			category: 'restaurant',
 			...(req.query.latitude && req.query.longitude  && req.query.radius ? 
-				{latLong: `${req.query.latitude},${req.query.longitude}`, radius: req.query.radius, radiusUnit: 'mi'} : {} )
+				{latLong: `${req.query.latitude},${req.query.longitude}`, radius: req.query.radius, radiusUnit: req.query.radiusUnits} : {} )
 		}),
 	};
 

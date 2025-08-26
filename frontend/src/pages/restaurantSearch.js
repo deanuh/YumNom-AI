@@ -7,13 +7,15 @@ import { getUserCity } from "../components/GetUserLoc";
 import { getRestaurant } from "../components/GetRestaurant";
 
 
-
 function RestaurantSearch() {
+	const [longLat, setlongLat] = useState(null);
   const [location, setLocation] = useState("Detecting...");
+	const [searchResults, setSearchResults] = useState(null);
   useEffect(() => {
     getUserCity()
       .then((data) => {
         setLocation(`${data.city}, ${data.state}`);
+				setlongLat({longitude: data.longitude, latitude: data.latitude});
         // can also use data.latitude, data.longitude for API filtering
       })
       .catch((err) => {
@@ -24,6 +26,7 @@ function RestaurantSearch() {
   const [showDistanceDropdown, setShowDistanceDropdown] = useState(false);
   // const [showRatingDropdown, setShowRatingDropdown] = useState(false);
   const [showPriceDropdown, setShowPriceDropdown] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   // this will be for when the user selects distance and price options, it will show next to the filter button
   const [selectedDistance, setSelectedDistance] = useState(null);
   const [selectedPrice, setSelectedPrice] = useState(null);
@@ -37,6 +40,24 @@ function RestaurantSearch() {
     setShowPriceDropdown(!showPriceDropdown);
     // setShowRatingDropdown(false);
   };
+  const toggleSearch = () => {
+			
+			var latitude = longLat.latitude;
+			var longitude = longLat.longitude;
+			var distanceParams =  selectedDistance ? selectedDistance.split(" ") : null;
+			console.log(`${latitude}, ${longitude}, ${selectedDistance}`);
+			if (!showSearchResults && longLat && distanceParams) {
+	  	  getRestaurant(longitude, latitude, distanceParams[0], distanceParams[1])
+				.then((data) => {
+	  	  	setSearchResults(data);
+					console.log(data);
+				})
+				.catch((err) => {
+					setLocation(err);
+				});
+			}
+			setShowSearchResults(!showSearchResults);
+	};
 
   return (
     <div className="Restaurant-container">
@@ -54,8 +75,15 @@ function RestaurantSearch() {
           <span className="search-icon"> <img src="/search.png" alt="arrow" className="search-glass" /></span>
           <input type="text" placeholder="Search YumNom" />
         </div>
-        <button className="Restaurant-search-enter-button">Enter</button>
-      </div>
+		{/* onClick is not a good event listener for toggleSearch, but its easy for now. 
+			It would be better to check if the mouse was clicked while on the search bar or not */}
+        <button onClick={toggleSearch} className="Restaurant-search-enter-button">Enter</button>
+				{showSearchResults && (
+				<div className="Restaurant-search-menu">
+				<p>{JSON.stringify(searchResults)}</p>
+				</div>
+				)}
+		</div>
 
       {/* FILTERS */}
       
