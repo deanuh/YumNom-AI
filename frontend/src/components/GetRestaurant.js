@@ -3,12 +3,12 @@
 import axios from "axios";
 const base_url = process.env.REACT_APP_BACKEND_URL;
 
-export const getRestaurant = async (longitude='', latitude='', radius='') => {
+export const getRestaurant = async (longitude='', latitude='', radius='', radiusUnits='') => {
 	try {
 		var options = {
 			url: base_url + '/restaurant',
 			params: {
-				...(latitude && longitude && radius ? {latitude, longitude, radius} : {}),
+				...(latitude && longitude && radius && radiusUnits ? {latitude, longitude, radius, radiusUnits} : {}),
 			},
 		}
 		const response = await axios(options);
