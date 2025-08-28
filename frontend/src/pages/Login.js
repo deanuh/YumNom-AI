@@ -1,29 +1,32 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; 
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/Login.css";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 function Login() {
   const navigate = useNavigate();
-	const [email, setEmail] = useState(null);
-	const [password, setPassword] = useState(null);
-  const handleSubmit = (e) => {
+
+  // Email, Passwaord, and Error states
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState('');
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-	
-  //must run in terminal: firebase emulators:start --only auth --project (project id)
-	signInWithEmailAndPassword(auth, email, password)
-	  .then((userCredential) => {
-	    // Signed in 
-	    const user = userCredential.user;
-			console.log(userCredential);
-	    // ...
-	  })
-	  .catch((error) => {
-	    const errorCode = error.code;
-	    const errorMessage = error.message;
-			console.log(errorCode + ": " + errorMessage);
-	  });
-    navigate("/dashboard");
+    setError(''); 
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      // On success, redirect to the dashboard
+      navigate('/dashboard');
+
+    } catch (firebaseError) {
+      // On failure, caatches and displays error message
+      console.error("Firebase login error:", firebaseError.message);
+      setError(firebaseError.message);
+    }
   };
 
   return (
@@ -42,13 +45,27 @@ function Login() {
       <div className="login-right">
         <div className="login-card">
           <h2>Sign In</h2>
+          
+          {error && <p style={{ color: 'red' }}>{error}</p>}
 
-          <form onSubmit={handleSubmit}>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
+          <form onSubmit={handleLogin}>
+            <input 
+              type="email" 
+              placeholder="Email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+            />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+            />
 
             <div className="forgot-password">
-              <p style={{ color: "#190352" }}>Forgot Password?</p>
+              <Link to="/forgot-password" style={{ color: "#190352" }}>Forgot Password?</Link>
             </div>
 
             <button type="submit" className="signin-button">
