@@ -103,7 +103,6 @@ function RestaurantSearch() {
       })
       .finally(() => setLoading(false));
   };
-  
 
   return (
     <div className="Restaurant-container">
