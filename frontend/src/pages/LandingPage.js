@@ -1,4 +1,3 @@
-// frontend/src/pages/LandingPage.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/LandingPage.css";
@@ -13,7 +12,6 @@ function LandingPage() {
 
   return (
     <div className="landing-wrapper">
-      {/* ─── HERO / HEADING ─────────────────────────────────── */}
       <section className="landing-heading">
         <div className="landing-heading-left">
           <h1 className="landing-logo">YUMNOM AI</h1>
@@ -45,7 +43,6 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ─── FEATURE CARDS ─────────────────────────────────── */}
       <section className="landing-features">
         <div className="landing-feature-card">
           <img
