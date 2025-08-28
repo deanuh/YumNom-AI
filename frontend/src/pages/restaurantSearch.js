@@ -42,12 +42,17 @@ function RestaurantSearch() {
   };
   const toggleSearch = () => {
 			
-			var latitude = longLat.latitude;
-			var longitude = longLat.longitude;
-			var distanceParams =  selectedDistance ? selectedDistance.split(" ") : null;
-			console.log(`${latitude}, ${longitude}, ${selectedDistance}`);
-			if (!showSearchResults && longLat && distanceParams) {
-	  	  getRestaurant(longitude, latitude, distanceParams[0], distanceParams[1])
+		var latitude = longLat.latitude;
+		var longitude = longLat.longitude;
+		var distanceParams =  selectedDistance ? selectedDistance.split(" ") : null;
+    var radius = "15";
+    var radiusUnits = "mi";
+    if (distanceParams) {
+   		radius = distanceParams[0];
+    	radiusUnits = distanceParams[1];
+    }
+    if (!showSearchResults && longLat) {
+			getRestaurant(longitude, latitude, radius, radiusUnits)
 				.then((data) => {
 	  	  	setSearchResults(data);
 					console.log(data);
