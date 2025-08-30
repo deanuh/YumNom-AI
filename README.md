@@ -97,7 +97,7 @@ For testing sign-up, login, and other authentication features without needing a 
 
 ```bash
 npm install -g firebase-tools
-firebase emulators:start --only auth --project yumnomai
+firebase emulators:start --only auth,firestore --project yumnomai
 ```
 
 ---
