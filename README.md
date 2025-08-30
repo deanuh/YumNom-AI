@@ -89,6 +89,19 @@ Then visit: [http://localhost:3000](http://localhost:3000)
 
 ---
 
+### Firebase Authentication Emulator
+
+For testing sign-up, login, and other authentication features without needing a live connection:
+
+- Run the firebase emulator in the root directory
+
+```bash
+npm install -g firebase-tools
+firebase emulators:start --only auth --project yumnomai
+```
+
+---
+
 ## Git Commands to Stay Updated
 
 To save, commit your work, push to own branch, then to main once approved:
