@@ -25,9 +25,6 @@ app.get('/restaurant', getRestaurantTripAdvisor);
 app.get('/food', getFoodFatSecret);
 app.get('/city', getUserCityOpenCage);
 
-app.listen(5001, () => {
-console.log('listening on port 5001')});
-
 // Users
 app.post("/users", createUser);
 app.delete("/users/:userId", removeUser);
@@ -48,4 +45,7 @@ app.delete("/recommendations/:userId/:recommendationId", removeRecommendation);
 app.post("/votes", createVote);
 app.delete("/votes/:groupId/:voteId", removeVote);
 
+
+app.listen(5001, () => {
+console.log('listening on port 5001')});
 export default app;
