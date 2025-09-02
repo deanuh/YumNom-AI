@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from "react";
 import "../styles/restaurantSearch.css";
 import DashboardSection from "../components/Dashboard/DashboardSection";
-// import DishCard from "../components/Dashboard/DishCard";
+import DishCard from "../components/Dashboard/DishCard";
 import Category from "../components/restaurantCategories";
 import { getUserCity } from "../components/GetUserLoc";
 import { getRestaurant } from "../components/GetRestaurant";
 
+const formatDistance = (d) =>
+  typeof d === "number" ? `${d.toFixed(1)} mi` : d ? `${Number(d).toFixed(1)} mi` : "";
+
+const formatAddress = (r) =>
+  r.address_string ||
+  [r.street1 || r.street || r.address, r.city, r.state, r.postcode || r.postalcode]
+    .filter(Boolean)
+    .join(", ");
+
+const norm = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
 
 function RestaurantSearch() {
+  const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 	const [longLat, setlongLat] = useState(null);
   const [location, setLocation] = useState("Detecting...");
 	const [searchResults, setSearchResults] = useState(null);
@@ -41,28 +55,54 @@ function RestaurantSearch() {
     // setShowRatingDropdown(false);
   };
   const toggleSearch = () => {
-			
-		var latitude = longLat.latitude;
-		var longitude = longLat.longitude;
-		var distanceParams =  selectedDistance ? selectedDistance.split(" ") : null;
-    var radius = "15";
-    var radiusUnits = "mi";
-    if (distanceParams) {
-   		radius = distanceParams[0];
-    	radiusUnits = distanceParams[1];
+    const latitude = longLat?.latitude;
+    const longitude = longLat?.longitude;
+    const distanceParams = selectedDistance ? selectedDistance.split(" ") : null;
+  
+    setShowSearchResults(true);
+  
+    if (!latitude || !longitude || !distanceParams) {
+      setError("Choose a distance and allow location to load.");
+      return;
     }
-    if (!showSearchResults && longLat) {
-			getRestaurant(longitude, latitude, radius, radiusUnits)
-				.then((data) => {
-	  	  	setSearchResults(data);
-					console.log(data);
-				})
-				.catch((err) => {
-					setLocation(err);
-				});
-			}
-			setShowSearchResults(!showSearchResults);
-	};
+  
+    setError("");
+    setLoading(true);
+  
+    const q = (searchText || "").trim();
+    const miles = distanceParams[0];
+    const units = distanceParams[1]; // "mi"
+  
+    // Always pass q + lat/lng so backend can compute distance.
+    // We still filter client-side to be safe.
+    getRestaurant(longitude, latitude, miles, units, q)
+      .then((data) => {
+        let rows = Array.isArray(data?.data) ? data.data : [];
+  
+        // Flexible filter for the text box (handles punctuation/case)
+        if (q) {
+          const qNorm = norm(q);
+          rows = rows.filter((r) =>
+            [r.name, r.address_string, r.city, r.state]
+              .some((field) => norm(field).includes(qNorm))
+          );
+        }
+  
+        // Always sort by distance ascending (if distance exists)
+        rows = rows.slice().sort((a, b) => {
+          const da = parseFloat(a?.distance);
+          const db = parseFloat(b?.distance);
+          return (Number.isFinite(da) ? da : Infinity) - (Number.isFinite(db) ? db : Infinity);
+        });
+  
+        setSearchResults({ data: rows });
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Unable to fetch restaurants.");
+      })
+      .finally(() => setLoading(false));
+  };
 
   return (
     <div className="Restaurant-container">
@@ -78,16 +118,19 @@ function RestaurantSearch() {
       <div className="Restaurant-search-bar-wrapper">
         <div className="Restaurant-search-bar">
           <span className="search-icon"> <img src="/search.png" alt="arrow" className="search-glass" /></span>
-          <input type="text" placeholder="Search YumNom" />
+          <input
+            type="text"
+            placeholder="Search YumNom"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && toggleSearch()}
+          />
         </div>
 		{/* onClick is not a good event listener for toggleSearch, but its easy for now. 
 			It would be better to check if the mouse was clicked while on the search bar or not */}
         <button onClick={toggleSearch} className="Restaurant-search-enter-button">Enter</button>
-				{showSearchResults && (
-				<div className="Restaurant-search-menu">
-				<p>{JSON.stringify(searchResults)}</p>
-				</div>
-				)}
+      
+
 		</div>
 
       {/* FILTERS */}
@@ -125,7 +168,42 @@ function RestaurantSearch() {
       <Category/>
 
       {/* Applied Filters */}
-      <DashboardSection title="Applied Filters" />
+      {/* Nearby (search) results */}
+{showSearchResults && (
+  <>
+    <div className="section-header">
+      <h4>Nearby Restaurants</h4>
+      {/* optional: View all link */}
+    </div>
+
+    {loading && <p>Loading nearby restaurants…</p>}
+    {error && <p className="error">{error}</p>}
+
+    {!loading && !error && (
+      <>
+        {Array.isArray(searchResults?.data) && searchResults.data.length > 0 ? (
+          <div className="restaurant-grid">
+            {searchResults.data.map((r) => (
+              <DishCard
+                key={r.location_id || `${r.name}-${r.address_string}`}
+                name={r.name}
+                address={formatAddress(r)}
+                distance={formatDistance(r.distance)}
+                onViewMenu={() => {
+                  const q = encodeURIComponent(`${r.name} ${formatAddress(r)}`);
+                  window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank");
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          <p>No restaurants found with the current filters.</p>
+        )}
+      </>
+    )}
+  </>
+)}
+
 
       {/* Recently Searched */}
       <DashboardSection title="Your Recent Searches" />
