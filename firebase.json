@@ -3,6 +3,9 @@
     "auth": {
       "port": 9099
     },
+    "firestore": {
+      "port": 8090
+    },
     "ui": {
       "enabled": true
     },
