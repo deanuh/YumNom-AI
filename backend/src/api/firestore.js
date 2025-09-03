@@ -12,20 +12,28 @@ import {
 	deleteVote
 } from '../firebase/dbFunctions.js'
 
-// ------------------- USERS ------------------- //
+// ------------------- USERS ------------------- //  added this new function
 export async function createUser(req, res) {
   try {
-    const { first_name, last_name, username } = req.body;
+    const { first_name, last_name, username, address, uid } = req.body;
     if (!first_name || !last_name || !username) {
       return res.status(400).json({ error: "Missing required fields." });
     }
 
-    const userId = await addUser({ first_name, last_name, username });
+    const userId = await addUser({
+      first_name,
+      last_name,
+      username,
+      address,         // <-- store email under "address"
+      auth_uid: uid || null
+    });
+
     return res.status(201).json({ message: "User created", userId });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 }
+
 
 export async function removeUser(req, res) {
   try {

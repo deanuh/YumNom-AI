@@ -20,6 +20,7 @@ let expirationDate = Date.now();
 
 //allow requests from development origin
 app.use(cors({origin: 'http://localhost:3000'}));
+app.use(express.json()); // probs will need this for later
 
 app.get('/restaurant', getRestaurantTripAdvisor);
 app.get('/food', getFoodFatSecret);

@@ -54,6 +54,27 @@ function Help() {
       answer:
         "There is a 'Favorites' tab on the left navigation bar. You can filter what you have favorited by restaurant or dishes.",
     },
+    {
+      question: "What is Group Meal Party?",
+      answer:
+        "Group Meal Party is a way for you and your friends who also have a YumNom account to choose where to eat. Each memeber will choose a restaurant of their choice and then there will be a voting poll to decide a winning location on where to eat!",
+    },
+    {
+      question: "Do I need to sign a contract?",
+      answer:
+        "Not at all! The only thing we require from you is your location which you can turn on or off in the 'Location Preference' tab in settings",
+    },
+    {
+      question: "Do you have any physical locations?",
+      answer:
+        "No we do not, but if you have any questions or concerns you can reach out to us at the 'Contact Us' tab. Type in your full name, your YumNom account email, and your message!",
+    },
+    {
+      question: "How do I contact YumNom representatives",
+      answer:
+        "Go to the 'Contact Us' tab on the left side navigation bar and fill out the form!",
+    },
+
   ];
 
   return (

@@ -164,3 +164,19 @@ yarn-error.log*
 ```
 - Always work on your own branch and open pull requests to merge into `main`
 
+## RUN CONCURENTLY
+- run in ROOT of project in terminal: npm install --save-dev concurrently
+- add this to the package.json file in ROOT : "scripts": {
+  "dev": "concurrently \"npm start --prefix frontend\" \"npm start --prefix backend\" \"firebase emulators:start --only auth,firestore --project yumnomai\""
+}
+- *** if you dont have package.json in root, run this in terminal: npm init -y
+    - now add the script^
+
+- now in root you can run all currently (frontend, backend, emulator): npm run dev
+
+
+## IMPORTANT NOTES FOR FIREBASE
+- you need to run firebase emulators:start --only auth,firestore --project yumnomai in the backend to actually "sign up and log in " to the account
+- ** it wont show on the database but we will fix that
+- for the emulator to work (i mean save any data from any creations in to the database forever such as creating a user with auth and storing them in the database) run this line (assuming you have done step
+the RUN CONCureNTly STUFF) "dev": "concurrently -n frontend,backend,emulators -c blue,green,magenta \"npm start --prefix frontend\" \"npm start --prefix backend\" \"firebase emulators:start --only auth,firestore --project yumnomai --import=./emulator-data --export-on-exit\""
