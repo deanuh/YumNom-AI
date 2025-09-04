@@ -349,3 +349,168 @@
 
 /* Disabled detect section when opted out */
 .lp-disabled { opacity: 0.6; pointer-events: none; }
+
+
+
+/* REPORT ISSUE PAGE CSS */
+/* Report Issue Page Styles */
+.report-issue-page {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background-color: rgb(251, 250, 255);
+}
+
+.report-issue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.report-issue-back {
+  display: inline-block;
+  margin: 0.5rem 0;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #190352;
+  background: #fff;
+  border: 1.5px solid #3d2074;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.report-issue-back:hover { background-color: #b9a6e0; }
+
+.report-issue-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #190352;
+  margin: 0 auto;
+}
+
+.report-issue-intro {
+  color: #57437f;
+  margin-bottom: 1.25rem;
+}
+
+.report-issue-form {
+  background-color: #D0C9EB;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1.5px solid #3d2074;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.report-issue-section {
+  margin-bottom: 2rem;
+}
+
+.report-issue-section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #190352;
+}
+
+.report-issue-field {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-issue-label {
+  font-weight: 600;
+  color: #190352;
+  margin-bottom: 0.4rem;
+}
+
+.report-issue-input,
+.report-issue-textarea,
+.report-issue-select {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1.5px solid #3d2074;
+  font-size: 1rem;
+  outline: none;
+}
+
+.report-issue-input:focus,
+.report-issue-textarea:focus,
+.report-issue-select:focus {
+  box-shadow: 0 0 0 3px rgba(61, 32, 116, 0.15);
+}
+
+.report-issue-textarea {
+  resize: vertical;
+}
+
+.report-issue-scale,
+.report-issue-rating {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.report-issue-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.report-issue-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #57437f;
+  margin-top: 0.25rem;
+}
+
+.report-issue-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #190352;
+}
+
+.report-issue-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.report-issue-btn-primary {
+  background: #190352;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.report-issue-btn-primary:hover { background-color: #3d2074; }
+.report-issue-btn-primary[disabled] { opacity: 0.65; cursor: not-allowed; }
+
+.report-issue-btn-secondary {
+  background: #fff;
+  color: #190352;
+  padding: 0.6rem 1.2rem;
+  border: 1.5px solid #3d2074;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.report-issue-btn-secondary:hover { background-color: #b9a6e0; }
+
+.report-issue-status {
+  font-size: 0.95rem;
+}
+.report-issue-status.success { color: #1b5e20; }
+.report-issue-status.error { color: #b71c1c; }
+

@@ -17,6 +17,7 @@
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "firebase-admin": "^13.5.0",
+    "nodemailer": "^7.0.6",
     "react-router-dom": "^7.5.0",
     "request": "^2.88.2"
   }

@@ -1,0 +1,110 @@
+// backend/api/reportIssue.js
+import express from "express";
+import nodemailer from "nodemailer";
+import admin from "firebase-admin";
+import dbModule from "../firebase/db.cjs"; // same module used elsewhere
+const { db } = dbModule;
+
+const router = express.Router();
+
+// Nodemailer (use App Password for Gmail)
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.SUPPORT_EMAIL,
+    pass: process.env.SUPPORT_EMAIL_PASSWORD,
+  },
+});
+
+
+function buildEmailText(d, firestoreId) {
+  return [
+    "New issue report submitted",
+    "",
+    `Reporter: ${d.name || "N/A"} <${d.email || "N/A"}>`,
+    `Experience rating: ${d.rating ?? "N/A"} (1–5)`,
+    `Frequency: ${d.frequency ?? "N/A"} (1–10)`,
+    "",
+    "Issue:",
+    d.issue || "N/A",
+    "",
+    "Expected:",
+    d.expected || "N/A",
+    "",
+    "Actual:",
+    d.actual || "N/A",
+    "",
+  ].join("\n");
+}
+
+router.post("/report-issue", async (req, res) => {
+  try {
+    const {
+      email,
+      name,
+      issue,
+      expected,
+      actual,
+      frequency, // 1..10 (optional)
+      rating,    // 1..5  (optional)
+      consent,   // boolean
+    } = req.body || {};
+
+    // Minimal validation
+    if (!email || !name || !issue) {
+      return res.status(400).json({ success: false, message: "Missing required fields (email, name, issue)." });
+    }
+
+    // Save to Firestore (optional via env flag)
+    let firestoreId = null;
+    if (String(process.env.SAVE_ISSUES_TO_FIRESTORE || "true").toLowerCase() === "true") {
+      const { FieldValue } = admin.firestore;
+      const ref = await db.collection("issueReports").add({
+        email,
+        name,
+        issue,
+        expected: expected ?? "",
+        actual: actual ?? "",
+        frequency: Number.isFinite(Number(frequency)) ? Number(frequency) : null,
+        rating: Number.isFinite(Number(rating)) ? Number(rating) : null,
+        consent: !!consent,
+        createdAt: FieldValue.serverTimestamp(),
+      });
+      firestoreId = ref.id;
+    }
+
+    // Email
+    await transporter.sendMail({
+      from: process.env.SUPPORT_EMAIL,
+      to: process.env.YUMNOM_SUPPORT_INBOX,
+      subject: `[Issue Report] ${String(issue).slice(0, 60) || "No subject"}`,
+      text: buildEmailText(
+        {
+          email,
+          name,
+          issue,
+          expected,
+          actual,
+          frequency,
+          rating,
+        },
+        firestoreId
+      ),
+    });
+
+    res.status(200).json({ success: true, id: firestoreId || undefined });
+  } catch (err) {
+    console.error("report-issue error:", err);
+    res.status(500).json({ success: false, message: "Failed to submit report." });
+  }
+});
+// router.post("/report-issue", (req, res) => {
+//   // If you are not using express.json() globally, you can parse JSON only here:
+//   // but you already have app.use(express.json()), so req.body is set.
+//   res.json({ success: true, got: req.body || null });
+// });
+
+
+export default router;

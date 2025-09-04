@@ -32,6 +32,7 @@ import EmailSettings from "./pages/settingsInfo/emailSettings";
 import Help from "./pages/settingsInfo/help";
 import PrivacyPolicy from "./pages/settingsInfo/privacyPolicy";
 import LocationPref from "./pages/settingsInfo/locationPref";
+import ReportIssue from "./pages/settingsInfo/ReportIssue";
 
 function App() {
   const location = useLocation();
@@ -67,6 +68,7 @@ function App() {
           <Route path="/deleteAccount" element={<DeleteAccount />} />
           <Route path="/help" element={<Help />} />
           <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+          <Route path="/ReportIssue" element={<ReportIssue />} />
         </Routes>
       </div>
     </div>

@@ -12,6 +12,7 @@ import {
   createRecommendation, removeRecommendation,
   createVote, removeVote
 } from './api/firestore.js';
+import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
 
 let app = express();
 
@@ -46,6 +47,18 @@ app.delete("/recommendations/:userId/:recommendationId", removeRecommendation);
 app.post("/votes", createVote);
 app.delete("/votes/:groupId/:voteId", removeVote);
 
+// report Issue   NEW 
+app.use("/api", reportIssueRouter);
+
+// THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING
+// // quick request logger
+// app.use((req, _res, next) => {
+//   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+//   next();
+// });
+// // checks
+// app.get("/api/ping", (_req, res) => res.json({ ok: true }));
+// app.post("/api/echo", express.json(), (req, res) => res.json({ ok: true, body: req.body }));
 
 app.listen(5001, () => {
 console.log('listening on port 5001')});
