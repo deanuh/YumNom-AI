@@ -12,3 +12,4 @@ dist/
 /package.json
 /package-lock.json
 backend/src/firebase/serviceAccountKey.json
+backend/src/firebase/serviceAccountKey.json
