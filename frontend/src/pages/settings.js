@@ -44,7 +44,7 @@ function Settings() {
           <h3 className="Set-section-heading">Account</h3>
           <ul className="Set-settings-list">
             <li><Link to="/help">Help</Link></li>
-            <li><Link to="#">Report Abuse</Link></li>
+            <li><Link to="/ReportIssue">Report An Issue</Link></li>
             <li><Link to="/deleteAccount">Delete Account</Link></li>
             <li><Link to="/login" onClick={handleLogOut}>Log out</Link></li>
           </ul>
