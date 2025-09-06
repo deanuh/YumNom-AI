@@ -20,7 +20,9 @@ function Login() {
       navigate('/dashboard');
     } catch (firebaseError) {
       console.error("Firebase login error:", firebaseError.message);
-      setError(firebaseError.message);
+      
+      // CHANGE: Set a user-friendly, generic error message here
+      setError("Invalid email or password. Please try again.");
     }
   };
 
@@ -35,8 +37,20 @@ function Login() {
           <h2>Sign In</h2>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           <form onSubmit={handleLogin}>
-            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <input 
+              type="email" 
+              placeholder="Email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+            />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+            />
             <div className="forgot-password">
               <Link to="/forgot-password" style={{ color: "#190352" }}>Forgot Password?</Link>
             </div>
