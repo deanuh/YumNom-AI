@@ -1,33 +1,31 @@
 import React from "react";
-import "../styles/restaurantSearch.css"; // make sure it’s the correct path
 
-const categories = [
-  { name: "Bakery", img: "../Baked.png" },
-  { name: "Burger", img: "../Burger.png" },
-  { name: "Beverage", img: "../Coffee.png" },
-  { name: "Chicken", img: "../Chickenleg.png" },
-  { name: "Pizza", img: "../pizza.png" },
-  { name: "Seafood", img: "../fish.png" },
+// Adjust icon paths to your assets
+const ITEMS = [
+  { name: "Bakery",  icon: "/Baked.png" },
+  { name: "Burger",  icon: "/burger.png" },
+  { name: "Beverage", icon: "/coffee.png" },
+  { name: "Chicken", icon: "/chickenleg.png" },
+  { name: "Pizza",   icon: "/pizza.png" },
+  { name: "Seafood", icon: "/fish.png" },
 ];
 
-const Category = () => {
+export default function Category({ onPick, active }) {
   return (
-    <div className="main-body">
-      <h3>Category</h3>
     <div className="category-grid">
-      {categories.map((item) => (
-        <div key={item.name} className="category-card">
-          <img
-            src={`/assets/${item.img}`} // assumes images are in public/assets/
-            alt={item.name}
-            className="category-dish-img"
-          />
-          <p>{item.name}</p>
-        </div>
+      {ITEMS.map(({ name, icon }) => (
+        <button
+          key={name}
+          type="button"
+          className={`category-card${active === name ? " is-active" : ""}`}
+          onClick={() => onPick && onPick(name)}
+          aria-pressed={active === name}
+        >
+          {/* keep your existing class names so your CSS continues to style it */}
+          <img src={icon} alt="" className="category-dish-img" aria-hidden="true" />
+          <div className="category-label">{name}</div>
+        </button>
       ))}
     </div>
-    </div>
   );
-};
-
-export default Category;
+}
