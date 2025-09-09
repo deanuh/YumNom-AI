@@ -12,6 +12,8 @@ admin.initializeApp({
 
 if (useEmulator) {
   console.log(`Using Firestore Emulator at: ${process.env.FIRESTORE_EMULATOR_HOST}`);
+
+  console.log(`Using Auth Emulator at: ${process.env.FIREBASE_AUTH_EMULATOR_HOST}`);
 }
 
 const db = admin.firestore();

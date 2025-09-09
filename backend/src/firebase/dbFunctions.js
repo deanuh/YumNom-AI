@@ -12,11 +12,13 @@ import admin from "firebase-admin";
 const { FieldValue } = admin.firestore;
 
 // -------------------- USERS -------------------- //
-export async function addUser(userData) {
+export async function addUser(userData, userId) {
   try {
+		console.log("reached addUser");
     validateUserData(userData);
+		console.log("left validateUserData");
 
-    const userRef = await db.collection("User").add({
+		await db.collection("User").doc(userId).create({
       address: null,
       profile_picture: null,
       ...userData,
@@ -25,7 +27,7 @@ export async function addUser(userData) {
       current_group: null
     });
 
-    return userRef.id;
+    return userId;
   } catch (err) {
     console.error(`addUser failed: ${err.message}`);
     throw new Error(`addUser failed: ${err.message}`);
@@ -33,6 +35,7 @@ export async function addUser(userData) {
 }
 
 export async function deleteUser(userId) {
+
   const userRef = db.collection("User").doc(userId);
 
   try {
@@ -42,23 +45,47 @@ export async function deleteUser(userId) {
 
       const userData = userDoc.data();
 
-      // Remove user from group if exists
-      if (userData.current_group) {
-        const groupRef = db.collection("Group").doc(userData.current_group);
-        const groupDoc = await transaction.get(groupRef);
 
-        if (!groupDoc.exists) {
-          throw new Error(`Dangling group reference for user: ${userId}`);
-        }
+			// Remove user from group if exists
+			if (userData.current_group) {
+			  const groupRef = db.collection("Group").doc(userData.current_group);
+			  const groupDoc = await transaction.get(groupRef);
+			
+			  if (!groupDoc.exists) {
+			    throw new Error(`Dangling group reference for user: ${userId}`);
+			  }
+			
+			  const groupData = groupDoc.data();
+			
+			  // Remove user from members
+			  delete groupData.members[userId];
+			
+			  let newOwner = groupData.owner_id;
+			
+			  // If the deleted user was the owner, pick a new one
+			  if (groupData.owner_id === userId) {
+			    const memberIds = Object.keys(groupData.members || {});
+			    if (memberIds.length > 0) {
+			      newOwner = memberIds[0]; // promote the first remaining member
+			    } else {
+			      // No members left → delete the group entirely
+			      transaction.delete(groupRef);
+			    }
+			  }
+			
+			  // Update group with new members and possibly new owner
+				if (Object.keys(groupData.members).length > 0) {
+			  	transaction.update(groupRef, { 
+			  	  members: groupData.members,
+			  	  owner_id: newOwner
+			  	});
+				}
+			}
 
-        const groupData = groupDoc.data();
-        delete groupData.members[userId];
+			transaction.delete(userRef);
 
-        transaction.update(groupRef, { members: groupData.members });
-      }
+		});
 
-      transaction.delete(userRef);
-    });
 
     // Delete subcollections after transaction (cannot be in transaction)
     const subcollections = ["favorites", "ai_recommended_dishes"];
@@ -79,6 +106,7 @@ export async function addGroup(userId) {
   let newGroupId;
 
   try {
+		
     await db.runTransaction(async (transaction) => {
       const userRef = db.collection("User").doc(userId);
       const userDoc = await transaction.get(userRef);
@@ -116,10 +144,17 @@ export async function addGroup(userId) {
   }
 }
 
-export async function deleteGroup(groupId) {
-  const groupRef = db.collection("Group").doc(groupId);
+export async function deleteGroup(userId) {
 
   try {
+		
+		const userDoc = await db.collection("User").doc(userId).get();
+
+		if (!userDoc.exists) throw new Error("User does not exist");
+
+		const userData = userDoc.data();
+		const groupId = userData.current_group;
+  	const groupRef = db.collection("Group").doc(groupId);
     await db.runTransaction(async (transaction) => {
       const groupDoc = await transaction.get(groupRef);
       if (!groupDoc.exists) throw new Error("Group does not exist.");
@@ -128,8 +163,8 @@ export async function deleteGroup(groupId) {
       const userIds = Object.keys(groupData.members || {});
 
       // Clear current_group for all members
-      for (const userId of userIds) {
-        const userRef = db.collection("User").doc(userId);
+      for (const memberId of userIds) {
+        const userRef = db.collection("User").doc(memberId);
         transaction.update(userRef, { current_group: null });
       }
 
@@ -148,7 +183,7 @@ export async function deleteGroup(groupId) {
 }
 
 // -------------------- FAVORITES -------------------- //
-export async function addFavorite(userId, favoriteData) {
+export async function addFavorite(favoriteData, userId) {
   try {
     validateFavoriteData(favoriteData);
 
@@ -166,6 +201,7 @@ export async function addFavorite(userId, favoriteData) {
 
 export async function deleteFavorite(userId, favoriteId) {
   try {
+
     const userRef = db.collection("User").doc(userId);
     const userDoc = await userRef.get();
     if (!userDoc.exists) throw new Error("User does not exist.");
@@ -182,8 +218,9 @@ export async function deleteFavorite(userId, favoriteId) {
 }
 
 // -------------------- AI RECOMMENDATIONS -------------------- //
-export async function addRecommendation(userId, recommendationData) {
+export async function addRecommendation(recommendationData, userId) {
   try {
+
     validateRecommendationData(recommendationData);
 
     const userRef = db.collection("User").doc(userId);
@@ -216,11 +253,18 @@ export async function deleteRecommendation(userId, recommendationId) {
 }
 
 // -------------------- VOTES -------------------- //
-export async function addVote(groupId, userId, voteData) {
+export async function addVote(voteData, userId) {
 	//maybe use only to add a new restaurant to poll
 	//then use seperate function to increment and decrement tally by 1
 	//might need rewrite 
   try {
+		const userDoc = await db.collection("User").doc(userId).get();
+
+		if (!userDoc.exists) throw new Error("User does not exist");
+
+		const userData = userDoc.data();
+		const groupId = userData.current_group;
+
     validateVoteData(voteData);
 
     const groupRef = db.collection("Group").doc(groupId);
@@ -241,8 +285,15 @@ export async function addVote(groupId, userId, voteData) {
   }
 }
 
-export async function deleteVote(groupId, voteId) {
+export async function deleteVote(userId, voteId) {
   try {
+		const userDoc = await db.collection("User").doc(userId).get();
+
+		if (!userDoc.exists) throw new Error("User does not exist");
+
+		const userData = userDoc.data();
+		const groupId = userData.current_group;
+
     const groupRef = db.collection("Group").doc(groupId);
     const groupDoc = await groupRef.get();
     if (!groupDoc.exists) throw new Error("Group does not exist.");

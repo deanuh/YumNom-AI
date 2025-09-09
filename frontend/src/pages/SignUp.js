@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import "../styles/SignUp.css";
 import { auth } from "../firebase/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUser } from "../components/CreateUser.js";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -21,6 +22,9 @@ function SignUp() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       console.log("Sign up successful:", userCredential.user);
+			const JWT = await userCredential.user.getIdToken();
+			await createUser(firstName, lastName, username, JWT);
+
       navigate("/login");
 
     } catch (firebaseError) {
