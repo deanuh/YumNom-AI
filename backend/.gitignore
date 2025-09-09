@@ -45,3 +45,5 @@ yarn-error.log*
 # IDE/OS files
 .vscode/
 .DS_Store
+
+backend/src/firebase/serviceAccountKey.json
