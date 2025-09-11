@@ -6,7 +6,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function SignUp() {
   const navigate = useNavigate();
-  
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
@@ -25,7 +25,21 @@ function SignUp() {
 
     } catch (firebaseError) {
       console.error("Firebase sign-up error:", firebaseError.message);
-      setError(firebaseError.message);
+
+      switch (firebaseError.code) {
+        case 'auth/email-already-in-use':
+          setError('This email address is already in use.');
+          break;
+        case 'auth/weak-password':
+          setError('Password should be at least 6 characters long.');
+          break;
+        case 'auth/invalid-email':
+          setError('Please enter a valid email address.');
+          break;
+        default:
+          setError('Failed to create an account. Please try again.');
+          break;
+      }
     }
   };
 
