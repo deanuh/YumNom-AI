@@ -12,3 +12,5 @@ dist/
 /package.json
 /package-lock.json
 backend/src/firebase/serviceAccountKey.json
+
+firestore-debug.log

@@ -1,6 +1,7 @@
 // tripadvisor.js
 import axios from "axios";
 import "dotenv/config";
+import { fetchUnsplashImage } from "./unsplash.js";
 
 const api_key = process.env.TRIPADVISOR_API_KEY;
 const base_url = "https://api.content.tripadvisor.com/api";
@@ -57,10 +58,21 @@ async function getRestaurantTripAdvisor(req, res, next) {
     const tail = list.slice(N);
 
     const withPhotosHead = await Promise.all(
-      head.map(async (item) => ({
-        ...item,
-        photoUrl: await fetchPrimaryPhoto(item.location_id),
-      }))
+      head.map(async (item) => {
+        // First try TripAdvisor photo
+        let photoUrl = await fetchPrimaryPhoto(item.location_id);
+    
+        // If TripAdvisor didn’t return anything, fallback to Unsplash
+        if (!photoUrl) {
+          const category = guessCategory(item.name);
+          photoUrl = await fetchUnsplashImage(category);
+        }
+    
+        return {
+          ...item,
+          photoUrl,
+        };
+      })
     );
 
     list = [...withPhotosHead, ...tail];
@@ -68,6 +80,16 @@ async function getRestaurantTripAdvisor(req, res, next) {
     return res.json({ data: list });
   } catch (err) {
     next(err);
+  }
+  function guessCategory(name) {
+    const lower = (name || "").toLowerCase();
+    if (lower.includes("pizza")) return "pizza";
+    if (lower.includes("burger") || lower.includes("grill")) return "burger";
+    if (lower.includes("sushi")) return "sushi";
+    if (lower.includes("seafood")) return "seafood";
+    if (lower.includes("bakery") || lower.includes("cafe")) return "bakery";
+    if (lower.includes("chicken")) return "chicken";
+    return "restaurant food";
   }
 }
 

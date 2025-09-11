@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
-const DishCard = ({ name, address, distance, onViewMenu }) => {
+const DishCard = ({ name, address, distance, imageUrl, onViewMenu }) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const fallback = "/chicken.png";
 
   return (
     <div className="dish-card">
@@ -14,13 +15,22 @@ const DishCard = ({ name, address, distance, onViewMenu }) => {
         />
       </div>
 
-      <img src="/chicken.png" alt={name} className="dish-img" />
+      <img
+        src={imageUrl || fallback}
+        alt={name}
+        className="dish-img"
+        loading="lazy"
+      />
+
       <p className="restaurant-name">{name}</p>
       <p className="dish-name">{address}</p>
       {distance && <div className="distance-pill">{distance}</div>}
-      <button className="menu-button" onClick={onViewMenu}>View Menu</button>
+      <button className="menu-button" onClick={onViewMenu}>
+        View Menu
+      </button>
     </div>
   );
 };
+
 
 export default DishCard;

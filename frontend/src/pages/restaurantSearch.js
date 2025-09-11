@@ -42,13 +42,14 @@ function RestaurantSearch() {
   // NEW: track selected category
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+
   useEffect(() => {
     getUserCity()
       .then((data) => {
         setLocation(`${data.city}, ${data.state}`);
         setlongLat({ longitude: data.longitude, latitude: data.latitude });
       })
-      .catch((err) => setLocation(err));
+      .catch((err) => setLocation(err?.message || "Location unavailable"));
   }, []);
 
   useEffect(() => {
@@ -141,13 +142,36 @@ function RestaurantSearch() {
     }
   };
 
-  // UPDATED: distance change re-queries with current category/text
-  const handleDistanceChange = (val) => {
-    setSelectedDistance(val);
-    const miles = Number(val.split(" ")[0]);
-    fetchRestaurants({ q: currentQuery(), miles });
+  const handleClearFilters = () => {
+    setSelectedDistance(null);
+    setSelectedPrice(null);
+    setSelectedCategory(null);
+    setSearchText("");
+    setShowDistanceDropdown(false); // close distance dropdown
+  setShowPriceDropdown(false);    // close price dropdown
+    // Refresh results with defaults
+    fetchRestaurants({ q: "", miles: DEFAULT_RADIUS_MI });
   };
+  
+  // // UPDATED: distance change re-queries with current category/text
+  // const handleDistanceChange = (val) => {
+  //   setSelectedDistance(val);
+  //   const miles = Number(val.split(" ")[0]);
+  //   fetchRestaurants({ q: currentQuery(), miles });
+  // };
 
+  // toggleable radio handlers
+  const handleDistanceRadio = (value) => {
+    setSelectedDistance((prev) => {
+      const next = prev === value ? null : value;
+      const miles = next ? Number(next.split(" ")[0]) : DEFAULT_RADIUS_MI;
+      fetchRestaurants({ q: currentQuery(), miles });
+      return next;
+    });
+  };
+  const handlePriceRadio = (value) => {
+    setSelectedPrice((prev) => (prev === value ? null : value));
+  };
   // Price filter stays client-side
   const displayed = useMemo(() => {
     const base = Array.isArray(searchResults?.data) ? searchResults.data : [];
@@ -162,7 +186,6 @@ function RestaurantSearch() {
       return normalized === selectedPrice;
     });
   }, [searchResults, selectedPrice]);
-
   return (
     <div className="Restaurant-container">
       <h3 className="Restaurant-container-title">Restaurant Search</h3>
@@ -180,7 +203,7 @@ function RestaurantSearch() {
             </span>
             <input
               type="text"
-              placeholder="Search YumNom"
+              placeholder="Search Resturant"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -200,15 +223,27 @@ function RestaurantSearch() {
             </button>
             {showDistanceDropdown && (
               <div className="dropdown-menu">
-                <label><input type="radio" name="distance" value="5 mi"
+                <label><input
+                  type="radio"
+                  name="distance"
+                  value="5 mi"
                   checked={selectedDistance === "5 mi"}
-                  onChange={(e) => handleDistanceChange(e.target.value)} /> 5 mi</label>
-                <label><input type="radio" name="distance" value="10 mi"
+                  onChange={(e) => handleDistanceRadio(e.target.value)}
+                /> 5 mi</label>
+                <label><input
+                  type="radio"
+                  name="distance"
+                  value="10 mi"
                   checked={selectedDistance === "10 mi"}
-                  onChange={(e) => handleDistanceChange(e.target.value)} /> 10 mi</label>
-                <label><input type="radio" name="distance" value="15 mi"
+                  onChange={(e) => handleDistanceRadio(e.target.value)}
+                /> 10 mi</label>
+                <label><input
+                  type="radio"
+                  name="distance"
+                  value="15 mi"
                   checked={selectedDistance === "15 mi"}
-                  onChange={(e) => handleDistanceChange(e.target.value)} /> 15 mi</label>
+                  onChange={(e) => handleDistanceRadio(e.target.value)}
+                /> 15 mi</label>
               </div>
             )}
           </div>
@@ -220,18 +255,34 @@ function RestaurantSearch() {
             </button>
             {showPriceDropdown && (
               <div className="dropdown-menu">
-                <label><input type="radio" name="price" value="$"
+                <label><input
+                  type="radio"
+                  name="price"
+                  value="$"
                   checked={selectedPrice === "$"}
-                  onChange={(e) => setSelectedPrice(e.target.value)} /> $ </label>
-                <label><input type="radio" name="price" value="$$"
+                  onChange={(e) => handlePriceRadio(e.target.value)}
+                /> $ </label>
+                <label><input
+                  type="radio"
+                  name="price"
+                  value="$$"
                   checked={selectedPrice === "$$"}
-                  onChange={(e) => setSelectedPrice(e.target.value)} /> $$ </label>
-                <label><input type="radio" name="price" value="$$$"
+                  onChange={(e) => handlePriceRadio(e.target.value)}
+                /> $$ </label>
+                <label><input
+                  type="radio"
+                  name="price"
+                  value="$$$"
                   checked={selectedPrice === "$$$"}
-                  onChange={(e) => setSelectedPrice(e.target.value)} /> $$$ </label>
+                  onChange={(e) => handlePriceRadio(e.target.value)}
+                /> $$$ </label>
               </div>
             )}
           </div>
+          <span className="clear-filters-link" onClick={handleClearFilters}>
+            Clear filters
+          </span>
+
         </div>
       </div>
 
@@ -258,6 +309,7 @@ function RestaurantSearch() {
                       name={r.name}
                       address={formatAddress(r)}
                       distance={formatDistance(r.distance)}
+                      imageUrl={r.photoUrl || r.image_url || r.photo?.images?.large?.url || null}
                       onViewMenu={() => {
                         const q = encodeURIComponent(`${r.name} ${formatAddress(r)}`);
                         window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank");
