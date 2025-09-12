@@ -14,6 +14,7 @@ import {
   createRecommendation, removeRecommendation,
   createVote, removeVote
 } from './api/firestore.js';
+import { getGroup } from './firebase/dbFunctions.js'
 import { Server } from 'socket.io';
 
 let app = express();
@@ -34,16 +35,37 @@ const io = new Server(server, {
     },
   });
 
-// Listen for incoming Socket.IO connections
+io.use(async (socket, next) => {
+  try {
+    const idToken = socket.handshake.auth.token;
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    socket.uid = decodedToken.uid; // attach UID to socket
+    next();
+  } catch (err) {
+    next(new Error("Authentication error"));
+  }
+});
+
 io.on("connection", (socket) => {
-    console.log("User connected ", socket.id); // Log the socket ID of the connected user
+  console.log("User connected", socket.id, "with UID", socket.uid);
 
-    // Listen for "send_message" events from the connected client
-    socket.on("send_message", (data) => {
-        console.log("Message Received ", data); // Log the received message data
 
-        // Emit the received message data to all connected clients
-        io.emit("receive_message", data);
+    socket.on("join_room", async () => {
+      try {
+    		socket.groupId = await getGroup(socket.uid);
+        socket.join(socket.groupId);
+        socket.emit("joined_room", socket.groupId);
+      } catch (err) {
+        socket.emit("join_error", { message: err.message });
+      }
+    });
+
+    socket.on("send_message", ({ message }) => {
+			if (!socket.groupId) return socket.emit("join_error", { message: "User not in room."});
+      io.to(socket.groupId).emit("receive_message", {
+        user: socket.uid,
+        message,
+      });
     });
 });
 

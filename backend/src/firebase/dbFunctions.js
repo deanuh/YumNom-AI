@@ -181,7 +181,20 @@ export async function deleteGroup(userId) {
     throw new Error(`deleteGroup failed: ${err.message}`);
   }
 }
-
+export async function getGroup(userId) {
+	try {
+		const userRef = db.collection("Users").doc(userId);
+		const userDoc = await userRef.get();
+		if (!userDoc.exists) throw new Error("User does not exist.");
+		const userData = userDoc.data();
+		const groupId = userData.current_group;
+		if (!groupId) throw new Error("User not in group.");
+		return groupId;
+	} catch(err) {
+		console.error(`getGroup failed: ${err.message}`);
+		throw new Error(`getGroup failed: ${err.message}`);
+	}
+}
 // -------------------- FAVORITES -------------------- //
 export async function addFavorite(favoriteData, userId) {
   try {
