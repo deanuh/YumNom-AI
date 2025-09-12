@@ -26,5 +26,5 @@ export const createUser = async (
 	} catch (err) {
 	  console.log(err);
 	}
-  };
+};
   

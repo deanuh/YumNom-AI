@@ -14,7 +14,8 @@ import {
   createRecommendation, removeRecommendation,
   createVote, removeVote
 } from './api/firestore.js';
-import { getGroup } from './firebase/dbFunctions.js'
+import { addGroup, getGroup } from './firebase/dbFunctions.js'
+import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
 
 let app = express();
@@ -38,10 +39,11 @@ const io = new Server(server, {
 io.use(async (socket, next) => {
   try {
     const idToken = socket.handshake.auth.token;
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await getAuth().verifyIdToken(idToken);
     socket.uid = decodedToken.uid; // attach UID to socket
     next();
   } catch (err) {
+		console.log(err);
     next(new Error("Authentication error"));
   }
 });
@@ -52,7 +54,12 @@ io.on("connection", (socket) => {
 
     socket.on("join_room", async () => {
       try {
-    		socket.groupId = await getGroup(socket.uid);
+				let groupId = await getGroup(socket.uid);
+				if (!groupId) {
+					groupId = await addGroup(socket.uid);
+				}
+    		socket.groupId = groupId;
+
         socket.join(socket.groupId);
         socket.emit("joined_room", socket.groupId);
       } catch (err) {

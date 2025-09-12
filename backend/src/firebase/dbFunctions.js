@@ -183,9 +183,9 @@ export async function deleteGroup(userId) {
 }
 export async function getGroup(userId) {
 	try {
-		const userRef = db.collection("Users").doc(userId);
+		const userRef = db.collection("User").doc(userId);
 		const userDoc = await userRef.get();
-		if (!userDoc.exists) throw new Error("User does not exist.");
+		if (!userDoc.exists) return null;
 		const userData = userDoc.data();
 		const groupId = userData.current_group;
 		if (!groupId) throw new Error("User not in group.");
