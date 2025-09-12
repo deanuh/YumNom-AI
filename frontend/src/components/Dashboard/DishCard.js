@@ -6,15 +6,6 @@ const DishCard = ({ name, address, distance, imageUrl, onViewMenu }) => {
 
   return (
     <div className="dish-card">
-      <div className="heart-container">
-        <img
-          src={isFavorite ? "/heart_dark.png" : "/heart.png"}
-          alt="Favorite"
-          className="heart-icon"
-          onClick={() => setIsFavorite((prev) => !prev)}
-        />
-      </div>
-
       <img
         src={imageUrl || fallback}
         alt={name}
@@ -22,15 +13,34 @@ const DishCard = ({ name, address, distance, imageUrl, onViewMenu }) => {
         loading="lazy"
       />
 
-      <p className="restaurant-name">{name}</p>
-      <p className="dish-name">{address}</p>
-      {distance && <div className="distance-pill">{distance}</div>}
-      <button className="menu-button" onClick={onViewMenu}>
-        View Menu
-      </button>
+      <div className="card-body">
+        <div className="meta-header">
+          <div className="meta-left">
+            <p className="restaurant-name">{name}</p>
+            {distance && <span className="distance-inline">{distance}</span>}
+          </div>
+
+          <button
+            type="button"
+            className="favorite-btn"
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            aria-pressed={isFavorite}
+            onClick={() => setIsFavorite(prev => !prev)}
+          >
+            <img
+              src={isFavorite ? "/heart_dark.png" : "/heart.png"}
+              alt=""
+              className="heart-icon"
+            />
+          </button>
+        </div>
+
+        <button type="button" className="menu-cta" onClick={onViewMenu}>
+          View Restaurant
+        </button>
+      </div>
     </div>
   );
 };
-
 
 export default DishCard;

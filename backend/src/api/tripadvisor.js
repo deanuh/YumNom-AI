@@ -1,7 +1,7 @@
 // tripadvisor.js
 import axios from "axios";
 import "dotenv/config";
-import { fetchUnsplashImage } from "./unsplash.js";
+import { fetchUnsplashImageFor } from "./unsplash.js";
 
 const api_key = process.env.TRIPADVISOR_API_KEY;
 const base_url = "https://api.content.tripadvisor.com/api";
@@ -65,7 +65,8 @@ async function getRestaurantTripAdvisor(req, res, next) {
         // If TripAdvisor didn’t return anything, fallback to Unsplash
         if (!photoUrl) {
           const category = guessCategory(item.name);
-          photoUrl = await fetchUnsplashImage(category);
+          const seed = item.location_id || item.name;
+          photoUrl = await fetchUnsplashImageFor(category, seed, item.name);
         }
     
         return {

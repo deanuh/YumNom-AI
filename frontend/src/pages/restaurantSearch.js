@@ -19,6 +19,10 @@ const CATEGORY_TO_QUERY = {
   Seafood: "seafood",
 };
 
+// ---------- NEW: Recents config ----------
+const RECENTS_KEY = "yn_recent_restaurants";
+const RECENTS_LIMIT = 12;
+
 const formatDistance = (d) =>
   typeof d === "number" ? `${d.toFixed(1)} mi` : d ? `${Number(d).toFixed(1)} mi` : "";
 
@@ -42,6 +46,8 @@ function RestaurantSearch() {
   // NEW: track selected category
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  // ---------- NEW: Recents state ----------
+  const [recents, setRecents] = useState([]);
 
   useEffect(() => {
     getUserCity()
@@ -60,6 +66,34 @@ function RestaurantSearch() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [longLat]);
+
+  // ---------- NEW: Load recents on mount ----------
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem(RECENTS_KEY) || "[]");
+    setRecents(Array.isArray(saved) ? saved : []);
+  }, []);
+
+  // ---------- NEW: helper to add a restaurant to recents ----------
+  const addRecent = (r) => {
+    const addr = formatAddress(r);
+    const id = r.location_id || `${r.name}-${addr}`;
+    const image =
+      r.photoUrl || r.image_url || r.photo?.images?.large?.url || null;
+
+    const item = {
+      id,
+      name: r.name,
+      address: addr,
+      imageUrl: image,
+    };
+
+    setRecents((prev) => {
+      const filtered = (prev || []).filter((x) => x.id !== id);
+      const next = [item, ...filtered].slice(0, RECENTS_LIMIT);
+      localStorage.setItem(RECENTS_KEY, JSON.stringify(next));
+      return next;
+    });
+  };
 
   const [showDistanceDropdown, setShowDistanceDropdown] = useState(false);
   const [showPriceDropdown, setShowPriceDropdown] = useState(false);
@@ -148,17 +182,10 @@ function RestaurantSearch() {
     setSelectedCategory(null);
     setSearchText("");
     setShowDistanceDropdown(false); // close distance dropdown
-  setShowPriceDropdown(false);    // close price dropdown
+    setShowPriceDropdown(false);    // close price dropdown
     // Refresh results with defaults
     fetchRestaurants({ q: "", miles: DEFAULT_RADIUS_MI });
   };
-  
-  // // UPDATED: distance change re-queries with current category/text
-  // const handleDistanceChange = (val) => {
-  //   setSelectedDistance(val);
-  //   const miles = Number(val.split(" ")[0]);
-  //   fetchRestaurants({ q: currentQuery(), miles });
-  // };
 
   // toggleable radio handlers
   const handleDistanceRadio = (value) => {
@@ -186,6 +213,7 @@ function RestaurantSearch() {
       return normalized === selectedPrice;
     });
   }, [searchResults, selectedPrice]);
+
   return (
     <div className="Restaurant-container">
       <h3 className="Restaurant-container-title">Restaurant Search</h3>
@@ -311,6 +339,9 @@ function RestaurantSearch() {
                       distance={formatDistance(r.distance)}
                       imageUrl={r.photoUrl || r.image_url || r.photo?.images?.large?.url || null}
                       onViewMenu={() => {
+                        // ---------- NEW: save to recents (no extra API calls) ----------
+                        addRecent(r);
+                        // Then open Google Maps
                         const q = encodeURIComponent(`${r.name} ${formatAddress(r)}`);
                         window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank");
                       }}
@@ -325,8 +356,38 @@ function RestaurantSearch() {
         </>
       )}
 
-      {/* Recently Searched */}
-      <DashboardSection title="Your Recent Searches" />
+      {/* ---------- NEW: Recently Searched (from localStorage) ---------- */}
+      {recents.length > 0 && (
+        <>
+          <div className="section-header" style={{ marginTop: 24 }}>
+            <h4>Your Recent Searches</h4>
+            {/* Optional "Clear all" link:
+            <button
+              className="link"
+              onClick={() => { localStorage.removeItem(RECENTS_KEY); setRecents([]); }}
+            >
+              Clear all
+            </button>
+            */}
+          </div>
+          <div className="restaurant-grid">
+            {recents.map((r) => (
+              <DishCard
+                key={r.id}
+                name={r.name}
+                address={r.address}
+                imageUrl={r.imageUrl}
+                onViewMenu={() => {
+                  const q = encodeURIComponent(`${r.name} ${r.address}`);
+                  window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank");
+                }}
+              />
+            ))}
+          </div>
+        </>
+      )}
+      {/* If you want to keep the section divider/header component still visible even with 0 items: */}
+      {/* <DashboardSection title="Your Recent Searches" /> */}
     </div>
   );
 }
