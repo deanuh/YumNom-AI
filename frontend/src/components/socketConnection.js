@@ -10,6 +10,8 @@ import { auth } from "../firebase/firebaseConfig.js";
 export default function SendAndReceive() {
 	const [sendMessage, setSendMessage] = useState("");
   const [receiveMessage, setReceiveMessage] = useState(""); // State to store received message
+  const [phaseState, setPhaseState] = useState(""); // State to store received message
+	const [timer, setTimer] = useState(null);
 	const socketRef = useRef(null);
 
 	const send = () => {
@@ -18,6 +20,13 @@ export default function SendAndReceive() {
 		}
 	}
   useEffect(() => {
+		const interval = setInterval(() => { 
+			setTimer(timer => {
+				if (timer > 0) return timer - 1;
+				clearInterval(interval);
+				return 0;
+			}); 
+		}, 1000);
 
 		const unsubscribe = onAuthStateChanged(auth, async (user) => {
 			try {
@@ -31,6 +40,11 @@ export default function SendAndReceive() {
 						auth: { token: JWT },
 					});
 
+  	  		socketRef.current.on("change_phase", (data) => {
+  	  		  setPhaseState(data.phaseName); // Set the received message data to state
+						setTimer(Math.ceil((data.endsAt  - Date.now()) / 1000));
+  	  		});
+	
   	  		socketRef.current.on("receive_message", (data) => {
   	  		  setReceiveMessage(data.message); // Set the received message data to state
   	  		});
@@ -50,6 +64,7 @@ export default function SendAndReceive() {
 
 
 	return () => {
+					clearInterval(interval);
   	  	  socketRef.current?.disconnect()
 					unsubscribe();
   };
@@ -58,6 +73,8 @@ export default function SendAndReceive() {
   return (
     <div>
       <p>View Receive messages: {receiveMessage}</p> {/* Display the received message */}
+
+      <p>View timer: { timer }, phase: { phaseState }</p> {/* Display the timer*/}
 			<input placeholder="message to socket" onChange={(e) => setSendMessage(e.target.value)} />
 			<button onClick={send}>Enter</button>
     </div>

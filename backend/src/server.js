@@ -36,6 +36,9 @@ const io = new Server(server, {
     },
   });
 
+const groupTimers = {};
+const groupState = {};
+
 io.use(async (socket, next) => {
   try {
     const idToken = socket.handshake.auth.token;
@@ -48,20 +51,92 @@ io.use(async (socket, next) => {
   }
 });
 
+function startPhase(groupId, duration, phaseName) {
+	if (!groupTimers[groupId]) groupTimers[groupId] = {};
+
+	const waitTime = 10;
+	const voteTime = 15;
+	groupState[groupId] = phaseName;
+	groupTimers[groupId].endsAt = Date.now() + duration * 1000;
+
+	io.to(groupId).emit("change_phase", { endsAt: groupTimers[groupId].endsAt, phaseName: groupState[groupId]});
+
+	groupTimers[groupId].main = setTimeout(() => {
+		delete groupTimers[groupId].main;
+
+		let nextPhase;
+		switch (phaseName) {
+			case "join": 
+				nextPhase = "round_one";
+				break;
+			case "round_one":
+				nextPhase = "round_two";
+				break;
+			case "round_two":
+				nextPhase = "tiebreaker";
+				break;
+			case "tiebreaker":
+				nextPhase = null;
+				break;
+			default:
+				console.log(`Error on phase ${phaseName}`);
+				nextPhase = null;
+		}
+
+		groupState[groupId] = "waiting_phase";
+		groupTimers[groupId].endsAt = Date.now() + waitTime * 1000;
+		io.to(groupId).emit("change_phase", { endsAt: groupTimers[groupId].endsAt, phaseName: groupState[groupId]});
+		groupTimers[groupId].wait = setTimeout(() => {
+			delete groupTimers[groupId].wait;
+			if (nextPhase) {
+				startPhase(groupId,  voteTime, nextPhase);
+			} else {
+				delete groupTimers[groupId];
+				groupState[groupId] = "end_phase";
+				io.to(groupId).emit("end_phase");
+				return;
+			}
+		}, waitTime * 1000); //  (duration) ms * 1000 = (duration) sec
+
+	}, duration * 1000); //  (duration) ms * 1000 = (duration) sec
+
+}
+
+async function joinGroup(userId) {
+      try {
+				let groupData = await getGroup(userId);
+				console.log(`groupData: ${JSON.stringify(groupData)}`);
+				let createdGroup = false;
+				//grab groupId from existing/new group.
+				let groupId;
+				if (groupData) {
+					groupId = groupData.id;
+				} else {
+					groupId = await addGroup(userId);
+					createdGroup = true;
+				}
+    		return { groupId, createdGroup };
+			} catch(err) {
+				throw new Error("Error joining group: " + err.message);
+			}
+
+}
 io.on("connection", (socket) => {
   console.log("User connected", socket.id, "with UID", socket.uid);
 
 
     socket.on("join_room", async () => {
-      try {
-				let groupId = await getGroup(socket.uid);
-				if (!groupId) {
-					groupId = await addGroup(socket.uid);
-				}
-    		socket.groupId = groupId;
+			try {
+				let { groupId, createdGroup } = await joinGroup(socket.uid);
+				console.log(`groupId: ${groupId}, createdGroup: ${createdGroup}`);
 
+				if (createdGroup) {
+					startPhase(groupId, 20, "join");
+				}
+				socket.groupId = groupId;
         socket.join(socket.groupId);
-        socket.emit("joined_room", socket.groupId);
+        socket.broadcast.to(groupId).emit("joined_room", socket.uid);
+				socket.emit("change_phase", { endsAt: groupTimers[groupId].endsAt, phaseName: groupState[groupId]});
       } catch (err) {
         socket.emit("join_error", { message: err.message });
       }

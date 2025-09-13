@@ -185,11 +185,19 @@ export async function getGroup(userId) {
 	try {
 		const userRef = db.collection("User").doc(userId);
 		const userDoc = await userRef.get();
-		if (!userDoc.exists) return null;
+		if (!userDoc.exists) throw new Error("User does not exist"); 
 		const userData = userDoc.data();
+
 		const groupId = userData.current_group;
-		if (!groupId) throw new Error("User not in group.");
-		return groupId;
+		if (!groupId) return null;
+
+		const groupRef = db.collection("Group").doc(groupId);
+		const groupDoc = await groupRef.get();
+		if (!groupDoc.exists) throw new Error("Dangling group reference");
+		const groupData = groupDoc.data();
+		groupData.id = groupDoc.id; //append id to data
+		return groupData;
+
 	} catch(err) {
 		console.error(`getGroup failed: ${err.message}`);
 		throw new Error(`getGroup failed: ${err.message}`);
