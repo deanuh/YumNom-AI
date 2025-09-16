@@ -74,6 +74,12 @@ function Help() {
       answer:
         "Go to the 'Contact Us' tab on the left side navigation bar and fill out the form!",
     },
+    {
+      question: "How do I delete my account?",
+      answer:
+        "Go to the settings page by clicking the 'Back' button on the top of the page, or the 'Settings' tab on the navigation bar on the left. Scroll down to the bottom of the page and click 'Delete Account'. Follow the steps and then you're set!",
+    },
+    
 
   ];
 

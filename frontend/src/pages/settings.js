@@ -25,9 +25,9 @@ function Settings() {
           <h3 className="Set-section-heading">General Settings</h3>
           <ul className="Set-settings-list">
             <li><Link to="/changePass">Change Password</Link></li>
-            <li><Link to="/emailSettings">Email</Link></li>
+            <li><Link to="/emailSettings">Change Email</Link></li>
             <li><Link to="/locationPref">Location Preferences</Link></li>
-            <li><Link to="/notifications">Notifications</Link></li>
+            {/* <li><Link to="/notifications">Notifications</Link></li> */}
             <li><Link to="#">Display</Link></li>
           </ul>
         </div>

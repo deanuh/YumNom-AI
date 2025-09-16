@@ -49,7 +49,7 @@ export default function ReportIssue() {
   return (
     <div className="report-issue-page">
       <div className="report-issue-header">
-        <button className="report-issue-back" onClick={() => navigate(-1)}>Back</button>
+        <button className="report-issue-back" onClick={() => navigate(-1)}> ← Back to Settings </button>
         <h1 className="report-issue-title">Report an Issue</h1>
       </div>
 
@@ -94,17 +94,14 @@ export default function ReportIssue() {
             <div className="report-issue-field">
               <label className="report-issue-label">How often does this happen?</label>
               <div className="report-issue-scale">
-                {Array.from({ length: 10 }, (_, i) => i + 1).map((val) => (
-                  <label key={val} className="report-issue-radio">
-                    <input type="radio" name="frequency" value={val} /> {val}
+                {["Never", "Sometimes", "Often", "Always"].map((option, index) => (
+                  <label key={index} className="report-issue-radio">
+                    <input type="radio" name="frequency" value={option} /> {option}
                   </label>
                 ))}
               </div>
-              <div className="report-issue-scale-labels">
-                <span>Not too often</span>
-                <span>All the time</span>
-              </div>
             </div>
+
 
             <div className="report-issue-field">
               <label className="report-issue-label">How would you rate your experience with YumNom so far?</label>

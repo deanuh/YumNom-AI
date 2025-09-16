@@ -452,6 +452,7 @@
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+  color: #190352;
 }
 
 .report-issue-radio {
@@ -514,3 +515,30 @@
 .report-issue-status.success { color: #1b5e20; }
 .report-issue-status.error { color: #b71c1c; }
 
+
+
+/*THIS IS FOR DELETE ACCOUNT*/
+.setting-danger-zone { border-top: 1px solid #eee; padding-top: 16px; }
+.setting-heading { font-size: 1.5rem; margin-bottom: 8px; }
+.setting-description { margin-bottom: 16px; color: #444; }
+
+.setting-btn { padding: 10px 14px; border-radius: 8px; border: none; cursor: pointer; }
+.setting-btn-secondary { background: #e6e6e6; }
+.setting-btn-danger { background: #c0392b; color: #fff; }
+.setting-btn-disabled { opacity: 0.6; cursor: not-allowed; }
+
+.setting-error { margin-top: 8px; color: #b00020; }
+
+.setting-modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.setting-modal-card {
+  background: #fff; width: 100%; max-width: 520px; border-radius: 12px;
+  padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.setting-modal-title { margin: 0 0 8px; }
+.setting-modal-text { margin: 0 0 12px; line-height: 1.5; }
+.setting-checkbox-row { display: flex; gap: 10px; align-items: center; margin: 12px 0; }
+.setting-confirm-input { display: grid; gap: 6px; margin: 12px 0 20px; }
+.setting-modal-actions { display: flex; justify-content: flex-end; gap: 10px; }

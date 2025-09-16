@@ -180,6 +180,7 @@ yarn-error.log*
 - ** it wont show on the database but we will fix that
 - for the emulator to work (i mean save any data from any creations in to the database forever such as creating a user with auth and storing them in the database) run this line (assuming you have done step
 the RUN CONCureNTly STUFF) "dev": "concurrently -n frontend,backend,emulators -c blue,green,magenta \"npm start --prefix frontend\" \"npm start --prefix backend\" \"firebase emulators:start --only auth,firestore --project yumnomai --import=./emulator-data --export-on-exit\""
+^^ MIGHT NOT NEED BUT JUST IN CASE
 
 
 ## TO BE ABLE TO RUN REPORT ISSUE

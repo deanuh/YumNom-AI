@@ -13,6 +13,7 @@ import {
   createVote, removeVote
 } from './api/firestore.js';
 import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
+import usersRouter from "./api/deleteUser.js";
 
 let app = express();
 
@@ -49,6 +50,9 @@ app.delete("/votes/:groupId/:voteId", removeVote);
 
 // report Issue   NEW 
 app.use("/api", reportIssueRouter);
+
+// delete account NEW
+app.use("/api", usersRouter);
 
 // THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING
 // // quick request logger

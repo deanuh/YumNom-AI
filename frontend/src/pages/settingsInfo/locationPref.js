@@ -29,7 +29,7 @@ export default function LocationPref() {
         const optOut = JSON.parse(legacyOptOut);
         setIsSharing(!Boolean(optOut));
       } else {
-        // If you later store a positive flag, prefer it:
+        // if later store a positive flag, prefer it:
         const stored = localStorage.getItem("yumNomLocationSharing");
         if (stored !== null) setIsSharing(Boolean(JSON.parse(stored)));
       }
