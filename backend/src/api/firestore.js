@@ -15,21 +15,24 @@ import {
 // ------------------- USERS ------------------- //
 export async function createUser(req, res) {
   try {
+		const userId = req.uid;
     const { first_name, last_name, username } = req.body;
-    if (!first_name || !last_name || !username) {
+		console.log(`userId: ${userId}, first_name: ${first_name}, last_name: ${last_name}, username: ${username}`);
+    if (!userId || !first_name || !last_name || !username) {
       return res.status(400).json({ error: "Missing required fields." });
     }
 
-    const userId = await addUser({ first_name, last_name, username });
+    await addUser({ first_name, last_name, username }, userId);
     return res.status(201).json({ message: "User created", userId });
   } catch (error) {
+		console.error(err.message);
     return res.status(500).json({ error: error.message });
   }
 }
 
 export async function removeUser(req, res) {
   try {
-    const { userId } = req.params;
+    const userId = req.uid;
     if (!userId) return res.status(400).json({ error: "Missing userId." });
 
     await deleteUser(userId);
@@ -42,7 +45,7 @@ export async function removeUser(req, res) {
 // ------------------- GROUPS ------------------- //
 export async function createGroup(req, res) {
   try {
-    const { userId } = req.body;
+    const userId = req.uid;
     if (!userId) return res.status(400).json({ error: "Missing userId." });
 
     const groupId = await addGroup(userId);
@@ -54,10 +57,10 @@ export async function createGroup(req, res) {
 
 export async function removeGroup(req, res) {
   try {
-    const { groupId } = req.params;
-    if (!groupId) return res.status(400).json({ error: "Missing groupId." });
+    const userId = req.uid;
+    if (!userId) return res.status(400).json({ error: "Missing userId." });
 
-    await deleteGroup(groupId);
+    await deleteGroup(userId);
     return res.status(200).json({ message: "Group deleted" });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -67,12 +70,13 @@ export async function removeGroup(req, res) {
 // ------------------- FAVORITES ------------------- //
 export async function createFavorite(req, res) {
   try {
-    const { userId, api_id, name, photo_url, type } = req.body;
+		const userId = req.uid;
+    const { api_id, name, photo_url, type } = req.body;
     if (!userId || !api_id || !name || !photo_url || !type) {
       return res.status(400).json({ error: "Missing required fields." });
     }
 
-    const favoriteId = await addFavorite(userId, { api_id, name, photo_url, type });
+    const favoriteId = await addFavorite({ api_id, name, photo_url, type }, userId);
     return res.status(201).json({ message: "Favorite added", favoriteId });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -81,7 +85,8 @@ export async function createFavorite(req, res) {
 
 export async function removeFavorite(req, res) {
   try {
-    const { userId, favoriteId } = req.params;
+		const userId = req.uid;
+    const favoriteId = req.body.favoriteId;
     if (!userId || !favoriteId) {
       return res.status(400).json({ error: "Missing userId or favoriteId." });
     }
@@ -96,12 +101,13 @@ export async function removeFavorite(req, res) {
 // ------------------- RECOMMENDATIONS ------------------- //
 export async function createRecommendation(req, res) {
   try {
-    const { userId, api_id, name, photo_url } = req.body;
+		const userId = req.uid;
+    const { api_id, name, photo_url } = req.body;
     if (!userId || !api_id || !name || !photo_url) {
       return res.status(400).json({ error: "Missing required fields." });
     }
 
-    const recommendationId = await addRecommendation(userId, { api_id, name, photo_url });
+    const recommendationId = await addRecommendation({ api_id, name, photo_url }, userId);
     return res.status(201).json({ message: "Recommendation added", recommendationId });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -110,7 +116,8 @@ export async function createRecommendation(req, res) {
 
 export async function removeRecommendation(req, res) {
   try {
-    const { userId, recommendationId } = req.params;
+		const userId = req.uid;
+    const recommendationId = req.body.recommendationId;
     if (!userId || !recommendationId) {
       return res.status(400).json({ error: "Missing userId or recommendationId." });
     }
@@ -125,12 +132,13 @@ export async function removeRecommendation(req, res) {
 // ------------------- VOTES ------------------- //
 export async function createVote(req, res) {
   try {
-    const { groupId, userId, name, photo_url, restaurant_id } = req.body;
-    if (!groupId || !userId || !name || !photo_url || !restaurant_id) {
+		const userId = req.uid;
+    const { name, photo_url, restaurant_id } = req.body;
+    if (!userId || !name || !photo_url || !restaurant_id) {
       return res.status(400).json({ error: "Missing required fields." });
     }
 
-    const voteId = await addVote(groupId, userId, { name, photo_url, restaurant_id });
+    const voteId = await addVote({ name, photo_url, restaurant_id }, userId);
     return res.status(201).json({ message: "Vote added", voteId });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -139,12 +147,13 @@ export async function createVote(req, res) {
 
 export async function removeVote(req, res) {
   try {
-    const { groupId, voteId } = req.params;
-    if (!groupId || !voteId) {
-      return res.status(400).json({ error: "Missing groupId or voteId." });
+		const userId = req.uid;
+    const voteId = req.body.voteId;
+    if (!userId || !voteId) {
+      return res.status(400).json({ error: "Missing userId or voteId." });
     }
 
-    await deleteVote(groupId, voteId);
+    await deleteVote(userId, voteId);
     return res.status(200).json({ message: "Vote deleted" });
   } catch (error) {
     return res.status(500).json({ error: error.message });

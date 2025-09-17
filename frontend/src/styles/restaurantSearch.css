@@ -1,9 +1,3 @@
-/* ===== PAGE WRAPPER ===== */
-/* .search-page {
-    padding: 2rem;
-    font-family: 'Poppins', sans-serif;
-    background-color: #FFFFFF;
-  } */
 
   @import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');
 
@@ -11,7 +5,7 @@
     padding: 2rem;
     background-color: rgb(251, 250, 255);
     box-sizing: border-box;
-    margin: 0;            /* important */
+    margin: 0;           
     border: none;  
   }
 
@@ -21,7 +15,7 @@
     /* font-weight: bolder; */
     color: #3c2b7f;
   }
-  /* ===== LOCATION + SEARCH ===== */
+  /* LOCATION + SEARCH  */
   .search-row {
     display: flex;
     justify-content: space-between;
@@ -49,38 +43,7 @@
   }
 
   
-  /* .search-input-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 6rem;
-    background: white;
-    padding: .4rem;
-    border-radius: 999px;
-    box-shadow: 0 2px 6px rgba(0,0,0,5);
-    flex-grow: 1;
-    max-width: 600px;
-  }
-  
-  .search-input-wrapper input {
-    border: none;
-    outline: none;
-    padding: 0.6rem 1rem;
-    flex: 1;
-    border-radius: 999px;
-    font-size: 0.95rem;
-  }
-  
-  .search-input-wrapper button {
-    background: #6d4dc3;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 999px;
-    cursor: pointer;
-    font-weight: 500;
-  } */
-  
-  /* ===== FILTERS ===== */
+  /* FILTERS  */
   .filters-bar {
     display: flex;
     flex-wrap: wrap;
@@ -126,7 +89,7 @@
     gap: 0.4rem;
   }
   
-  /* ===== SECTION TITLES ===== */
+  /* SECTION TITLES */
   .section-title {
     font-weight: 600;
     margin-top: 2rem;
@@ -159,7 +122,8 @@
     padding: 1rem;
     text-align: center;
     font-weight: 500;
-    box-shadow: 0 2px 5px #65558F;
+    border: 1px solid #737078;     
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);  
     cursor: pointer;
     transition: transform 0.2s ease;
 }
@@ -178,11 +142,12 @@
     margin-bottom: 0.5rem;
   }
   
-  /* ===== RESTAURANT CARDS ===== */
+  /* RESTAURANT CARDS  */
   .restaurant-grid {
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
+    align-items: stretch; 
   }
   
   .restaurant-card {
@@ -193,6 +158,8 @@
     text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.04);
     transition: box-shadow 0.2s;
+    flex: 1 1 100%;
+    max-width: 100%;
   }
   
   .restaurant-card:hover {
@@ -200,8 +167,8 @@
   }
   
   .restaurant-card img {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     object-fit: cover;
     border-radius: 50%;
     margin-bottom: 0.75rem;
@@ -222,15 +189,7 @@
     font-size: 0.85rem;
     color: #777;
   }
-  /* .location-box {
-    font-weight: 600;
-    background: white;
-    border-radius: 12px;
-    padding: 0.8rem 1.2rem;
-    box-shadow: 0 0 3px rgba(0,0,0,0.05);
-    display: inline-block;
-    margin-bottom: 1.2rem;
-  } */
+
   
   .Restaurant-search-bar-wrapper {
     display: flex;
@@ -276,19 +235,6 @@
     box-shadow: none;
     margin-bottom: 0rem;  
   }
-  /* .enter-button {
-    border: none;
-    outline: none;
-    box-shadow: none;
-    background-color: #3c2b7f; 
-    color: white;
-    padding: 0.5rem 1.2rem;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-   */
   
   .section-header {
     display: flex;
@@ -319,10 +265,7 @@
     position: relative;
     display:inline-block
   }
-/*   
-  .filter-dropdown:hover .dropdown-menu {
-    display: block;
-  } */
+
 
   .star-label {
     display: flex;
@@ -352,14 +295,184 @@
 }
 
 .Restaurant-container input[type="checkbox"] {
-  accent-color: #6d4dc3;  /* or any hex color you want */
+  accent-color: #6d4dc3;  
 }
 
 .Restaurant-container input[type="radio"] {
-  accent-color: #6d4dc3;  /* or any hex color you want */
+  accent-color: #6d4dc3;  
 
 }
 
-/* .main-body h3{
-  color: #190352
-}   */
+
+.clear-filters-link {
+  margin-left: 12px;
+  color: #6d4dc3;        
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.clear-filters-link:hover {
+  color: #473281;
+}
+
+.restaurant-name {
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 10px 12px 4px;
+  color: #1f2937; /* near-black */
+  text-align: left;
+}
+
+/* make the heart float over the image so it doesn't push content down */
+.heart-container {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+}
+
+.text-link,
+.dish-card .menu-button {
+  background: transparent;
+  border: 0;
+  color: #4f46e5; 
+  font-weight: 600;
+  padding: 0;
+  margin: 0 12px 12px;
+  text-decoration: underline;
+}
+
+/* 1) Exactly 5 cards per row on wide screens */
+@media (min-width: 1200px) {
+  .restaurant-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;                    
+    justify-content: flex-start;
+  }
+  /* (100% - 4 gaps) / 5 cards */
+  .restaurant-grid .dish-card {
+    box-sizing: border-box;
+    flex: 0 0 calc((100% - (4 * 1.5rem)) / 5);
+    max-width: calc((100% - (4 * 1.5rem)) / 5);
+  }
+}
+
+/* 2) Keep the image the same (top, flush, rounded via card) */
+.dish-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden; 
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+/* You already set this elsewhere; repeating to ensure no stretching */
+.dish-card .dish-img {
+  display: block;
+  width: 100%;
+  height: 160px;                      
+  object-fit: cover;                
+  margin: 0 !important;
+  border-radius: 0;
+  aspect-ratio: auto !important;     
+}
+
+/* 3) Make the **card** shorter (tighten vertical spacing only) */
+.dish-card .restaurant-name { margin: 8px 12px 2px;  line-height: 1.2; }
+.dish-card .dish-name       { margin: 0 12px 6px;    line-height: 1.25; }
+.dish-card .distance-pill   { margin: 0 12px 8px;    }
+.dish-card .menu-button     { margin: 0 12px 12px;   }
+
+
+.card-body { padding: 8px 12px 12px; }
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; 
+  gap: 12px;                    
+  margin-top: 8px;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-right { display: none !important; }
+
+
+/* Heart button */
+.favorite-btn {
+  width: 32px; height: 32px;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+.favorite-btn .heart-icon { width: 18px; height: 18px; }
+
+
+
+.restaurant-name { margin: 8px 0 4px; line-height: 1.2; text-align: left; }
+.dish-name       { margin: 0 0 6px;   line-height: 1.25; text-align: left; }
+
+.distance-inline {
+  color: #6a41c1;         
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.1;
+}
+/*  Bottom-of-card layout */
+
+/* spacing just under the image */
+.card-body {
+  padding: 10px 12px 12px;
+}
+
+/* row under image */
+.meta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.meta-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+/* tighten only the name inside the meta-left (won't affect other places) */
+.meta-left .restaurant-name {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+
+/* full-width purple CTA at the bottom */
+.menu-cta {
+  width: 100%;
+  display: block;
+  background: #6a41c1;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: center;
+}
+.menu-cta:hover { filter: brightness(0.96); }

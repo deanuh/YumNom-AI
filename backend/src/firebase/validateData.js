@@ -1,4 +1,5 @@
 export function validateUserData(userData) {
+	console.log("reached validateUserData");
 	const requiredFields = ["first_name", "last_name", "username"];
 	for (const field of requiredFields) {
 		if (!userData[field]) {
