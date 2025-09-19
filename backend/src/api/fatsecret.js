@@ -73,9 +73,9 @@ async function getFoodFatSecret(req, res, next) {
 			'Authorization': `Bearer ${token}`
 		},
 		params:{
-			search_expression: "McDonald's", //  If this is used to retrieve a menu,
-			max_results: 20,								 //  pass the brand name here. Last resort,
-			include_sub_categories: true, 	 //  since the API wasn't meant for that.
+			search_expression: "McDonald's", //  If this is used to retrieve a menu, pass the brand name here. 
+			max_results: 20,
+			include_sub_categories: true, 	 //  However, the API wasn't meant for that.
 			include_food_images: true,
 			include_food_attributes: true,
 			format: "json"
