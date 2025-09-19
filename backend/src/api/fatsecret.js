@@ -49,8 +49,7 @@ async function getRestaurantFatSecret(req, res, next) {
 		},
 		params: {
 			starts_with: "McDonald", // replace after router is finished, pass user query
-															// through here. 
-			brand_type: "restaurant",
+			brand_type: "restaurant", // through here.
 			format: "json"
 		},
 	};
