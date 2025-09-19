@@ -7,6 +7,9 @@ const base_url = 'https://platform.fatsecret.com/rest';
 const fatsecret_client_id = process.env.FATSECRET_CLIENT_ID
 const fatsecret_client_secret = process.env.FATSECRET_CLIENT_SECRET
 
+
+//Helper function for retrieving OAuth2 token for API calls.
+
 async function getAuthTokenFatSecret() {
 	if (expirationDate > Date.now()) {
 		console.log('token still valid...');
@@ -45,7 +48,8 @@ async function getRestaurantFatSecret(req, res, next) {
 			'Authorization': `Bearer ${token}`
 		},
 		params: {
-			starts_with: "McDonald",
+			starts_with: "McDonald", // replace after router is finished, pass user query
+															// through here. 
 			brand_type: "restaurant",
 			format: "json"
 		},
@@ -56,6 +60,9 @@ async function getRestaurantFatSecret(req, res, next) {
 
 }
 
+// Use this to retrieve the id of the food item from FatSecret.
+// Useful for allergen information and other details.
+// Technically could be used to retrieve a restaurant's menu, as well.
 async function getFoodFatSecret(req, res, next) {
 	const token = await getAuthTokenFatSecret();
 
@@ -66,9 +73,9 @@ async function getFoodFatSecret(req, res, next) {
 			'Authorization': `Bearer ${token}`
 		},
 		params:{
-			search_expression: "McDonald's",
-			max_results: 20,
-			include_sub_categories: true,
+			search_expression: "McDonald's", //  If this is used to retrieve a menu,
+			max_results: 20,								 //  pass the brand name here. Last resort,
+			include_sub_categories: true, 	 //  since the API wasn't meant for that.
 			include_food_images: true,
 			include_food_attributes: true,
 			format: "json"

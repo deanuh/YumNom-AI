@@ -29,6 +29,9 @@ let expirationDate = Date.now();
 app.use(cors());
 app.use(express.json());
 
+// #################### WEBSOCKET SERVER ###############################
+// This is a seperate server used with Socket.IO in order to start the real-time voting
+// sessions. All real-time voting / socket-related code and will be moved later.
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -153,6 +156,12 @@ io.on("connection", (socket) => {
     });
 });
 
+// ############################################################
+
+
+// ############# ROUTERS ######################################
+// These are all the routers available on the server. These will be moved
+// to their own file via a router export at a later time.
 app.get('/restaurant', getRestaurantTripAdvisor);
 app.get('/food', getFoodFatSecret);
 app.get('/city', getUserCityOpenCage);
@@ -193,10 +202,14 @@ app.use("/api", usersRouter);
 // app.get("/api/ping", (_req, res) => res.json({ ok: true }));
 // app.post("/api/echo", express.json(), (req, res) => res.json({ ok: true, body: req.body }));
 
+// ###################################################################
+
+// All backend services available via this port
 app.listen(5001, () => {
 	console.log('listening on port 5001');
 });
 
+// Socket.IO server via this port.
 server.listen(7001, () => {
   console.log('Server is running on port 7001');
 });
