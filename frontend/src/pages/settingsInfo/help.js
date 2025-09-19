@@ -28,7 +28,7 @@ function FAQItem({ question, answer }) {
 function Help() {
   const navigate = useNavigate();
 
-  const faqs = [
+  const faqs = [  // the questions that user might ask
     {
       question: "How do I reset my password?",
       answer:

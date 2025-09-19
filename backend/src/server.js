@@ -15,10 +15,10 @@ import {
   createVote, removeVote
 } from './api/firestore.js';
 import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
-import usersRouter from "./api/deleteUser.js";
 import { addGroup, getGroup } from './firebase/dbFunctions.js'
 import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
+import deleteUserRouter from "./api/deleteUser.js";
 
 let app = express();
 
@@ -26,8 +26,27 @@ let accessToken = null;
 let expirationDate = Date.now();
 
 //allow requests from development origin
-app.use(cors());
+
+// ADDED THESE FOR THE DELETE ACCOUNT TESTING AND MAKING SURE IT WORKS
+// {
+app.use(cors({
+	origin: "http://localhost:3000",   // frontend dev server
+	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+	allowedHeaders: ["Content-Type", "Authorization"],
+  }));
+  
+  // Make sure Express responds to OPTIONS quickly
+app.use(cors({ origin: "http://localhost:3000", methods: ["GET","POST","PUT","DELETE","OPTIONS"], allowedHeaders: ["Content-Type","Authorization"] }));
+
 app.use(express.json());
+// added this to check delete account is actually working
+app.use((req, _res, next) => {
+	console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+	next();
+  });
+
+// }
+  
 
 const server = http.createServer(app);
 
@@ -181,9 +200,9 @@ app.delete("/votes/:voteId", authMiddleware, removeVote);
 app.use("/api", reportIssueRouter);
 
 // delete account NEW
-app.use("/api", usersRouter);
+app.use("/api", deleteUserRouter);
 
-// THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING
+// THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING  -- update it works
 // // quick request logger
 // app.use((req, _res, next) => {
 //   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);

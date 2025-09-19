@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-function buildEmailText(d, firestoreId) {
+function buildEmailText(d, firestoreId) {  // this is to set up the email being sent to YumNom
   return [
     "New issue report submitted",
     "",
@@ -47,35 +47,35 @@ router.post("/report-issue", async (req, res) => {
       issue,
       expected,
       actual,
-      frequency, // 1..10 (optional)
+      frequency, // never, sometimes, often, always options
       rating,    // 1..5  (optional)
       consent,   // boolean
     } = req.body || {};
 
-    // Minimal validation
+    //  validation for the entry fields (users need to fill this in)
     if (!email || !name || !issue) {
       return res.status(400).json({ success: false, message: "Missing required fields (email, name, issue)." });
     }
 
-    // Save to Firestore (optional via env flag)
-    let firestoreId = null;
-    if (String(process.env.SAVE_ISSUES_TO_FIRESTORE || "true").toLowerCase() === "true") {
-      const { FieldValue } = admin.firestore;
-      const ref = await db.collection("issueReports").add({
-        email,
-        name,
-        issue,
-        expected: expected ?? "",
-        actual: actual ?? "",
-        frequency: Number.isFinite(Number(frequency)) ? Number(frequency) : null,
-        rating: Number.isFinite(Number(rating)) ? Number(rating) : null,
-        consent: !!consent,
-        createdAt: FieldValue.serverTimestamp(),
-      });
-      firestoreId = ref.id;
-    }
+    // **** Save to Firestore (this is optional, but most likely will have in order to keep track later on)
+    // let firestoreId = null;
+    // if (String(process.env.SAVE_ISSUES_TO_FIRESTORE || "true").toLowerCase() === "true") {
+    //   const { FieldValue } = admin.firestore;
+    //   const ref = await db.collection("issueReports").add({
+    //     email,
+    //     name,
+    //     issue,
+    //     expected: expected ?? "",
+    //     actual: actual ?? "",
+    //     frequency: Number.isFinite(Number(frequency)) ? Number(frequency) : null,
+    //     rating: Number.isFinite(Number(rating)) ? Number(rating) : null,
+    //     consent: !!consent,
+    //     createdAt: FieldValue.serverTimestamp(),
+    //   });
+    //   firestoreId = ref.id;
+    // }
 
-    // Email
+    // Email being sent out
     await transporter.sendMail({
       from: process.env.SUPPORT_EMAIL,
       to: process.env.YUMNOM_SUPPORT_INBOX,
@@ -101,8 +101,6 @@ router.post("/report-issue", async (req, res) => {
   }
 });
 // router.post("/report-issue", (req, res) => {
-//   // If you are not using express.json() globally, you can parse JSON only here:
-//   // but you already have app.use(express.json()), so req.body is set.
 //   res.json({ success: true, got: req.body || null });
 // });
 
