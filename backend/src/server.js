@@ -3,6 +3,7 @@ import axios from 'axios';
 import cors from 'cors';
 import http from 'http';
 import 'dotenv/config';
+import aiRoutes from './api/ai/routes.js';
 import { getFoodFatSecret, getRestaurantFatSecret} from './api/fatsecret.js';
 import { getRestaurantTripAdvisor } from './api/tripadvisor.js';
 import { getUserCityOpenCage } from './api/opencage.js';
@@ -26,6 +27,8 @@ let expirationDate = Date.now();
 //allow requests from development origin
 app.use(cors());
 app.use(express.json());
+
+app.use('/api/ai', aiRoutes);
 
 const server = http.createServer(app);
 

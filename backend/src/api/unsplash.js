@@ -2,8 +2,11 @@ import axios from "axios";
 
 const unsplashKey = process.env.UNSPLASH_ACCESS_KEY;
 
+// Simple in-memory cache: query string → array of URLs
 const cache = Object.create(null);
 
+// Brand-specific query expansions ----
+// If the restaurant name matches one of these brands, use a tailored search query.
 const BRAND_QUERY = {
   "subway": "sub sandwich hoagie deli sandwich on baguette lettuce tomato",
   "mcdonald": "burger and fries fast food burger",
@@ -26,6 +29,8 @@ const BRAND_QUERY = {
   "shake shack": "smash burger fries",
 };
 
+// Cuisine keyword query expansions ----
+// Used if the restaurant name contains a cuisine/food keyword.
 const CUISINE_QUERY = {
   "thai": "thai food pad thai curry basil stir fry",
   "mexican": "tacos burrito bowl mexican food",
@@ -43,18 +48,31 @@ const CUISINE_QUERY = {
   "breakfast": "pancakes waffles breakfast plate",
 };
 
-
+/**
+ * Deterministic hash function for a seed string.
+ * Used to pick a consistent Unsplash image per restaurant ID.
+ */
 function hashSeed(seed) {
   const s = String(seed || "");
-  let h = 2166136261;
+  let h = 2166136261;  // FNV-like start value
   for (let i = 0; i < s.length; i++) {
     h ^= s.charCodeAt(i);
     h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
   }
-  return (h >>> 0);
+  return (h >>> 0);  // unsigned
 }
 
-// Build an Unsplash query from brand/cuisine/name/category
+/**
+ * Build an Unsplash query string given:
+ *  - category: a broad type like "pizza" or "burger"
+ *  - name: the venue’s name (used for brand/cuisine detection)
+ *
+ * Priority:
+ *  1. Brand match in name (Subway, Starbucks, etc.)
+ *  2. Cuisine keyword match (pizza, ramen, etc.)
+ *  3. Category string
+ *  4. Generic fallback
+ */
 export function categoryToQuery(category = "food", name = "") {
   const n = (name || "").toLowerCase();
 
@@ -77,10 +95,16 @@ export function categoryToQuery(category = "food", name = "") {
   if (c.includes("bakery") || c.includes("cafe")) return CUISINE_QUERY.bakery;
   if (c.includes("chicken")) return CUISINE_QUERY.chicken;
 
+  // Last resort
   return "restaurant dish plated food";
 }
 
-// Get (and cache) a set of results for a query
+/**
+ * Fetch and cache Unsplash results for a query.
+ * - Uses Unsplash search API
+ * - Returns an array of image URLs (regular or small size)
+ * - Applies caching to avoid repeated API calls
+ */
 async function getResultSet(query) {
   if (!unsplashKey) {
     console.error("Missing UNSPLASH_ACCESS_KEY in .env");
@@ -112,10 +136,10 @@ async function getResultSet(query) {
 }
 
 /**
- * Pick a single Unsplash image for a (category, name) using a stable seed.
- * - `category`: coarse category key ("pizza", "burger", etc.)
- * - `seed`: a stable identifier (TripAdvisor `location_id` or name)
- * - `name`: full venue name (used for brand/cuisine detection)
+ * Fetch and cache Unsplash results for a query.
+ * - Uses Unsplash search API
+ * - Returns an array of image URLs (regular or small size)
+ * - Applies caching to avoid repeated API calls
  */
 export async function fetchUnsplashImageFor(category, seed, name = "") {
   const query = categoryToQuery(category, name);
