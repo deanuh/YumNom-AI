@@ -35,9 +35,6 @@ app.use(cors({
 	allowedHeaders: ["Content-Type", "Authorization"],
   }));
   
-  // Make sure Express responds to OPTIONS quickly
-app.use(cors({ origin: "http://localhost:3000", methods: ["GET","POST","PUT","DELETE","OPTIONS"], allowedHeaders: ["Content-Type","Authorization"] }));
-
 app.use(express.json());
 // added this to check delete account is actually working
 app.use((req, _res, next) => {
