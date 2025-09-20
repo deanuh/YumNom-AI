@@ -1,75 +1,173 @@
 // this file will be for the user to update their password
 // need to have auth0 started -> this will allow the user to update password thru firebase auth0
 
+// src/pages/ChangePassword.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
+} from "firebase/auth";
+// Make sure this points to your initialized auth instance
+import { auth } from "../../firebase/firebaseConfig"; // e.g., export const auth = getAuth(app)
 
-//import React, { useState } from "react";
-// import { updatePassword } from "firebase/auth";
-// import { auth } from "../../firebase/firebaseConfig"; //need to export auth from here (add to the .env if key is needed)
-// function ChangePassword() {
-//     const [newPassword, setNewPassword] = useState("");
-//     const [confirmPassword, setConfirmPassword] = useState("");
-//     const [message, setMessage] = useState("");
-  
-//     const handlePasswordUpdate = async () => {
-//       if (!auth.currentUser) {
-//         setMessage("⚠️ No user is currently logged in.");
-//         return;
-//       }
-  
-//       if (newPassword !== confirmPassword) {
-//         setMessage("Passwords do not match.");
-//         return;
-//       }
-  
-//       try {
-//         await updatePassword(auth.currentUser, newPassword);
-//         setMessage("Password updated successfully.");
-//         setNewPassword("");
-//         setConfirmPassword("");
-//       } catch (error) {
-//         console.error("Error updating password:", error.message);
-//         if (error.code === "auth/requires-recent-login") {
-//           setMessage("⚠️ Please re-authenticate to change your password.");
-//         } else {
-//           setMessage(`Failed to update password: ${error.message}`);
-//         }
-//       }
-//     };
-  
-//     return (
-//       <div style={{ padding: "2rem", maxWidth: "500px", margin: "0 auto" }}>
-//         <h2>Change Your Password</h2>
-  
-//         <input
-//           type="password"
-//           placeholder="New Password"
-//           value={newPassword}
-//           onChange={(e) => setNewPassword(e.target.value)}
-//           style={{ display: "block", marginBottom: "1rem", width: "100%" }}
-//         />
-  
-//         <input
-//           type="password"
-//           placeholder="Confirm New Password"
-//           value={confirmPassword}
-//           onChange={(e) => setConfirmPassword(e.target.value)}
-//           style={{ display: "block", marginBottom: "1rem", width: "100%" }}
-//         />
-  
-//         <button onClick={handlePasswordUpdate}>Update Password</button>
-//         {message && <p style={{ marginTop: "1rem" }}>{message}</p>}
-//       </div>
-//     );
-//   }
-  
-//   export default ChangePassword;
+const ChangePassword = () => {
+  const navigate = useNavigate();
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState({ type: "", text: "" });
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMsg({ type: "", text: "" });
 
-// place holder
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      return setMsg({ type: "error", text: "Please fill out all fields." });
+    }
+    if (newPassword !== confirmNewPassword) {
+      return setMsg({ type: "error", text: "New passwords do not match." });
+    }
+    if (newPassword.length < 6) {
+      return setMsg({
+        type: "error",
+        text: "New password must be at least 6 characters.",
+      });
+    }
+    if (currentPassword === newPassword) {
+      return setMsg({
+        type: "error",
+        text: "New password must be different from your current password.",
+      });
+    }
 
-function ChangePassword() {
-    return <div><h3>The page to change user password</h3>
-    <p>Here you will change your pasword</p></div>;
-  }
+    const user = auth.currentUser;
+    if (!user || !user.email) {
+      return setMsg({
+        type: "error",
+        text: "No authenticated user found. Please sign in again.",
+      });
+    }
+
+    setLoading(true);
+    try {
+      // Re-auth with current password
+      const cred = EmailAuthProvider.credential(user.email, currentPassword);
+      await reauthenticateWithCredential(user, cred);
+
+      // Update to new password
+      await updatePassword(user, newPassword);
+
+      setMsg({ type: "success", text: "Password updated successfully." });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+    } catch (err) {
+      let friendly = "Something went wrong. Please try again.";
+      if (err.code === "auth/wrong-password") friendly = "Current password is incorrect.";
+      if (err.code === "auth/weak-password") friendly = "New password is too weak.";
+      if (err.code === "auth/too-many-requests")
+        friendly = "Too many attempts. Please wait a bit, then try again.";
+      if (err.code === "auth/requires-recent-login")
+        friendly = "For security, please sign in again and retry.";
+      setMsg({ type: "error", text: friendly });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="Set-settings-body">
+      <button className="report-issue-back" onClick={() => navigate(-1)}> ← Back to Settings </button>
+
+      <div className="Set-settings-card">
+
+        <h2 className="Set-settings-title">Security</h2>
+
+        <section className="Set-settings-section">
+          <h3 className="Set-section-heading">Change Password</h3>
+
+          <form onSubmit={handleSubmit}>
+            <div className="report-issue-field">
+              <label className="report-issue-label" htmlFor="currentPassword">
+                Current password
+              </label>
+              <input
+                id="currentPassword"
+                type="password"
+                className="lp-input"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+            </div>
+
+            <div className="report-issue-field">
+              <label className="report-issue-label" htmlFor="newPassword">
+                New password
+              </label>
+              <input
+                id="newPassword"
+                type="password"
+                className="lp-input"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                autoComplete="new-password"
+              />
+            </div>
+
+            <div className="report-issue-field">
+              <label className="report-issue-label" htmlFor="confirmNewPassword">
+                Confirm new password
+              </label>
+              <input
+                id="confirmNewPassword"
+                type="password"
+                className="lp-input"
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                autoComplete="new-password"
+              />
+            </div>
+
+            {msg.text ? (
+              <div
+                className={`report-issue-status ${
+                  msg.type === "error" ? "error" : "success"
+                }`}
+                role="alert"
+                style={{ marginTop: "0.5rem" }}
+              >
+                {msg.text}
+              </div>
+            ) : null}
+
+            <div className="report-issue-actions">
+              <button
+                className="report-issue-btn-primary"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Updating..." : "Update Password"}
+              </button>
+              {/* Optional cancel/back action could use your Set-back-button style */}
+              {/* <button type="button" className="Set-back-button" onClick={() => navigate(-1)}>Cancel</button> */}
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  );
+};
+
 export default ChangePassword;
+
+
+// function ChangePassword() {
+//     return <div><h3>The page to change user password</h3>
+//     <p>Here you will change your pasword</p></div>;
+//   }
+// export default ChangePassword;
   

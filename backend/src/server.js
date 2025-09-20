@@ -15,6 +15,8 @@ import {
   createRecommendation, removeRecommendation,
   createVote, removeVote
 } from './api/firestore.js';
+import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
+import usersRouter from "./api/deleteUser.js";
 import { addGroup, getGroup } from './firebase/dbFunctions.js'
 import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
@@ -30,6 +32,9 @@ app.use(express.json());
 
 app.use('/api/ai', aiRoutes);
 
+// #################### WEBSOCKET SERVER ###############################
+// This is a seperate server used with Socket.IO in order to start the real-time voting
+// sessions. All real-time voting / socket-related code and will be moved later.
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -154,6 +159,12 @@ io.on("connection", (socket) => {
     });
 });
 
+// ############################################################
+
+
+// ############# ROUTERS ######################################
+// These are all the routers available on the server. These will be moved
+// to their own file via a router export at a later time.
 app.get('/restaurant', getRestaurantTripAdvisor);
 app.get('/food', getFoodFatSecret);
 app.get('/city', getUserCityOpenCage);
@@ -178,11 +189,30 @@ app.delete("/recommendations/:recommendationId", authMiddleware, removeRecommend
 app.post("/votes", authMiddleware, createVote);
 app.delete("/votes/:voteId", authMiddleware, removeVote);
 
+// report Issue   NEW 
+app.use("/api", reportIssueRouter);
 
+// delete account NEW
+app.use("/api", usersRouter);
+
+// THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING
+// // quick request logger
+// app.use((req, _res, next) => {
+//   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+//   next();
+// });
+// // checks
+// app.get("/api/ping", (_req, res) => res.json({ ok: true }));
+// app.post("/api/echo", express.json(), (req, res) => res.json({ ok: true, body: req.body }));
+
+// ###################################################################
+
+// All backend services available via this port
 app.listen(5001, () => {
 	console.log('listening on port 5001');
 });
 
+// Socket.IO server via this port.
 server.listen(7001, () => {
   console.log('Server is running on port 7001');
 });

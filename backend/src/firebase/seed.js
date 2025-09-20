@@ -4,6 +4,9 @@ import admin from "firebase-admin";
 
 const { FieldValue, Timestamp } = admin.firestore;
 
+// seeds data for empty database. should be used with the emulator if you need to see the database structure.
+// run using node seed.js while the backend and firestore emulator are both running.
+
 async function seed() {
   try {
     // -------------------- USERS -------------------- //

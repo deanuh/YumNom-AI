@@ -1,3 +1,4 @@
+// run using node testDbFunctions.js
 import "dotenv/config";
 import {
   addUser,

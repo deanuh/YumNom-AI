@@ -80,8 +80,12 @@ const Sidebar = () => {
         <p>Start A Group Party</p>
         <button className="invite-btn" onClick={() => navigate("/group-meal")}>Get Started</button>
       </div>
-
-      <p className="report-issue">Report an issue</p>
+  
+      <Link 
+        to="/ReportIssue" 
+        className={`report-issue ${location.pathname === "/ReportIssue" ? "active" : ""}`}>
+        Report an issue
+      </Link>
     </div>
   );
 };

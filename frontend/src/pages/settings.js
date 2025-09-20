@@ -25,9 +25,9 @@ function Settings() {
           <h3 className="Set-section-heading">General Settings</h3>
           <ul className="Set-settings-list">
             <li><Link to="/changePass">Change Password</Link></li>
-            <li><Link to="/emailSettings">Email</Link></li>
+            <li><Link to="/emailSettings">Change Email</Link></li>
             <li><Link to="/locationPref">Location Preferences</Link></li>
-            <li><Link to="/notifications">Notifications</Link></li>
+            {/* <li><Link to="/notifications">Notifications</Link></li> */}
             <li><Link to="#">Display</Link></li>
           </ul>
         </div>
@@ -44,7 +44,7 @@ function Settings() {
           <h3 className="Set-section-heading">Account</h3>
           <ul className="Set-settings-list">
             <li><Link to="/help">Help</Link></li>
-            <li><Link to="#">Report Abuse</Link></li>
+            <li><Link to="/ReportIssue">Report An Issue</Link></li>
             <li><Link to="/deleteAccount">Delete Account</Link></li>
             <li><Link to="/login" onClick={handleLogOut}>Log out</Link></li>
           </ul>

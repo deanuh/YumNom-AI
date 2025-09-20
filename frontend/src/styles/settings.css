@@ -1,6 +1,6 @@
 .Set-settings-body {
     background-color: rgb(251, 250, 255);
-    display: flex;
+    display: block;
     justify-content: center;
     flex-direction: column;
     margin-top: 0rem;
@@ -104,7 +104,441 @@
   }
 
 
+.Set-help li {
+  background-color: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 0.3rem;
+  padding: 1rem;
+  /* transition: 0.2s;  idk what element should be inside bc its supposed to change background color */
+  transition: background 0.2s;
+  display: block;
+  justify-content: space-between;
+  align-items: center;
+  border: 1.5px solid #190352
+}
 
-  
 
+/* Prevent hover effect once opened */
+.Set-help li.open:hover {
+  background-color: #fff; /* same as default */
+}
+
+.Set-back-button {
+  display: inline-block;   /* prevents full-width stretch */
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #190352;
+  background: #fff;
+  border: 1.5px solid #3d2074;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.Set-back-button:hover {
+  background-color: #b9a6e0;
+}
+
+/* FAQ styles */
+.faq-item {
+  background-color: #fff;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+  border: 1.5px solid #190352;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.faq-item:hover {
+  background-color: #b9a6e0;
+}
+
+/* Remove hover for opened FAQ */
+.faq-item.open:hover {
+  background-color: #fff;
+}
+
+/* Question row */
+.faq-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1 rem;
+  font-weight: 450;
+  color: #190352;
+}
+
+/* Answer */
+.faq-answer {
+  margin-top: 0.75rem;
+  color: #333;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Arrow rotation */
+.faq-arrow {
+  transition: transform 0.2s;
+}
+.faq-arrow.rotated {
+  transform: rotate(90deg);
+}
   /* THIS IS PLACE HOLDER FOR THE POPUP CSS --> transport to AI rec once done */
+
+
+/*THIS IS FOR THE TERMS>JS PAGE*/
+/* Text-focused layout for the Terms page */
+.terms-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.terms-container h1 {
+  font-size: 2rem;
+  color: #190352;
+  margin: 0.5rem 0 0.25rem;
+}
+
+.terms-container .muted {
+  color: #57437f;
+  margin-bottom: 1.25rem;
+}
+
+.terms-container h2 {
+  font-size: 1.2rem;
+  color: #190352;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.terms-container p,
+.terms-container li {
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: #242424;
+}
+
+.terms-container ul {
+  padding-left: 1.1rem;
+  margin-top: 0.25rem;
+}
+
+/*THIS IS FOR THE PROVACY POLISYY*/
+/* Privacy Policy page layout */
+.privacy-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.privacy-container h1 {
+  font-size: 2rem;
+  color: #190352;
+  margin: 0.5rem 0 0.25rem;
+}
+
+.privacy-container .muted {
+  color: #57437f;
+  margin-bottom: 1.25rem;
+}
+
+.privacy-container h2 {
+  font-size: 1.2rem;
+  color: #190352;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.privacy-container p,
+.privacy-container li {
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: #242424;
+}
+
+.privacy-container ul {
+  padding-left: 1.1rem;
+  margin-top: 0.25rem;
+}
+
+
+/*THIS IS FOR LOCATION PREFERENCES*/
+/* src/styles/locationPref.css */
+
+.lp-container {
+  max-width: 900px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.lp-back { margin: 1rem 0 0; }
+
+.lp-title {
+  color: #190352;
+  margin: 0.5rem 0 0.25rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.lp-subtitle { color: #57437f; margin-bottom: 1rem; }
+
+.lp-section { margin-top: 1.25rem; padding-top: 0.25rem; }
+.lp-h2 { font-size: 1.1rem; color: #190352; margin: 0.5rem 0 0.5rem; font-weight: 700; }
+.lp-action { margin-left: 0; margin-top: 0.25rem; }
+.lp-status { margin-top: 0.5rem; color: #242424; }
+
+.lp-instructions { margin-top: 0.75rem; font-size: 0.95rem; line-height: 1.5; }
+.lp-instructions ul { padding-left: 1.1rem; margin-top: 0.25rem; }
+
+.lp-preview { margin-top: 0.75rem; }
+
+.lp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  max-width: 520px;
+}
+
+.lp-input {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1.5px solid #3d2074;
+  outline: none;
+}
+.lp-input:focus { box-shadow: 0 0 0 3px rgba(61, 32, 116, 0.15); }
+
+.lp-footnote { margin-top: 0.5rem; color: #57437f; font-size: 0.95rem; }
+
+/* Opt-out row */
+.lp-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid rgba(25,3,82,0.08);
+  border-bottom: 1px solid rgba(25,3,82,0.08);
+}
+.lp-row-text { display: flex; flex-direction: column; }
+.lp-row-title { font-weight: 700; color: #190352; }
+.lp-row-sub { color: #57437f; font-size: 0.95rem; }
+
+/* iOS-like switch */
+.lp-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+}
+.lp-switch input { opacity: 0; width: 0; height: 0; }
+.lp-slider {
+  position: absolute; cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #bbb; transition: .2s; border-radius: 26px;
+}
+.lp-slider:before {
+  position: absolute; content: "";
+  height: 20px; width: 20px; left: 3px; bottom: 3px;
+  background-color: white; transition: .2s; border-radius: 50%;
+}
+.lp-switch input:checked + .lp-slider { background-color: #3d2074; }
+.lp-switch input:checked + .lp-slider:before { transform: translateX(20px); }
+
+/* Disabled detect section when opted out */
+.lp-disabled { opacity: 0.6; pointer-events: none; }
+
+
+
+/* REPORT ISSUE PAGE CSS */
+/* Report Issue Page Styles */
+.report-issue-page {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background-color: rgb(251, 250, 255);
+}
+
+.report-issue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.report-issue-back {
+  display: inline-block;
+  margin: 0.5rem 0;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #190352;
+  background: #fff;
+  border: 1.5px solid #3d2074;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.report-issue-back:hover { background-color: #b9a6e0; }
+
+.report-issue-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #190352;
+  margin: 0 auto;
+}
+
+.report-issue-intro {
+  color: #57437f;
+  margin-bottom: 1.25rem;
+}
+
+.report-issue-form {
+  background-color: #D0C9EB;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1.5px solid #3d2074;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.report-issue-section {
+  margin-bottom: 2rem;
+}
+
+.report-issue-section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #190352;
+}
+
+.report-issue-field {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-issue-label {
+  font-weight: 600;
+  color: #190352;
+  margin-bottom: 0.4rem;
+}
+
+.report-issue-input,
+.report-issue-textarea,
+.report-issue-select {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1.5px solid #3d2074;
+  font-size: 1rem;
+  outline: none;
+}
+
+.report-issue-input:focus,
+.report-issue-textarea:focus,
+.report-issue-select:focus {
+  box-shadow: 0 0 0 3px rgba(61, 32, 116, 0.15);
+}
+
+.report-issue-textarea {
+  resize: vertical;
+}
+
+.report-issue-scale,
+.report-issue-rating {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  color: #190352;
+}
+
+.report-issue-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.report-issue-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #57437f;
+  margin-top: 0.25rem;
+}
+
+.report-issue-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #190352;
+}
+
+.report-issue-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.report-issue-btn-primary {
+  background: #190352;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.report-issue-btn-primary:hover { background-color: #3d2074; }
+.report-issue-btn-primary[disabled] { opacity: 0.65; cursor: not-allowed; }
+
+.report-issue-btn-secondary {
+  background: #fff;
+  color: #190352;
+  padding: 0.6rem 1.2rem;
+  border: 1.5px solid #3d2074;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.report-issue-btn-secondary:hover { background-color: #b9a6e0; }
+
+.report-issue-status {
+  font-size: 0.95rem;
+}
+.report-issue-status.success { color: #1b5e20; }
+.report-issue-status.error { color: #b71c1c; }
+
+
+
+/*THIS IS FOR DELETE ACCOUNT*/
+.setting-danger-zone { border-top: 1px solid #eee; padding-top: 16px; }
+.setting-heading { font-size: 1.5rem; margin-bottom: 8px; }
+.setting-description { margin-bottom: 16px; color: #444; }
+
+.setting-btn { padding: 10px 14px; border-radius: 8px; border: none; cursor: pointer; }
+.setting-btn-secondary { background: #e6e6e6; }
+.setting-btn-danger { background: #c0392b; color: #fff; }
+.setting-btn-disabled { opacity: 0.6; cursor: not-allowed; }
+
+.setting-error { margin-top: 8px; color: #b00020; }
+
+.setting-modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.setting-modal-card {
+  background: #fff; width: 100%; max-width: 520px; border-radius: 12px;
+  padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.setting-modal-title { margin: 0 0 8px; }
+.setting-modal-text { margin: 0 0 12px; line-height: 1.5; }
+.setting-checkbox-row { display: flex; gap: 10px; align-items: center; margin: 12px 0; }
+.setting-confirm-input { display: grid; gap: 6px; margin: 12px 0 20px; }
+.setting-modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
