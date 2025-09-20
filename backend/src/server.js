@@ -10,24 +10,21 @@ import { authMiddleware } from './auth/auth.js';
 import {
   createUser, removeUser,
   createGroup, removeGroup,
-  createFavorite, removeFavorite,
+  createFavorite, removeFavorite, listFavorites,
   createRecommendation, removeRecommendation,
-  createVote, removeVote
+  createVote, removeVote,
 } from './api/firestore.js';
-import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
-import usersRouter from "./api/deleteUser.js";
 import { addGroup, getGroup } from './firebase/dbFunctions.js'
 import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
 
 let app = express();
-
+app.use(express.json());
 let accessToken = null;
 let expirationDate = Date.now();
 
 //allow requests from development origin
 app.use(cors());
-app.use(express.json());
 
 // #################### WEBSOCKET SERVER ###############################
 // This is a seperate server used with Socket.IO in order to start the real-time voting
@@ -176,6 +173,7 @@ app.delete("/groups", authMiddleware, removeGroup);
 
 // Favorites
 app.post("/favorites", authMiddleware, createFavorite);
+app.get("/favorites", authMiddleware, listFavorites);            
 app.delete("/favorites/:favoriteId", authMiddleware, removeFavorite);
 
 // Recommendations
@@ -186,21 +184,6 @@ app.delete("/recommendations/:recommendationId", authMiddleware, removeRecommend
 app.post("/votes", authMiddleware, createVote);
 app.delete("/votes/:voteId", authMiddleware, removeVote);
 
-// report Issue   NEW 
-app.use("/api", reportIssueRouter);
-
-// delete account NEW
-app.use("/api", usersRouter);
-
-// THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING
-// // quick request logger
-// app.use((req, _res, next) => {
-//   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
-//   next();
-// });
-// // checks
-// app.get("/api/ping", (_req, res) => res.json({ ok: true }));
-// app.post("/api/echo", express.json(), (req, res) => res.json({ ok: true, body: req.body }));
 
 // ###################################################################
 

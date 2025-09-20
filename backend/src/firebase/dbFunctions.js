@@ -212,7 +212,12 @@ export async function addFavorite(favoriteData, userId) {
     const userDoc = await userRef.get();
     if (!userDoc.exists) throw new Error("User does not exist.");
 
-    const favRef = await userRef.collection("favorites").add(favoriteData);
+    const favRef = await userRef.collection("favorites").add({
+      ...favoriteData,
+      created_at: FieldValue.serverTimestamp(),
+      updated_at: FieldValue.serverTimestamp(),
+    });
+
     return favRef.id;
   } catch (err) {
     console.error(`addFavorite failed: ${err.message}`);
@@ -222,7 +227,6 @@ export async function addFavorite(favoriteData, userId) {
 
 export async function deleteFavorite(userId, favoriteId) {
   try {
-
     const userRef = db.collection("User").doc(userId);
     const userDoc = await userRef.get();
     if (!userDoc.exists) throw new Error("User does not exist.");
@@ -232,12 +236,44 @@ export async function deleteFavorite(userId, favoriteId) {
     if (!favDoc.exists) throw new Error("Favorite does not exist.");
 
     await favRef.delete();
+    return true;
   } catch (err) {
     console.error(`deleteFavorite failed: ${err.message}`);
     throw new Error(`deleteFavorite failed: ${err.message}`);
   }
 }
 
+export async function getFavorites(
+  userId,
+  { type, limit = 20, cursorDocId } = {}
+) {
+  try {
+    const userRef = db.collection("User").doc(userId);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) throw new Error("User does not exist.");
+
+    let q = userRef.collection("favorites").orderBy("created_at", "desc");
+
+    if (type) q = q.where("type", "==", type);
+    const capped = Math.min(limit || 20, 100);
+    q = q.limit(capped);
+
+    if (cursorDocId) {
+      const cursorSnap = await userRef.collection("favorites").doc(cursorDocId).get();
+      if (!cursorSnap.exists) throw new Error("Invalid cursor.");
+      q = q.startAfter(cursorSnap);
+    }
+
+    const snap = await q.get();
+    const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const nextCursor = snap.size === capped ? snap.docs[snap.docs.length - 1].id : null;
+
+    return { items, nextCursor };
+  } catch (err) {
+    console.error(`getFavorites failed: ${err.message}`);
+    throw new Error(`getFavorites failed: ${err.message}`);
+  }
+}
 // -------------------- AI RECOMMENDATIONS -------------------- //
 export async function addRecommendation(recommendationData, userId) {
   try {

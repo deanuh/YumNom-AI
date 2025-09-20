@@ -21,7 +21,6 @@ function Login() {
     } catch (firebaseError) {
       console.error("Firebase login error:", firebaseError.message);
       
-      // CHANGE: Set a user-friendly, generic error message here
       setError("Invalid email or password. Please try again.");
     }
   };
