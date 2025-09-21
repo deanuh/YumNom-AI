@@ -204,6 +204,10 @@ export async function getGroup(userId) {
 	}
 }
 // -------------------- FAVORITES -------------------- //
+
+// Add a new favorite for the authenticated User
+// Validates required fields coming from favoriteData
+// Verifies that the parent user doc exists
 export async function addFavorite(favoriteData, userId) {
   try {
     validateFavoriteData(favoriteData);
@@ -212,6 +216,7 @@ export async function addFavorite(favoriteData, userId) {
     const userDoc = await userRef.get();
     if (!userDoc.exists) throw new Error("User does not exist.");
 
+    // Create a new favorite doc with server-side timestamps
     const favRef = await userRef.collection("favorites").add({
       ...favoriteData,
       created_at: FieldValue.serverTimestamp(),
@@ -225,6 +230,10 @@ export async function addFavorite(favoriteData, userId) {
   }
 }
 
+// Delete an Existing Favorite for the authenticated User
+// Checks that both User and Favorite documents exist before deletion
+// Looks up specific favorite document under that user
+// Deletes the favorite document if found
 export async function deleteFavorite(userId, favoriteId) {
   try {
     const userRef = db.collection("User").doc(userId);
@@ -243,6 +252,12 @@ export async function deleteFavorite(userId, favoriteId) {
   }
 }
 
+// List Favorites for the authenticated User with optional filtering and pagination
+// Confirms the user doc exists
+// Builds a firestore query on the user's favorites subcollection
+// Applies an optional type filter 
+// Enforces a safe maximum limit on page size
+// Supports cursor-based pagination by accepting a document id and starting after it
 export async function getFavorites(
   userId,
   { type, limit = 20, cursorDocId } = {}
@@ -252,18 +267,23 @@ export async function getFavorites(
     const userDoc = await userRef.get();
     if (!userDoc.exists) throw new Error("User does not exist.");
 
+    // Base query: user's favorites, newest first
     let q = userRef.collection("favorites").orderBy("created_at", "desc");
 
+    // Optional: Users favorites, newest first
     if (type) q = q.where("type", "==", type);
+    // Enforece a max page size to keep queries performant
     const capped = Math.min(limit || 20, 100);
     q = q.limit(capped);
 
+    // Cursor-based pagination: start after a known document id if provided
     if (cursorDocId) {
       const cursorSnap = await userRef.collection("favorites").doc(cursorDocId).get();
       if (!cursorSnap.exists) throw new Error("Invalid cursor.");
       q = q.startAfter(cursorSnap);
     }
 
+    // Execute query and shape the response
     const snap = await q.get();
     const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
     const nextCursor = snap.size === capped ? snap.docs[snap.docs.length - 1].id : null;

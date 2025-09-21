@@ -1,3 +1,7 @@
+// Allow User to request a password reset email
+// Collects the user's email and sends a reset link using Firebase Auth
+// On success, informs the user to check their inbox
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
@@ -8,13 +12,20 @@ function ForgotPassword() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  // Form submission handler for sending a password reset email
+  // Uses Firebase Auth to send the reset email to the provided address
+  // On success, sets a success message
+  // On failure, sets an error message to be displayed to the user
+  // Updates UI with success or error feedback
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
     setError('');
 
+    // Grabs the auth instance tied to our initialized Firebase app
     const auth = getAuth();
     try {
+      // Sends a reset link to the User's email address
       await sendPasswordResetEmail(auth, email);
       setMessage('Password reset email sent! Please check your inbox.');
     } catch (firebaseError) {
