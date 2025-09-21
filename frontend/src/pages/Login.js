@@ -11,11 +11,16 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState('');
 
+  // Form submission handler for email/password login
+  // Calls Firebase auth to sign the user in with auth, email, and password
+  // On success, navigates to the dashboard
+  // on failiure, sets an error message to be displayed to the user
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
 
     try {
+      // Firebase Auth performs email/password log in and returns a Promise<UserCredential>
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/dashboard');
     } catch (firebaseError) {

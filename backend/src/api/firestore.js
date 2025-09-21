@@ -69,6 +69,12 @@ export async function removeGroup(req, res) {
 }
 
 // ------------------- FAVORITES ------------------- //
+
+// Add a new favorite for the authenitcated User
+// Reads the authed users UID from req.uid (set by authMiddleware)
+// Validates required fields coming from the request body
+// Calls addFavorite from dbFunctions.js to add the favorite to Firestore
+// Returns 201 status with favoriteId on success, or 500 status with error message on failure
 export async function createFavorite(req, res) {
   try {
     const userId = req.uid; 
@@ -83,6 +89,10 @@ export async function createFavorite(req, res) {
   }
 }
 
+// Delete an Existing Favorite for the authenticated User
+// Reads the authed user UID from req.uid (set by authMiddleware)
+// Calls data layer to remove the document at User's favorites subcollection
+// Returns 200 status with success message on success, or 500 status with error message on failure
 export async function removeFavorite(req, res) {
   try {
     const userId = req.uid; // set by authMiddleware
@@ -98,6 +108,13 @@ export async function removeFavorite(req, res) {
   }
 }
 
+// List Favorites for the authenticated User with optional filtering and pagination
+// Requires req.uid to identify the user (set by authMiddleware)
+// Supports optional filtereing by type
+// Supports pagination via limit and cursor query parameters
+// Caps the page size to a safe maximum 
+// Calls getFavorites from dbFunctions.js to fetch the data from Firestore
+// Returns 200 status with list of favorites and nextCursor on success, or 500 status with error message on failure
 export async function listFavorites(req, res) {
   try {
     const userId = req.uid; // set by authMiddleware
