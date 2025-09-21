@@ -16,7 +16,7 @@ import {
 } from './api/firestore.js';
 import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
 import usersRouter from "./api/deleteUser.js";
-import { addGroup, getGroup } from './firebase/dbFunctions.js'
+import { addGroup, deleteGroup, getGroupFromUserId, getGroupFromGroupId } from './firebase/dbFunctions.js'
 import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
 
@@ -41,8 +41,7 @@ const io = new Server(server, {
     },
   });
 
-const groupTimers = {};
-const groupState = {};
+const groupInfo = {};
 
 io.use(async (socket, next) => {
   try {
@@ -57,17 +56,38 @@ io.use(async (socket, next) => {
 });
 
 function startPhase(groupId, duration, phaseName) {
-	if (!groupTimers[groupId]) groupTimers[groupId] = {};
+	if (!groupInfo[groupId]) {
+		groupInfo[groupId] = {
+			timer: {
+				main: null,
+				endsAt: null,
+			},
+			state: "",
+			votes: {
+				polling: {},
+				results: {}
+			},
+			choices: ["A", "B", "C", "D"] //placeholder debug values
+		};
+	}
 
 	const waitTime = 10;
 	const voteTime = 15;
-	groupState[groupId] = phaseName;
-	groupTimers[groupId].endsAt = Date.now() + duration * 1000;
+	groupInfo[groupId].state = phaseName;
+	groupInfo[groupId].timer.endsAt = Date.now() + duration * 1000;
 
-	io.to(groupId).emit("change_phase", { endsAt: groupTimers[groupId].endsAt, phaseName: groupState[groupId]});
+	io.to(groupId).emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state});
 
-	groupTimers[groupId].main = setTimeout(() => {
-		delete groupTimers[groupId].main;
+	groupInfo[groupId].timer.main = setTimeout(() => {
+		const tally = Object.values(groupInfo[groupId].votes.polling).reduce((acc, vote) => {
+			acc[vote] = ( acc[vote] || 0 ) + 1;
+			return acc
+		}, {});
+		const sortedTally = Object.entries(tally).sort((a, b) => b[1] - a[1]);
+		groupInfo[groupId].votes.results = sortedTally;
+		
+		groupInfo[groupId].votes.polling = {}
+		delete groupInfo[groupId].timer.main;
 
 		let nextPhase;
 		switch (phaseName) {
@@ -88,19 +108,38 @@ function startPhase(groupId, duration, phaseName) {
 				nextPhase = null;
 		}
 
-		groupState[groupId] = "waiting_phase";
-		groupTimers[groupId].endsAt = Date.now() + waitTime * 1000;
-		io.to(groupId).emit("change_phase", { endsAt: groupTimers[groupId].endsAt, phaseName: groupState[groupId]});
-		groupTimers[groupId].wait = setTimeout(() => {
-			delete groupTimers[groupId].wait;
+		groupInfo[groupId].state = "waiting_phase";
+		groupInfo[groupId].timer.endsAt = Date.now() + waitTime * 1000;
+		io.to(groupId).emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state});
+		groupInfo[groupId].timer.wait = setTimeout(() => {
+			const topTwo = sortedTally.slice(0, 2)
+			const topTwoNames = topTwo.map(([choice, count]) => choice);
+			const topTwoTally = topTwo.map(([choice, count]) => count);			
+			if (topTwoTally[0] === topTwoTally[1]) {
+				groupInfo[groupId].choices = topTwoNames;
+			} else {
+				groupInfo[groupId].choices = [topTwoNames[0]];
+			}
+			groupInfo[groupId].votes.results = {}
+			delete groupInfo[groupId].timer.wait;
 			if (nextPhase) {
+				if ( (nextPhase === "round_two" || nextPhase === "tiebreaker" ) && groupInfo[groupId].choices.length > 1) {
+					nextPhase = "end_phase"
+				}
 				startPhase(groupId,  voteTime, nextPhase);
 			} else {
-				delete groupTimers[groupId];
-				groupState[groupId] = "end_phase";
-				io.to(groupId).emit("end_phase");
-				return;
+				delete groupInfo[groupId].timer;
+				groupInfo[groupId].state = "end_phase";
+				getGroupFromGroupId(groupId)
+				.then(groupData => {	
+					return deleteGroup(groupData.owner_id)
+				})
+				.catch(err => {
+					console.error(err);
+				});
 			}
+			io.to(groupId).emit("end_phase");
+			return;
 		}, waitTime * 1000); //  (duration) ms * 1000 = (duration) sec
 
 	}, duration * 1000); //  (duration) ms * 1000 = (duration) sec
@@ -109,13 +148,17 @@ function startPhase(groupId, duration, phaseName) {
 
 async function joinGroup(userId) {
       try {
-				let groupData = await getGroup(userId);
+				let groupData = await getGroupFromUserId(userId);
 				console.log(`groupData: ${JSON.stringify(groupData)}`);
 				let createdGroup = false;
 				//grab groupId from existing/new group.
 				let groupId;
 				if (groupData) {
 					groupId = groupData.id;
+					if (groupData.session_expires_at.toDate() < new Date()) {
+						groupId = await addGroup(userId)
+						createdGroup = true;
+					};
 				} else {
 					groupId = await addGroup(userId);
 					createdGroup = true;
@@ -141,18 +184,25 @@ io.on("connection", (socket) => {
 				socket.groupId = groupId;
         socket.join(socket.groupId);
         socket.broadcast.to(groupId).emit("joined_room", socket.uid);
-				socket.emit("change_phase", { endsAt: groupTimers[groupId].endsAt, phaseName: groupState[groupId]});
+				socket.emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state});
       } catch (err) {
         socket.emit("join_error", { message: err.message });
       }
     });
 
-    socket.on("send_message", ({ message }) => {
+    socket.on("send_vote", ( vote ) => {
 			if (!socket.groupId) return socket.emit("join_error", { message: "User not in room."});
-      io.to(socket.groupId).emit("receive_message", {
-        user: socket.uid,
-        message,
-      });
+			if (
+				groupInfo[socket.groupId].state ==  "round_one" || 
+				groupInfo[socket.groupId].state ==  "round_two" || 
+				groupInfo[socket.groupId].state ==  "tiebreaker" 
+			) {
+				groupInfo[socket.groupId].votes.polling[socket.uid] = vote
+      	io.to(socket.groupId).emit("receive_vote", {
+      	  user: socket.uid,
+      	  vote,
+      	});
+			}
     });
 });
 
