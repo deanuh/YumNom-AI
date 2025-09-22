@@ -20,7 +20,8 @@ async function authMiddleware(req, res, next) {
     const decoded = await admin.auth().verifyIdToken(token);
     req.user = decoded; // { uid, email, ... }
     next();
-  } catch (e) {
+  } 
+  catch (e) {
     return res.status(401).json({ error: "Invalid token" });
   }
 }
@@ -31,7 +32,7 @@ async function authMiddleware(req, res, next) {
  * - firestore cleanup (if user doc exists)  *** find a way to add the user to firestore when they sign up
  * - delete the Auth user
  */
-router.delete("/users/:userId", authMiddleware, async (req, res) => {
+router.delete("/users/:userId", authMiddleware, async (req, res) => {  // deleting them
   const { userId } = req.params;
 
   if (req.user.uid !== userId) {
@@ -42,7 +43,8 @@ router.delete("/users/:userId", authMiddleware, async (req, res) => {
     // trying firestore clean up if the user is in there, if not then continue
     try {
       await deleteUserDoc(userId);
-    } catch (e) {
+    } 
+    catch (e) {
       const msg = String(e?.message || e);
       if (!msg.includes("User does not exist")) throw e;
     }

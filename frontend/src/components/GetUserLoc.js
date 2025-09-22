@@ -96,13 +96,13 @@ const base_url = process.env.REACT_APP_BACKEND_URL;
 export const getUserCity = async () => {
   // get information of the user's preference of the location (respect if they have it on or off)
   try {
-    const optOut = JSON.parse(localStorage.getItem("yumNomLocationOptOut") || "false");
+    const optOut = JSON.parse(localStorage.getItem("yumNomLocationOptOut") || "false");  // gets whether the location is on or off from locationPref local storage!
     if (optOut) {
-      const e = new Error("Location sharing is OFF");
+      const e = new Error("Location sharing is OFF");  
       e.code = "GEO_OPT_OUT";
       throw e;
     }
-  } catch { /* ignore */ }
+  } catch { /* ignore */ }  // this is if location is on, then go on with the rest of the code to get location
 
   return new Promise((resolve, reject) => {
     if (!("geolocation" in navigator)) {
@@ -111,7 +111,7 @@ export const getUserCity = async () => {
       return reject(e);
     }
 
-    navigator.geolocation.getCurrentPosition(
+    navigator.geolocation.getCurrentPosition(  // getting location with geolocation
       async ({ coords }) => {
         const { latitude, longitude } = coords;
 

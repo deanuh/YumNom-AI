@@ -42,21 +42,22 @@ function RestaurantSearch() {
   const [longLat, setlongLat] = useState(null);
   const [location, setLocation] = useState("Detecting...");
   const [searchResults, setSearchResults] = useState(null);
-  // NEW: location sharing toggle (default ON, persisted)
+  //------------ NEW: location sharing toggle (default ON, persisted) ----------
   const [isSharing, setIsSharing] = useState(() => {
       try {
         const stored = localStorage.getItem("yumNomLocationSharing");
         if (stored !== null) return JSON.parse(stored);
         const legacy = localStorage.getItem("yumNomLocationOptOut");
         return legacy !== null ? !JSON.parse(legacy) : true;
-      } catch { return true; }
+      } 
+      catch { return true; }
     });
     useEffect(() => {
       const onStorage = (e) => {
-        if (e.key === "yumNomLocationSharing" && e.newValue != null) {
+        if (e.key === "yumNomLocationSharing" && e.newValue != null) {  // is location on and there is a location - display info
           setIsSharing(JSON.parse(e.newValue));
         }
-        if (e.key === "yumNomLocationOptOut" && e.newValue != null) {
+        if (e.key === "yumNomLocationOptOut" && e.newValue != null) {  // sharing is off, do not share location info
           setIsSharing(!JSON.parse(e.newValue));
         }
       };

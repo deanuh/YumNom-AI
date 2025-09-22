@@ -24,7 +24,7 @@ export default function DeleteAccount({ apiBaseUrl = "/api", currentUser }) {
   );
 
 
-  const canConfirm = agree;
+  const canConfirm = agree;  // the user confirmation - go ahead and delete the account
 
   async function handleDelete() {
     setErrMsg("");
@@ -36,6 +36,7 @@ export default function DeleteAccount({ apiBaseUrl = "/api", currentUser }) {
   
     setLoading(true);
     try {
+      // WORKS WITH AUTH
       // 1. Get firebase ID token for authorization header
       const auth = getAuth();
       const token = await auth.currentUser.getIdToken();
@@ -44,7 +45,7 @@ export default function DeleteAccount({ apiBaseUrl = "/api", currentUser }) {
       const API_BASE = "http://localhost:5001/api";
       const url = `http://127.0.0.1:5001/api/users/${encodeURIComponent(userId)}`;
   
-      const res = await fetch(url, {  // sending delete method to the router for the api
+      const res = await fetch(url, {  // sending delete method to the router for the api and using auth bearer helps with securing user deletion request
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -58,7 +59,7 @@ export default function DeleteAccount({ apiBaseUrl = "/api", currentUser }) {
         throw new Error(body?.error || `Request failed (${res.status})`);
       }
   
-      // 3. Clean up local state and redirect - YAY ACCOUNT DELETED
+      // 3. clean up local state and redirect - YAY ACCOUNT DELETED
       localStorage.clear();
       navigate("/login", { replace: true });
     } 
