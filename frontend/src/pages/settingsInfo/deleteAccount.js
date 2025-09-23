@@ -43,7 +43,7 @@ export default function DeleteAccount({ apiBaseUrl = "/api", currentUser }) {
   
       // 2. Call backend directly on port 5001  (set it like this bc of earlier problems with backend not responding!!)
       const API_BASE = "http://localhost:5001/api";
-      const url = `http://127.0.0.1:5001/api/users/${encodeURIComponent(userId)}`;
+      const url = `http://127.0.0.1:5001/api/users/${encodeURIComponent(userId)}`;  // TRY WITHOUT 'API' IN THE URL
   
       const res = await fetch(url, {  // sending delete method to the router for the api and using auth bearer helps with securing user deletion request
         method: "DELETE",
