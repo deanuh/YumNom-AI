@@ -15,14 +15,23 @@ function SignUp() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  // Handles form submission for signing up a new user
+  // Creates a new Firebase auth user with email/password credentials
+  // Retrieves a Json web token (JWT) from the signed up user
+  // Calls createUser to store additional user info in Firestore
+  // On success, navigate to the login screen
+  // On failure, sets an error message to be displayed to the user
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
+    // Firebase Auth creates a new user with email & password, returns Promise<UserCredential>
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       console.log("Sign up successful:", userCredential.user);
+      // Get JWT from the newly created user
 			const JWT = await userCredential.user.getIdToken();
+      // Create user in Firestore with additional info
 			await createUser(firstName, lastName, username, JWT);
 
       navigate("/login");
@@ -30,6 +39,7 @@ function SignUp() {
     } catch (firebaseError) {
       console.error("Firebase sign-up error:", firebaseError.message);
 
+      // Set user-friendly error messages based on Firebase error codes
       switch (firebaseError.code) {
         case 'auth/email-already-in-use':
           setError('This email address is already in use.');

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react"; // Import necessary modules from React
 import io from 'socket.io-client'; // Import the socket.io client library
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase/firebaseConfig.js";
+import { auth } from "../../firebase/firebaseConfig.js";
 
 
 

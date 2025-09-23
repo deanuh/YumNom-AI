@@ -1,5 +1,8 @@
 import { getAuth } from "firebase-admin/auth";
 
+// IMPORTANT: ALWAYS USE THIS FUNCTION AS MIDDLEWARE BEFORE ROUTING YOUR OWN FUNCTION 
+// This validates via TOKEN instead of information presented from the user.
+// Never trust data from the frontend. Always verify using JWT.
 export async function authMiddleware(req, res, next) {
   try {
     const authHeader = req.headers["authorization"];

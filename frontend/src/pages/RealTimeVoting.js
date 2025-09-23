@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../styles/RealTimeVoting.css";
 import { useLocation } from "react-router-dom";
-import Receive from "../components/socketConnection.js";
+import SendAndReceive from "../components/RealTimeVoting/socketConnection.js";
 
 const restaurants = [
   { id: 1, name: "Chipotle", image: "chipotle.png" },
@@ -59,7 +59,8 @@ export default function VotingPage() {
     <div className="voting-page">
     <div class="voting-title-container">
       <h1 className="voting-title">VOTING BEGINS</h1>
-			<Receive />
+			<SendAndReceive // debug component for socket server 
+			/>
       </div>
       <h3 className="round-title">Round 1</h3>
 

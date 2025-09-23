@@ -1,3 +1,5 @@
+// used to validate data being put into the database. 
+
 export function validateUserData(userData) {
 	console.log("reached validateUserData");
 	const requiredFields = ["first_name", "last_name", "username"];
