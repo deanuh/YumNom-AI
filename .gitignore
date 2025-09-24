@@ -27,3 +27,6 @@ yarn-debug.log*
 yarn-error.log*
 
 firestore-debug.log
+
+emulator-data
+*-debug.log

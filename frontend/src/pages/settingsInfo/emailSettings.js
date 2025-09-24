@@ -9,7 +9,7 @@ import {
   verifyBeforeUpdateEmail, // safer flow: email changes after user verifies the link
   // updateEmail,          // alternative immediate change (not recommended without verification)
 } from "firebase/auth";
-// Ensure this points to your initialized auth instance
+// makes sure this points to your initialized auth instance
 import { auth } from "../../firebase/firebaseConfig"; // e.g., export const auth = getAuth(app)
 
 const ChangeEmail = () => {
@@ -22,31 +22,31 @@ const ChangeEmail = () => {
   const [msg, setMsg] = useState({ type: "", text: "" });
 
   const validateEmail = (email) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMsg({ type: "", text: "" });
 
-    // Basic checks
-    if (!currentPassword || !newEmail || !confirmNewEmail) {
+    // Basic checks - user needs to input their current password and then their new email
+    if (!currentPassword || !newEmail || !confirmNewEmail) {  // either password wrong or emails wrong
       return setMsg({ type: "error", text: "Please fill out all fields." });
     }
-    if (newEmail !== confirmNewEmail) {
+    if (newEmail !== confirmNewEmail) {  // make them match!!
       return setMsg({ type: "error", text: "New emails do not match." });
     }
     if (!validateEmail(newEmail)) {
       return setMsg({ type: "error", text: "Please enter a valid email address." });
     }
 
-    const user = auth.currentUser;
+    const user = auth.currentUser;  // user needs to be logged in, making sure there the session is open
     if (!user || !user.email) {
       return setMsg({
         type: "error",
         text: "No authenticated user found. Please sign in again.",
       });
     }
-    if (user.email.toLowerCase() === newEmail.toLowerCase()) {
+    if (user.email.toLowerCase() === newEmail.toLowerCase()) { 
       return setMsg({
         type: "error",
         text: "New email must be different from your current email.",
@@ -92,7 +92,7 @@ const ChangeEmail = () => {
     }
   };
 
-  return (
+  return (  // what user sees
     <div className="Set-settings-body">
       <button className="report-issue-back" onClick={() => navigate(-1)}> ← Back to Settings </button>
 

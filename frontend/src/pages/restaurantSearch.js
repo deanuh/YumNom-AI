@@ -58,6 +58,28 @@ function RestaurantSearch() {
   const [longLat, setlongLat] = useState(null);
   const [location, setLocation] = useState("Detecting...");
   const [searchResults, setSearchResults] = useState(null);
+  //------------ NEW: location sharing toggle (default ON, persisted) ----------
+  const [isSharing, setIsSharing] = useState(() => {
+      try {
+        const stored = localStorage.getItem("yumNomLocationSharing");
+        if (stored !== null) return JSON.parse(stored);
+        const legacy = localStorage.getItem("yumNomLocationOptOut");
+        return legacy !== null ? !JSON.parse(legacy) : true;
+      } 
+      catch { return true; }
+    });
+    useEffect(() => {
+      const onStorage = (e) => {
+        if (e.key === "yumNomLocationSharing" && e.newValue != null) {  // is location on and there is a location - display info
+          setIsSharing(JSON.parse(e.newValue));
+        }
+        if (e.key === "yumNomLocationOptOut" && e.newValue != null) {  // sharing is off, do not share location info
+          setIsSharing(!JSON.parse(e.newValue));
+        }
+      };
+      window.addEventListener("storage", onStorage);
+      return () => window.removeEventListener("storage", onStorage);
+    }, []);
 
   // Currently active quick category (null when user types a query)
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -68,13 +90,33 @@ function RestaurantSearch() {
   // 1) On mount: detect user's city and lat/lng.
   //    This populates 'location' (for display) and 'longLat' (for API calls).
   useEffect(() => {
-    getUserCity()
-      .then((data) => {
-        setLocation(`${data.city}, ${data.state}`);
-        setlongLat({ longitude: data.longitude, latitude: data.latitude });
-      })
-      .catch((err) => setLocation(err?.message || "Location unavailable"));
-  }, []);
+    let cancelled = false;
+    (async () => {
+      if (!isSharing) {
+        setLocation("No location (sharing off)");
+        setlongLat(null);
+        return;
+      }
+      setLocation("Detecting...");
+      try {
+        const data = await getUserCity(); // honors opt-out; throws with .code
+        if (!cancelled) {
+          setLocation(`${data.city}, ${data.state}`);
+          setlongLat({ longitude: data.longitude, latitude: data.latitude });
+        }
+      } catch (err) {
+        if (!cancelled) {
+          const code = err?.code;
+          if (code === "GEO_DENIED") setLocation("Location permission denied.");
+          else if (code === "GEO_OPT_OUT") setLocation("No location (sharing off)");
+          else if (code === "BACKEND_UNAVAILABLE") setLocation("Location service unavailable.");
+          else setLocation(err?.message || "Location unavailable");
+          setlongLat(null);
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isSharing]);
 
   // 2) Once we have lat/lng, auto-run a nearby search with default distance.
   //    We also reveal the results panel by default in this case.
