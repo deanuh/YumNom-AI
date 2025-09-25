@@ -31,11 +31,10 @@ export default function VotingPage() {
 	const [tally, setTally] = useState({});
   const [phaseState, setPhaseState] = useState(""); // State to store received vote
 	const [timer, setTimer] = useState(null);
-	const partyMembers = selectedFriendObjects || [];
+	const [partyMembers, setPartyMembers] =  useState(new Set());
 	const socketRef = useRef(null);
-	
-	const MAX_VOTES = partyMembers.length; // e.g., 4
-	const [totalVotes, setTotalVotes] = useState(0);
+	const resultBarRef = useRef(null);
+	const [ resultBarSize, setResultBarSize] = useState({width: 0, height: 0});
 	
 	// create a "finalRestaurants" array to display
 	const finalRestaurants = [...restaurants];
@@ -51,7 +50,7 @@ export default function VotingPage() {
 	});
 	}
 
-	const sendVote = () => {
+	const sendVote = () => { // ------------------------------------- Submitted by martin
 		if (socketRef.current) {
 			socketRef.current.emit("send_vote",  vote);
 		}
@@ -63,8 +62,21 @@ export default function VotingPage() {
 				if (timer > 0) return timer - 1;
 				clearInterval(interval);
 				return 0;
-			}); 
+			});
 		}, 1000);
+
+		const getResultBarSize = () => {
+			const { width, height } = resultBarRef.current.getBoundingClientRect();
+			setResultBarSize({ width, height });
+		}
+		if (resultBarRef.current) {
+			getResultBarSize();
+		}
+		window.addEventListener("resize", getResultBarSize);
+
+
+	
+
 
 		const unsubscribe = onAuthStateChanged(auth, async (user) => {
 			try {
@@ -72,12 +84,12 @@ export default function VotingPage() {
 					const user = auth.currentUser;
 
 					const JWT = await user.getIdToken();	
-					
-  	  		// Listen for incoming votes from the server
+			
 					socketRef.current = io(process.env.REACT_APP_SOCKETIO_BACKEND_URL, {
 						auth: { token: JWT },
 					});
-
+		
+  	  		// Listen for incoming votes from the server
   	  		socketRef.current.on("change_phase", (data) => {
   	  		  setPhaseState(data.phaseName); // Set the received vote data to state
 						setTimer(Math.ceil((data.endsAt  - Date.now()) / 1000));
@@ -100,8 +112,22 @@ export default function VotingPage() {
 					    return updated;
 					  });
 					});
+					
+					socketRef.current.on("get_members", ({ party }) => {
+						setPartyMembers(new Set(party));
+					});
 
+					socketRef.current.on("joined_room", (userId) => {
+						setPartyMembers(prev => new Set(prev).add(userId));
+					});
 
+					socketRef.current.on("left_room", (userId) => {
+						setPartyMembers(prev => { 
+							const updated = new Set(prev);
+							updated.delete(userId);
+							return updated;
+						});
+					});
 
 					socketRef.current.on("join_error", (data) => {
 						console.error("Error joining room: ", data.message);
@@ -119,13 +145,15 @@ export default function VotingPage() {
 
 
 	return () => {
+					window.removeEventListener("resize", getResultBarSize);
 					clearInterval(interval);
   	  	  socketRef.current?.disconnect()
 					unsubscribe();
   };
 }, []); // Empty dependency array ensures this runs only once when the component mounts
 
-
+              /*<img src={`/${member.image}`} alt={member.username} /> moved for now*/
+// ---------------------------------------------------------------------------------------------------------------------------------------
   return (
     <div className="voting-page">
     <div class="voting-title-container">
@@ -138,10 +166,9 @@ export default function VotingPage() {
       <div className="voting-section">
         <div className="party-column">
         <h4>Party Members</h4>
-            {partyMembers.map((member, i) => (
+            {[...partyMembers].map((member, i) => (
             <div key={i} className="party-avatar">
-              <img src={`/${member.image}`} alt={member.username} />
-              <div>{member.username}</div>
+              <div>{member}</div>
             </div>
           ))}
         </div>
@@ -167,13 +194,13 @@ export default function VotingPage() {
         {finalRestaurants.map((r, i) => (
           <div key={i} className="result-row">
             <img src={r.image} alt={r.name} className="result-icon" />
-            <div className="result-bar-container">
+            <div ref={resultBarRef} className="result-bar-container">
               <div
                 className="result-bar"
-                style={{ width: `${tally[r.id] * 130}px` }}  // the 110 is for how long the vote will appear on the bar
+                style={{ width: `${(tally[r.id] || 0) / partyMembers.size * resultBarSize.width}px` }}  // the 110 is for how long the vote will appear on the bar
               />
             </div>
-            <div className="vote-count">({tally[r.id]})</div>
+            <div className="vote-count">({tally[r.id] || 0})</div>
           </div>
         ))}
       </div>

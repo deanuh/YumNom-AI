@@ -42,12 +42,15 @@ const io = new Server(server, {
   });
 
 const groupInfo = {};
+const users = {};
 
 io.use(async (socket, next) => {
   try {
     const idToken = socket.handshake.auth.token;
     const decodedToken = await getAuth().verifyIdToken(idToken);
+		if (users[decodedToken.uid]) throw new Error(`User ${socket.uid} already connected through socket ${users[decodedToken.uid]}`);
     socket.uid = decodedToken.uid; // attach UID to socket
+		users[socket.uid] = socket.id;
     next();
   } catch (err) {
 		console.log(err);
@@ -155,8 +158,10 @@ async function joinGroup(userId) {
 				let groupId;
 				if (groupData) {
 					groupId = groupData.id;
-					if (groupData.session_expires_at.toDate() < new Date()) {
-						groupId = await addGroup(userId)
+					const expiresAt = new Date(groupData.date_created.toDate().getTime() + groupData.secondsUntilExpiration * 1000)
+					if (expiresAt < Date.now()) {
+						await deleteGroup(userId);
+						groupId = await addGroup(userId);
 						createdGroup = true;
 					};
 				} else {
@@ -183,7 +188,12 @@ io.on("connection", (socket) => {
 				}
 				socket.groupId = groupId;
         socket.join(socket.groupId);
-        socket.broadcast.to(groupId).emit("joined_room", socket.uid);
+				const socketsInGroup = await io.in(socket.groupId).fetchSockets();
+				const uids = socketsInGroup.map(s => s.uid);
+				socket.emit("get_members", { party: uids })
+        socket.broadcast.to(socket.groupId).emit("joined_room", { 
+					userId: socket.uid, 
+				});
 				socket.emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state});
       } catch (err) {
         socket.emit("join_error", { message: err.message });
@@ -204,6 +214,12 @@ io.on("connection", (socket) => {
       	});
 			}
     });
+	socket.on("disconnect", (reason) => {
+		delete users[socket.uid];
+		io.to(socket.groupId).emit("left_room", socket.uid);
+		console.log(`User ${socket.uid} disconnected`);
+		
+	})
 });
 
 // ############################################################

@@ -129,7 +129,7 @@ export async function addGroup(userId) {
         },
         owner_id: userId,
         date_created: FieldValue.serverTimestamp(),
-        session_expires_at: FieldValue.serverTimestamp() // adjust for real session expiration
+        secondsUntilExpiration: 120 // offset in seconds, saved as int
       });
 
       transaction.update(userRef, {
