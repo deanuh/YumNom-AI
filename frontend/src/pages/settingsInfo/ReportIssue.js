@@ -94,9 +94,9 @@ export default function ReportIssue() {
             <div className="report-issue-field">
               <label className="report-issue-label">How often does this happen?</label>
               <div className="report-issue-scale">
-                {["Never", "Sometimes", "Often", "Always"].map((option, index) => (
+                {["Never", "Sometimes", "Often", "Always"].map((index) => (
                   <label key={index} className="report-issue-radio">
-                    <input type="radio" name="frequency" value={option} /> {option}
+                    <input type="radio" name="frequency" value={index} /> {index}
                   </label>
                 ))}
               </div>

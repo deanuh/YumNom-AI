@@ -10,24 +10,42 @@ import { authMiddleware } from './auth/auth.js';
 import {
   createUser, removeUser,
   createGroup, removeGroup,
-  createFavorite, removeFavorite,
+  createFavorite, removeFavorite, listFavorites,
   createRecommendation, removeRecommendation,
-  createVote, removeVote
+  createVote, removeVote,
 } from './api/firestore.js';
 import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
 import usersRouter from "./api/deleteUser.js";
 import { addGroup, deleteGroup, getGroupFromUserId, getGroupFromGroupId } from './firebase/dbFunctions.js'
 import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
+import deleteUserRouter from "./api/deleteUser.js";
 
 let app = express();
-
+app.use(express.json());
 let accessToken = null;
 let expirationDate = Date.now();
 
 //allow requests from development origin
-app.use(cors());
+
+// ADDED THESE FOR THE DELETE ACCOUNT TESTING AND MAKING SURE IT WORKS
+// {
+app.use(cors({
+	origin: "http://localhost:3000",   // frontend dev server
+	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+	allowedHeaders: ["Content-Type", "Authorization"],
+  }));
+  
 app.use(express.json());
+// added this to check delete account is actually working
+app.use((req, _res, next) => {
+	console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+	next();
+  });
+
+// }
+  
+app.use(cors());
 
 // #################### WEBSOCKET SERVER ###############################
 // This is a seperate server used with Socket.IO in order to start the real-time voting
@@ -242,6 +260,7 @@ app.delete("/groups", authMiddleware, removeGroup);
 
 // Favorites
 app.post("/favorites", authMiddleware, createFavorite);
+app.get("/favorites", authMiddleware, listFavorites);            
 app.delete("/favorites/:favoriteId", authMiddleware, removeFavorite);
 
 // Recommendations
@@ -252,13 +271,15 @@ app.delete("/recommendations/:recommendationId", authMiddleware, removeRecommend
 app.post("/votes", authMiddleware, createVote);
 app.delete("/votes/:voteId", authMiddleware, removeVote);
 
-// report Issue   NEW 
+
+
 app.use("/api", reportIssueRouter);
 
-// delete account NEW
-app.use("/api", usersRouter);
 
-// THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING
+// delete account NEW
+app.use("/api", deleteUserRouter);
+
+// THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING  -- update it works
 // // quick request logger
 // app.use((req, _res, next) => {
 //   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
@@ -267,8 +288,6 @@ app.use("/api", usersRouter);
 // // checks
 // app.get("/api/ping", (_req, res) => res.json({ ok: true }));
 // app.post("/api/echo", express.json(), (req, res) => res.json({ ok: true, body: req.body }));
-
-// ###################################################################
 
 // All backend services available via this port
 app.listen(5001, () => {

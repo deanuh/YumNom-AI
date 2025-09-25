@@ -34,6 +34,7 @@ import Help from "./pages/settingsInfo/help";
 import PrivacyPolicy from "./pages/settingsInfo/privacyPolicy";
 import LocationPref from "./pages/settingsInfo/locationPref";
 import ReportIssue from "./pages/settingsInfo/ReportIssue";
+import DisplaySettings from "./pages/settingsInfo/displaySettings";
 
 function App() {
   const location = useLocation();
@@ -72,6 +73,7 @@ function App() {
           <Route path="/help" element={<Help />} />
           <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
           <Route path="/ReportIssue" element={<ReportIssue />} />
+          <Route path="/DisplaySettings" element={<DisplaySettings/>} />
         </Routes>
       </div>
     </div>

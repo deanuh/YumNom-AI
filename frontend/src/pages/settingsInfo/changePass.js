@@ -1,7 +1,7 @@
 // this file will be for the user to update their password
 // need to have auth0 started -> this will allow the user to update password thru firebase auth0
 
-// src/pages/ChangePassword.jsx
+// src/pages/ChangePassword.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -20,30 +20,30 @@ const ChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState({ type: "", text: "" });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {  // this will handle what to do after the uesr is sure they want to change their password
     e.preventDefault();
     setMsg({ type: "", text: "" });
 
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
+    if (!currentPassword || !newPassword || !confirmNewPassword) {  // user needs to fill out all fields
       return setMsg({ type: "error", text: "Please fill out all fields." });
     }
-    if (newPassword !== confirmNewPassword) {
+    if (newPassword !== confirmNewPassword) {  // if the new password confirmation and what they og typed in do not match
       return setMsg({ type: "error", text: "New passwords do not match." });
     }
-    if (newPassword.length < 6) {
+    if (newPassword.length < 6) {  // got to make password more than 6 characters or else FireAuth wont take it
       return setMsg({
         type: "error",
         text: "New password must be at least 6 characters.",
       });
     }
-    if (currentPassword === newPassword) {
+    if (currentPassword === newPassword) {  // if it matches the password u already have (why change it?)
       return setMsg({
         type: "error",
         text: "New password must be different from your current password.",
       });
     }
 
-    const user = auth.currentUser;
+    const user = auth.currentUser;  // getting current user info (if you try to change password but you're not logged in or something messes up)
     if (!user || !user.email) {
       return setMsg({
         type: "error",
@@ -55,16 +55,16 @@ const ChangePassword = () => {
     try {
       // Re-auth with current password
       const cred = EmailAuthProvider.credential(user.email, currentPassword);
-      await reauthenticateWithCredential(user, cred);
+      await reauthenticateWithCredential(user, cred);  // Re-authenticate them to be sure everything is updated
 
       // Update to new password
       await updatePassword(user, newPassword);
 
-      setMsg({ type: "success", text: "Password updated successfully." });
+      setMsg({ type: "success", text: "Password updated successfully." });  // this will show on the UI
       setCurrentPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
-    } catch (err) {
+    } catch (err) {  // if anything went wrong fr
       let friendly = "Something went wrong. Please try again.";
       if (err.code === "auth/wrong-password") friendly = "Current password is incorrect.";
       if (err.code === "auth/weak-password") friendly = "New password is too weak.";
