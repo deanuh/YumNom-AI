@@ -31,7 +31,7 @@ export default function VotingPage() {
 	const [tally, setTally] = useState({});
   const [phaseState, setPhaseState] = useState(""); // State to store received vote
 	const [timer, setTimer] = useState(null);
-	const [partyMembers, setPartyMembers] =  useState(new Set());
+	const [partyMembers, setPartyMembers] =  useState({});
 	const socketRef = useRef(null);
 	const resultBarRef = useRef(null);
 	const [ resultBarSize, setResultBarSize] = useState({width: 0, height: 0});
@@ -113,17 +113,26 @@ export default function VotingPage() {
 					  });
 					});
 					
-					socketRef.current.on("get_members", ({ party }) => {
-						setPartyMembers(new Set(party));
+					socketRef.current.on("get_members", (party) => {
+						setPartyMembers(party);
 					});
 
-					socketRef.current.on("joined_room", (userId) => {
-						setPartyMembers(prev => new Set(prev).add(userId));
+					socketRef.current.on("joined_room", (partyMember) => {
+						setPartyMembers(prev => {
+                const newParty = {
+                ...prev,
+                [partyMember.userId]: {
+                    profile_picture: partyMember.profile_picture,
+                    username: partyMember.username
+                }
+            }
+            return newParty;
+            });
 					});
 
 					socketRef.current.on("left_room", (userId) => {
 						setPartyMembers(prev => { 
-							const updated = new Set(prev);
+							const updated = prev;
 							updated.delete(userId);
 							return updated;
 						});
@@ -152,7 +161,6 @@ export default function VotingPage() {
   };
 }, []); // Empty dependency array ensures this runs only once when the component mounts
 
-              /*<img src={`/${member.image}`} alt={member.username} /> moved for now*/
 // ---------------------------------------------------------------------------------------------------------------------------------------
   return (
     <div className="voting-page">
@@ -166,11 +174,15 @@ export default function VotingPage() {
       <div className="voting-section">
         <div className="party-column">
         <h4>Party Members</h4>
-            {[...partyMembers].map((member, i) => (
-            <div key={i} className="party-avatar">
-              <div>{member}</div>
+            {Object.keys(partyMembers).map((memberKey) => {
+            const member = partyMembers[memberKey];
+            return (
+            <div key={memberKey} className="party-avatar">
+              <img src={`/${member.profile_picture}`} alt={member.username} />
+              <div>{member.username}</div>
             </div>
-          ))}
+          );
+          })}
         </div>
 
         <div className="Voting-restaurant-grid">
@@ -197,7 +209,7 @@ export default function VotingPage() {
             <div ref={resultBarRef} className="result-bar-container">
               <div
                 className="result-bar"
-                style={{ width: `${(tally[r.id] || 0) / partyMembers.size * resultBarSize.width}px` }}  // the 110 is for how long the vote will appear on the bar
+                style={{ width: `${(tally[r.id] || 0) / Object.keys(partyMembers).length * resultBarSize.width}px` }}  // the 110 is for how long the vote will appear on the bar
               />
             </div>
             <div className="vote-count">({tally[r.id] || 0})</div>

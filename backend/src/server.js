@@ -167,7 +167,7 @@ function startPhase(groupId, duration, phaseName) {
 
 }
 
-async function joinGroup(userId) {
+async function joinGroup(userId) { //we're going to need a seperate dbFunction that adds a user to group.
       try {
 				let groupData = await getGroupFromUserId(userId);
 				console.log(`groupData: ${JSON.stringify(groupData)}`);
@@ -199,6 +199,8 @@ io.on("connection", (socket) => {
     socket.on("join_room", async () => {
 			try {
 				let { groupId, createdGroup } = await joinGroup(socket.uid);
+        let groupData = await getGroupFromGroupId(groupId); 
+        let invitedUsers = groupData.members;
 				console.log(`groupId: ${groupId}, createdGroup: ${createdGroup}`);
 
 				if (createdGroup) {
@@ -208,9 +210,17 @@ io.on("connection", (socket) => {
         socket.join(socket.groupId);
 				const socketsInGroup = await io.in(socket.groupId).fetchSockets();
 				const uids = socketsInGroup.map(s => s.uid);
-				socket.emit("get_members", { party: uids })
+        const uidInfo = uids.reduce((acc, key) => {
+           if (invitedUsers[key]) acc[key] = invitedUsers[key];
+           return acc;
+        }, {});
+
+        
+				socket.emit("get_members", uidInfo)
         socket.broadcast.to(socket.groupId).emit("joined_room", { 
 					userId: socket.uid, 
+          profile_picture: uidInfo[socket.uid].profile_picture,
+          username: uidInfo[socket.uid].username
 				});
 				socket.emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state});
       } catch (err) {
