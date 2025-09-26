@@ -1,0 +1,1 @@
+// the script to embed the faqs into vectors

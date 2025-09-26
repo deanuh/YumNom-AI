@@ -1,0 +1,17 @@
+[
+    {
+      "id": "acct-password-change",
+      "question": "How do I change my password?",
+      "answer": "Go to Settings → Account → Change Password. Enter your current password and a new one, then Save.",
+      "route": "/settings/account#password",
+      "tags": ["account","password","security"]
+    },
+    {
+      "id": "prefs-edit",
+      "question": "Where do I update my food preferences?",
+      "answer": "Open Profile → Preferences. Adjust cuisines, price range, and allergens, then Save.",
+      "route": "/profile/preferences",
+      "tags": ["preferences","profile","dietary"]
+    }
+  ]
+  
