@@ -4,6 +4,9 @@ import { useLocation } from "react-router-dom";
 import io from 'socket.io-client'; // Import the socket.io client library
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig.js";
+import Join from "../components/RealTimeVoting/Wait.js"
+import Vote from "../components/RealTimeVoting/Vote.js"
+import Wait from "../components/RealTimeVoting/Wait.js"
 
 const restaurants = [
   { id: 1, name: "Chipotle", image: "chipotle.png" },
@@ -33,8 +36,6 @@ export default function VotingPage() {
 	const [timer, setTimer] = useState(null);
 	const [partyMembers, setPartyMembers] =  useState({});
 	const socketRef = useRef(null);
-	const resultBarRef = useRef(null);
-	const [ resultBarSize, setResultBarSize] = useState({width: 0, height: 0});
 	
 	// create a "finalRestaurants" array to display
 	const finalRestaurants = [...restaurants];
@@ -65,14 +66,6 @@ export default function VotingPage() {
 			});
 		}, 1000);
 
-		const getResultBarSize = () => {
-			const { width, height } = resultBarRef.current.getBoundingClientRect();
-			setResultBarSize({ width, height });
-		}
-		if (resultBarRef.current) {
-			getResultBarSize();
-		}
-		window.addEventListener("resize", getResultBarSize);
 
 
 	
@@ -154,7 +147,6 @@ export default function VotingPage() {
 
 
 	return () => {
-					window.removeEventListener("resize", getResultBarSize);
 					clearInterval(interval);
   	  	  socketRef.current?.disconnect()
 					unsubscribe();
@@ -163,59 +155,25 @@ export default function VotingPage() {
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
   return (
-    <div className="voting-page">
-    <div class="voting-title-container">
-      <h1 className="voting-title">VOTING BEGINS</h1>
-      </div>
-      <h3 className="round-title">Round 1</h3>
-			<p> {phaseState} </p>
-			<p> {timer} </p>
-			
-      <div className="voting-section">
-        <div className="party-column">
-        <h4>Party Members</h4>
-            {Object.keys(partyMembers).map((memberKey) => {
-            const member = partyMembers[memberKey];
-            return (
-            <div key={memberKey} className="party-avatar">
-              <img src={`/${member.profile_picture}`} alt={member.username} />
-              <div>{member.username}</div>
-            </div>
-          );
-          })}
-        </div>
+<div>
+  <p>{phaseState}</p>
+{ (() => {
+    switch (phaseState) { 
+        case "join":
+            return(<Join timer={timer} partyMembers={partyMembers} />);
+        case "waiting_phase":
+            return(<Wait timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} tally={tally} />);
+        case "round_one": 
+        case "round_two":
+        case "tiebreaker":
+            return (<Vote phaseState={phaseState} timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} vote={vote} setVote={setVote} sendVote={sendVote} tally={tally} />);
+        case "end_phase":
+            return (<p>End</p>);
 
-        <div className="Voting-restaurant-grid">
-          {finalRestaurants.map(r => (
-            <div
-              key={r.id}
-              className={`Voting-restaurant-option ${vote === r.id ? "selected" : ""}`}
-              onClick={() => setVote(r.id)}
-            >
-              <img src={r.image} alt={r.name} />
-            </div>
-          ))}
-          <button className="Voting-submit-button" onClick={sendVote} >
-            Submit
-          </button>
-        </div>
-      </div>
-
-      <h2 className="Voting-results-title">Results</h2>
-      <div className="Voting-results-section">
-        {finalRestaurants.map((r, i) => (
-          <div key={i} className="result-row">
-            <img src={r.image} alt={r.name} className="result-icon" />
-            <div ref={resultBarRef} className="result-bar-container">
-              <div
-                className="result-bar"
-                style={{ width: `${(tally[r.id] || 0) / Object.keys(partyMembers).length * resultBarSize.width}px` }}  // the 110 is for how long the vote will appear on the bar
-              />
-            </div>
-            <div className="vote-count">({tally[r.id] || 0})</div>
-          </div>
-        ))}
-      </div>
-    </div>
+        default:
+            return(<p>oops</p>);
+    }
+})()}
+</div>
   );
 }

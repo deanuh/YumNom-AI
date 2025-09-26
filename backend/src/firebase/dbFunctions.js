@@ -20,7 +20,7 @@ export async function addUser(userData, userId) {
 
 		await db.collection("User").doc(userId).create({
       address: null,
-      profile_picture: null,
+      profile_picture: "ban_gato.png",
       ...userData,
       restriction: {},
       date_created: FieldValue.serverTimestamp(),
