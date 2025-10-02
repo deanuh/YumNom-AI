@@ -24,7 +24,7 @@ return (
     <div class="voting-title-container">
       <h1 className="voting-title">THE VOTES ARE IN!</h1>
       </div>
-			<p>{props.timer}</p>
+			<div className="voting-timer">{props.timer}</div>
       <div className="voting-section">
         <div className="party-column">
         <h4>Party Members</h4>

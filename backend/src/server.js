@@ -92,8 +92,8 @@ function startPhase(groupId, duration, phaseName, choices) {
 		};
 	}
 
-	const waitTime = 5;
-	const voteTime = 5;
+	const waitTime = 10;
+	const voteTime = 30;
 	groupInfo[groupId].state = phaseName; //name of current phase.
 	groupInfo[groupId].timer.endsAt = Date.now() + duration * 1000;
 	console.log(`choices on ${phaseName}: ${groupInfo[groupId].choices}`);
@@ -204,7 +204,7 @@ io.on("connection", (socket) => {
 				console.log(`groupId: ${groupId}, createdGroup: ${createdGroup}`);
 
 				if (createdGroup) {
-					startPhase(groupId, 5, "join", ["1", "2", "3"]); // placeholder array. starts voting here
+					startPhase(groupId, 30, "join", ["1", "2", "3"]); // placeholder array. starts voting here
 				}
 				socket.groupId = groupId;
         socket.join(socket.groupId);

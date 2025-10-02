@@ -182,7 +182,7 @@ export default function VotingPage() {
 // ---------------------------------------------------------------------------------------------------------------------------------------
   return (
 <div>
-	{renderPhase("round_one")}
+	{renderPhase(phaseState)}
 </div>
   );
 }

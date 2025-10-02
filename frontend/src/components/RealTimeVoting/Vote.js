@@ -2,6 +2,9 @@ import React, { useRef, useEffect, useState } from "react";
 export default function Vote(props) {
 	const resultBarRef = useRef(null);
 	const [ resultBarSize, setResultBarSize] = useState({width: 0, height: 0});
+	const gridRef = useRef(null);
+	const [gridSize, setGridSize] = useState({width:0, height: 0});
+	const animationClass = props.timer <= 15 ? "animate" : "";
   const formattedPhase = {
   "round_one": "ROUND ONE",
   "round_two": "ROUND TWO",
@@ -11,15 +14,34 @@ export default function Vote(props) {
 	const restaurantItems = props.finalRestaurants.filter(restaurant =>
     (props.choices || []).includes(restaurant.id)
   );
-	const dummyCount = 5;
+	const dummyCount = 10;
 	const itemCount = restaurantItems.length + dummyCount;
-	const gridSize = Math.ceil(Math.sqrt(itemCount));
-	const gridStyle = {
-		gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-		gridTemplateRows: `repeat(${gridSize},  1fr)`
+	const squareGridSize = Math.ceil(Math.sqrt(itemCount));
+	let { width } = gridSize
+	console.log(gridSize);
+	const max_grid_w = Math.trunc(width / 200); // approximately the size of the grid cell.
+	let gridStyle = {
+			gridTemplateColumns: `repeat(${squareGridSize}, 1fr)`,
+			gridTemplateRows: `repeat(${squareGridSize},  1fr)`
+		}
+
+	if (max_grid_w < squareGridSize) {
+			gridStyle.gridTemplateColumns = `repeat(${max_grid_w},  1fr)`;
+			gridStyle.gridTemplateRows = `repeat(${Math.ceil(itemCount / max_grid_w)}, 1fr)`;
 	}
 
   useEffect(() => {
+
+   	const getGridSize = () => {
+			const { width, height } = gridRef.current.getBoundingClientRect();
+			setGridSize({ width, height });
+		}
+		if (gridRef.current) {
+			getGridSize();
+		}
+		window.addEventListener("resize", getGridSize);
+
+
    	const getResultBarSize = () => {
 			const { width, height } = resultBarRef.current.getBoundingClientRect();
 			setResultBarSize({ width, height });
@@ -31,6 +53,7 @@ export default function Vote(props) {
 
     return () => {
    		window.removeEventListener("resize", getResultBarSize);
+   		window.removeEventListener("resize", getGridSize);
     };
 
   }, []);
@@ -40,7 +63,7 @@ return (
     <div className="voting-title-container">
       <h1 className="voting-title">{formattedPhase[props.phaseState]}</h1>
       </div>
-			<p> {props.timer} </p>
+			<div key={props.timer} className={`voting-timer ${animationClass}`}> {props.timer} </div>
       <div className="voting-section">
         <div className="party-column">
         <h4>Party Members</h4>
@@ -55,7 +78,7 @@ return (
           })}
         </div>
 				<div className="Voting-restaurant-grid-container">
-        	<div className="Voting-restaurant-grid"
+        	<div ref={gridRef} className="Voting-restaurant-grid"
 						style={gridStyle}
 						>
 						{props.finalRestaurants.filter(restaurant => 
@@ -71,7 +94,7 @@ return (
         	  ))}
 						{(() => {
 							const gridItems = [];
-							for (let i = 0; i < 5; i++) {
+							for (let i = 0; i < dummyCount; i++) {
 								gridItems.push(
 									<div className="Voting-restaurant-option">
         	      		<img src={props.finalRestaurants[0].image} alt="dummy" />
