@@ -4,14 +4,15 @@ import { useLocation } from "react-router-dom";
 import io from 'socket.io-client'; // Import the socket.io client library
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig.js";
-import Join from "../components/RealTimeVoting/Wait.js"
+import Join from "../components/RealTimeVoting/Join.js"
 import Vote from "../components/RealTimeVoting/Vote.js"
 import Wait from "../components/RealTimeVoting/Wait.js"
+import End from "../components/RealTimeVoting/End.js"
 
 const restaurants = [
-  { id: 1, name: "Chipotle", image: "chipotle.png" },
-  { id: 2, name: "Pizza Hut", image: "pizzahut.png" },
-  { id: 3, name: "Wingstop", image: "wingstop.png" },
+  { id: "1", name: "Chipotle", image: "chipotle.png" },
+  { id: "2", name: "Pizza Hut", image: "pizzahut.png" },
+  { id: "3", name: "Wingstop", image: "wingstop.png" },
 ];
 
 // const partyMembers = [
@@ -29,14 +30,17 @@ export default function VotingPage() {
 	const location = useLocation();
 	const { chosenRestaurant, selectedFriendObjects } = location.state || {}; 
 	// pull it safely (in case state is missing)
-	const [vote, setVote] = useState(null);
-  const [receivedVotes, setReceivedVotes] = useState({}); // State to store received vote
-	const [tally, setTally] = useState({});
-  const [phaseState, setPhaseState] = useState(""); // State to store received vote
-	const [timer, setTimer] = useState(null);
-	const [partyMembers, setPartyMembers] =  useState({});
-	const socketRef = useRef(null);
-	
+	const [vote, setVote] = useState(null); // Own user's vote
+  const [receivedVotes, setReceivedVotes] = useState({}); //Each user's vote including own {userIdOne: 1, userIdTwo: 2, ...}
+	const [tally, setTally] = useState({}); // vote count for each vote { "1": 10, "2": 2, ... }
+  const [phaseState, setPhaseState] = useState(""); //current phase (round_one OR waiting_phase OR end_phase, etc.)
+	const [timer, setTimer] = useState(null);  // in seconds
+	const [partyMembers, setPartyMembers] =  useState({}); // State to store users in session, not invited users.
+	const socketRef = useRef(null); // Reference to the current socket connection
+	const [choices, setChoices] = useState(null); // Possible choices to vote between.
+	const [results, setResults] = useState({}); // Last round's results from server. Techically should match tally with 0's if a restaurant didnt get any votes.
+	const [winner, setWinner] = useState(null);
+
 	// create a "finalRestaurants" array to display
 	const finalRestaurants = [...restaurants];
 	
@@ -84,7 +88,12 @@ export default function VotingPage() {
 		
   	  		// Listen for incoming votes from the server
   	  		socketRef.current.on("change_phase", (data) => {
+						console.log(JSON.stringify(data));
   	  		  setPhaseState(data.phaseName); // Set the received vote data to state
+						if (data.choices) setChoices(data.choices);
+						if (data.results) setResults(data.results);
+						if (data.winner) setWinner(data.winner);
+						
 						setTimer(Math.ceil((data.endsAt  - Date.now()) / 1000));
   	  		});
 	
@@ -153,27 +162,27 @@ export default function VotingPage() {
   };
 }, []); // Empty dependency array ensures this runs only once when the component mounts
 
+	function renderPhase(phaseState) {
+		switch (phaseState) { 
+  	      case "join":
+  	          return(<Join timer={timer} partyMembers={partyMembers} />);
+  	      case "waiting_phase":
+  	          return(<Wait timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} tally={tally} results={results} />);
+  	      case "round_one": 
+  	      case "round_two":
+  	      case "tiebreaker":
+  	          return (<Vote phaseState={phaseState} timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} vote={vote} setVote={setVote} sendVote={sendVote} tally={tally} choices={choices}/>);
+  	      case "end_phase":
+  	          return (<End timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} winner={winner} />);
+  	      default:
+  	          return;
+		}
+	}
+
 // ---------------------------------------------------------------------------------------------------------------------------------------
   return (
 <div>
-  <p>{phaseState}</p>
-{ (() => {
-    switch (phaseState) { 
-        case "join":
-            return(<Join timer={timer} partyMembers={partyMembers} />);
-        case "waiting_phase":
-            return(<Wait timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} tally={tally} />);
-        case "round_one": 
-        case "round_two":
-        case "tiebreaker":
-            return (<Vote phaseState={phaseState} timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} vote={vote} setVote={setVote} sendVote={sendVote} tally={tally} />);
-        case "end_phase":
-            return (<p>End</p>);
-
-        default:
-            return(<p>oops</p>);
-    }
-})()}
+	{renderPhase("round_one")}
 </div>
   );
 }

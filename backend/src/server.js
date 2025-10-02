@@ -76,45 +76,47 @@ io.use(async (socket, next) => {
   }
 });
 
-function startPhase(groupId, duration, phaseName) {
-	if (!groupInfo[groupId]) {
-		groupInfo[groupId] = {
+function startPhase(groupId, duration, phaseName, choices) {
+	if (!groupInfo[groupId]) { // initialize object 
+		groupInfo[groupId] = { 
 			timer: {
-				main: null,
-				endsAt: null,
+				main: null, // reference to setTimeout timer
+				endsAt: null, //timestamp for current phase end
 			},
-			state: "",
+			state: "", //phaseName
 			votes: {
-				polling: {},
-				results: {}
+				polling: {}, //current votes for voting phases. {"userIdOne": "1", "userIdTwo": "2", ...}
+				results: {} //result for waiting phases and end {"1": 10, "2": 3, "3": 0}
 			},
-			choices: ["A", "B", "C", "D"] //placeholder debug values
+			choices //available restaurants to choose ["1", "2", "3"]
 		};
 	}
 
-	const waitTime = 10;
-	const voteTime = 15;
-	groupInfo[groupId].state = phaseName;
+	const waitTime = 5;
+	const voteTime = 5;
+	groupInfo[groupId].state = phaseName; //name of current phase.
 	groupInfo[groupId].timer.endsAt = Date.now() + duration * 1000;
-
-	io.to(groupId).emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state});
-
+	console.log(`choices on ${phaseName}: ${groupInfo[groupId].choices}`);
+	io.to(groupId).emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state, choices: groupInfo[groupId].choices});
+	//send event and end after timeout
 	groupInfo[groupId].timer.main = setTimeout(() => {
+		const baseVotes = Object.fromEntries(groupInfo[groupId].choices.map((choice) => [choice, 0])); 
+		//init object with key as restaurant and values 0
 		const tally = Object.values(groupInfo[groupId].votes.polling).reduce((acc, vote) => {
 			acc[vote] = ( acc[vote] || 0 ) + 1;
 			return acc
-		}, {});
-		const sortedTally = Object.entries(tally).sort((a, b) => b[1] - a[1]);
-		groupInfo[groupId].votes.results = sortedTally;
-		
-		groupInfo[groupId].votes.polling = {}
-		delete groupInfo[groupId].timer.main;
+		}, {}); // transform polling object to key as restaurant and values 0.
+		const voteResult = {...baseVotes, ...tally}; //all restaurants and their vote count, even with 0 votes.
+		groupInfo[groupId].votes.results = voteResult;
+		groupInfo[groupId].votes.polling = {} //reset for next phase
+		delete groupInfo[groupId].timer.main; 
 
-		let nextPhase;
+		let nextPhase; // on null, end. on val, go to next phase.
 		switch (phaseName) {
 			case "join": 
 				nextPhase = "round_one";
-				break;
+				startPhase(groupId,  voteTime, nextPhase); //skip wait.
+				return;
 			case "round_one":
 				nextPhase = "round_two";
 				break;
@@ -128,29 +130,26 @@ function startPhase(groupId, duration, phaseName) {
 				console.log(`Error on phase ${phaseName}`);
 				nextPhase = null;
 		}
-
-		groupInfo[groupId].state = "waiting_phase";
+		groupInfo[groupId].state = "waiting_phase"; //now that timeout has ended, phase change to wait
 		groupInfo[groupId].timer.endsAt = Date.now() + waitTime * 1000;
-		io.to(groupId).emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state});
+		io.to(groupId).emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state, results: groupInfo[groupId].votes.results});
+		//send event and start wait phase
 		groupInfo[groupId].timer.wait = setTimeout(() => {
-			const topTwo = sortedTally.slice(0, 2)
-			const topTwoNames = topTwo.map(([choice, count]) => choice);
-			const topTwoTally = topTwo.map(([choice, count]) => count);			
-			if (topTwoTally[0] === topTwoTally[1]) {
-				groupInfo[groupId].choices = topTwoNames;
-			} else {
-				groupInfo[groupId].choices = [topTwoNames[0]];
+			const highestVote = Math.max(...Object.values(groupInfo[groupId].votes.results));
+			//console.log(`results: ${JSON.stringify(groupInfo[groupId].votes.results)}`);
+			const topVotes = Object.keys(groupInfo[groupId].votes.results).filter(result => groupInfo[groupId].votes.results[result] === highestVote);
+			// topVote is array of all restaurants that tied with highest count.
+			groupInfo[groupId].choices = topVotes;
+			groupInfo[groupId].votes.results = {}; // reset for next waiting phase
+			delete groupInfo[groupId].timer.wait; // lose wait phase timeout reference
+			if ( (nextPhase === "round_two" || nextPhase === "tiebreaker" ) && groupInfo[groupId].choices.length <= 1) {
+					nextPhase = null; // end phase early if there was a clear winner.
 			}
-			groupInfo[groupId].votes.results = {}
-			delete groupInfo[groupId].timer.wait;
 			if (nextPhase) {
-				if ( (nextPhase === "round_two" || nextPhase === "tiebreaker" ) && groupInfo[groupId].choices.length > 1) {
-					nextPhase = "end_phase"
-				}
-				startPhase(groupId,  voteTime, nextPhase);
-			} else {
-				delete groupInfo[groupId].timer;
-				groupInfo[groupId].state = "end_phase";
+								startPhase(groupId,  voteTime, nextPhase, groupInfo[groupId].choices);
+			} else { // only if nextPhase is null. meaning no more voting
+				delete groupInfo[groupId].timer; //lose all timers
+				groupInfo[groupId].state = "end_phase"; // unique end event, group will be deleted before sending.
 				getGroupFromGroupId(groupId)
 				.then(groupData => {	
 					return deleteGroup(groupData.owner_id)
@@ -158,9 +157,10 @@ function startPhase(groupId, duration, phaseName) {
 				.catch(err => {
 					console.error(err);
 				});
+				io.to(groupId).emit("change_phase", { endsAt: Date.now(), phaseName: groupInfo[groupId].state, winner: groupInfo[groupId].choices[0]});
+				// group is now officially gone
 			}
-			io.to(groupId).emit("end_phase");
-			return;
+			return; // all nextPhase values reach this eventually.
 		}, waitTime * 1000); //  (duration) ms * 1000 = (duration) sec
 
 	}, duration * 1000); //  (duration) ms * 1000 = (duration) sec
@@ -174,15 +174,15 @@ async function joinGroup(userId) { //we're going to need a seperate dbFunction t
 				let createdGroup = false;
 				//grab groupId from existing/new group.
 				let groupId;
-				if (groupData) {
+				if (groupData) { //probably invited or reloaded the page
 					groupId = groupData.id;
 					const expiresAt = new Date(groupData.date_created.toDate().getTime() + groupData.secondsUntilExpiration * 1000)
-					if (expiresAt < Date.now()) {
+					if (expiresAt < Date.now()) { // in case group is old and forgotten :(
 						await deleteGroup(userId);
 						groupId = await addGroup(userId);
 						createdGroup = true;
 					};
-				} else {
+				} else { // you create and own this group if you reach this
 					groupId = await addGroup(userId);
 					createdGroup = true;
 				}
@@ -204,25 +204,27 @@ io.on("connection", (socket) => {
 				console.log(`groupId: ${groupId}, createdGroup: ${createdGroup}`);
 
 				if (createdGroup) {
-					startPhase(groupId, 20, "join");
+					startPhase(groupId, 5, "join", ["1", "2", "3"]); // placeholder array. starts voting here
 				}
 				socket.groupId = groupId;
         socket.join(socket.groupId);
 				const socketsInGroup = await io.in(socket.groupId).fetchSockets();
-				const uids = socketsInGroup.map(s => s.uid);
-        const uidInfo = uids.reduce((acc, key) => {
+				const uids = socketsInGroup.map(s => s.uid); //we know what socket belongs to what user.
+        const uidInfo = uids.reduce((acc, key) => { // list of the invited users information actually connected to the session.
            if (invitedUsers[key]) acc[key] = invitedUsers[key];
            return acc;
         }, {});
 
         
-				socket.emit("get_members", uidInfo)
-        socket.broadcast.to(socket.groupId).emit("joined_room", { 
+				socket.emit("get_members", uidInfo) // sent to client
+        socket.broadcast.to(socket.groupId).emit("joined_room", { //everyone else is sent the user's info too
 					userId: socket.uid, 
           profile_picture: uidInfo[socket.uid].profile_picture,
           username: uidInfo[socket.uid].username
 				});
-				socket.emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state});
+				console.log(`socket.uid: ${socket.uid}, profile_picture: ${uidInfo[socket.uid].profile_picture}, uidInfo: ${JSON.stringify(uidInfo)}`);
+				socket.emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state, results: groupInfo[groupId].votes.results, choices: groupInfo[groupId].choices});
+				//client is sent info on current phase's state.
       } catch (err) {
         socket.emit("join_error", { message: err.message });
       }
@@ -231,20 +233,22 @@ io.on("connection", (socket) => {
     socket.on("send_vote", ( vote ) => {
 			if (!socket.groupId) return socket.emit("join_error", { message: "User not in room."});
 			if (
-				groupInfo[socket.groupId].state ==  "round_one" || 
+				groupInfo[socket.groupId].state ==  "round_one" ||  // only accept votes that are valid.
 				groupInfo[socket.groupId].state ==  "round_two" || 
 				groupInfo[socket.groupId].state ==  "tiebreaker" 
 			) {
-				groupInfo[socket.groupId].votes.polling[socket.uid] = vote
-      	io.to(socket.groupId).emit("receive_vote", {
-      	  user: socket.uid,
-      	  vote,
-      	});
+				if (groupInfo[socket.groupId].choices.includes(vote)) {
+					groupInfo[socket.groupId].votes.polling[socket.uid] = vote
+      		io.to(socket.groupId).emit("receive_vote", { // update clients on who just voted.
+      		  user: socket.uid,
+      		  vote,
+      		});
+				}
 			}
     });
 	socket.on("disconnect", (reason) => {
-		delete users[socket.uid];
-		io.to(socket.groupId).emit("left_room", socket.uid);
+		delete users[socket.uid]; //socket is no longer valid, delete incase client rejoins.
+		io.to(socket.groupId).emit("left_room", socket.uid); //tell clients to drop leaver's data.
 		console.log(`User ${socket.uid} disconnected`);
 		
 	})

@@ -3,15 +3,78 @@
 @import url('https://fonts.googleapis.com/css2?family=Chivo:wght@700&display=swap');
 
 
+/* --------------------------- Usable with any -----------------------------------*/
 
+  
+	/* -------------------------- JOIN LAYOUT ---------------------------------- */
+ 
+  .Join-party-section {
+
+		background: #DDD8EF;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    color: #3d2b6d;
+		width: 100%;
+		max-width: 50%;
+		height: 100%;
+		max-height: 50%;
+		overflow-y: scroll;
+
+		/* remove scrollbar from party column*/
+		scrollbar-width: none;
+  }
+
+  .Join-party-section::-webkit-scrollbar {
+ 			width: 0;
+		 height: 0;	
+	}
+
+	.Join-party-grid {
+    display: grid;
+		margin: 0 1rem;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, 15%); 
+		justify-content: center;
+
+  }
+
+	.Join-party-title {
+		text-align: center;
+    color: #3d2b6d;
+    font-family: "Chivo";
+    font-weight: 700;
+		font-size: 1.5rem;
+	}
+  
+  .Join-party-avatar {
+    text-align: center;
+    margin-bottom: 1rem;
+		font-size: 1rem;
+		overflow: hidden;
+  }
+  
+  .Join-party-avatar img {
+    width: 60%;
+    height: auto;
+    border-radius: 50%;
+    background-color: #ffffff;
+  }
+
+  	/* -------------------------- VOTE LAYOUT ---------------------------------- */
 .voting-page {
+		height: 100vh;
     padding: 2rem;
     background: rgb(238, 235, 247);
     font-family: "Poppins";
     border-radius: 10px;
     border: 1px solid #DDD8EF;
+		display: flex;
+		overflow: hidden;
+		flex-direction: column;
+		align-items: center;
+	}
     
-  }
   .voting-title-container {
     display: flex;
     justify-content: center;
@@ -24,7 +87,7 @@
     text-align: center;
     padding: 0.6rem 5rem ;
     border-radius: 12px;
-    font-size: 1.5rem;
+    font-size: 2rem;
     box-shadow: 0 5px 2px rgba(35, 5, 85, 0.4);
     font-family: "Cherry Bomb One";
     letter-spacing: 2px;
@@ -43,23 +106,36 @@
   
   .voting-section {
     display: flex;
+		flex-direction: row;
+		height: 100%;
+		max-height: 600px;
+		max-width: 1200px;
+		width: 100%;
+		overflow-y: scroll;
     /* margin-top: 0rem; */
   }
   
   .party-column {
-    flex: 0 0 120px;
     background: #DDD8EF;
     padding: 1rem;
     border-radius: 10px;
     color: #3d2b6d;
     overflow-y: auto;
-    width: 152px;
-    max-height: 409.28px;
     display: flex;
     flex-direction: column;
     align-items: center;
+		text-align: center;
+		width: 120px;
+		min-width: 120px; /* need both for whatever reason */
+
+		/* remove scrollbar from party column*/
+		scrollbar-width: none;
   }
-  
+  .party-column::-webkit-scrollbar {
+ 			width: 0;
+		 height: 0;	
+	}
+
   .party-avatar {
     text-align: center;
     margin-bottom: 1rem;
@@ -70,27 +146,39 @@
     height: 60px;
     border-radius: 50%;
     background-color: #ffffff;
-  }
-  
+  	}
+ 	.Voting-restaurant-grid-container {
+		display: flex;
+		flex-direction: column;	
+		align-items: center;
+		height: 100%;
+		width: 100%;
+		margin-left: 1rem;
+    background-color: #DDD8EF;
+    border-radius: 10px;
+	} 
   .Voting-restaurant-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin-left: 1rem;
-    background-color: #DDD8EF;
+		box-sizing: border-box;
+		height: 100%;
+		width: 100%;
+    gap: 1.5rem;
     padding: 20px;
-    border-radius: 10px;
   }
   
   .Voting-restaurant-option {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
     background: white;
-    border: 2px solid transparent;
     padding: 1rem;
     padding-top: 1.7rem;
     border-radius: 12px;
     cursor: pointer;
     text-align: center;
+
   }
   
   .Voting-restaurant-option.selected {
@@ -98,19 +186,20 @@
   }
   
   .Voting-restaurant-option img {
-    width: 100px;
     height: 100px;
-    object-fit: contain;
+    width: 100px;
+    object-fit: cover;
     border: 2px solid #DDD8EF;
-    border-radius: 100px
+    border-radius: 100px;
   }
   
   .Voting-submit-button {
-    grid-column: span 2;
+		height: 40px;
+		width: 90%;
+		margin-bottom: 1rem;
     background: #6a41c1;
     color: white;
     border: none;
-    padding: 0.2rem;
     border-radius: 10px;
     font-weight: bolder;
     font-size: large;
@@ -130,7 +219,10 @@
   }
   
   .Voting-results-section {
+		box-sizing: border-box;
     margin-top: 0.5rem;
+		width: 100%;
+		max-width: 1200px;
     background: #DDD8EF;
     padding: 1rem;
     border-radius: 12px;
@@ -182,5 +274,93 @@
     text-align: center;
     z-index: 1000;
   }
+	/* -------------------------- WAIT LAYOUT ---------------------------------- */
   
+  .Wait-voting-results-section {
+		display: flex;
+		flex-direction: column;
+		margin-left: 1rem;
+    background: #DDD8EF;
+    border-radius: 12px;
+		align-items: center;
+		overflow-y: scroll;
+		min-height: 500px;
+		width: 100%;
+		/* remove scrollbar from party column*/
+		scrollbar-width: none;
+  }
+
+  .party-column::-webkit-scrollbar {
+ 			width: 0;
+		 height: 0;	
+	}
   
+	.Wait-voting-results-title {
+    text-align: center;
+    color: #3d2b6d;
+    font-family: "Chivo";
+		font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .Wait-result-row {
+    display: flex;
+		align-items: center;
+		flex-direction: row;
+		margin: .5rem 2rem;
+		width: 85%;
+  }
+  
+  .Wait-result-icon {
+    width: 5%;
+    height: auto;
+    border-radius: 50%;
+    background: #ffffff;
+  }
+  
+  .Wait-result-bar-container {
+		display: flex;
+		height: 15px;
+		width:100%;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+		margin: 0rem 1rem;
+  }
+  
+  .Wait-result-bar {
+    background: #5b41a8;
+    height: 100%;
+    border-radius: 8px;
+  }
+  
+  .Wait-vote-count {
+    font-weight: bold;
+    color: #3d2b6d;
+  }
+  
+	/* -------------------------- END LAYOUT ----------------------------------- */
+  
+	.End-results-section {
+		background: #DDD8EF;
+		display: flex;
+		height: auto;
+    /* margin-top: 0rem; */
+		padding: 1rem;
+    border-radius: 10px;
+		font-weight: 700; 
+		font-size: 1.5rem;
+    color: #3d2b6d;
+		width: 100%;
+		margin-left: 1rem;
+    /*max-height: 409.28px;*/
+    align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
+	.End-results-icon {
+		margin-bottom: .5rem;	
+		height: 150px;
+		width: 150px;
+		border-radius: 50%;
+	}

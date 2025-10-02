@@ -3,10 +3,21 @@ export default function Vote(props) {
 	const resultBarRef = useRef(null);
 	const [ resultBarSize, setResultBarSize] = useState({width: 0, height: 0});
   const formattedPhase = {
-  "round_one": "Round One",
-  "round_two": "Round Two",
-  "tiebreaker":"Tiebreaker"
+  "round_one": "ROUND ONE",
+  "round_two": "ROUND TWO",
+  "tiebreaker":"TIEBREAKER"
   }
+
+	const restaurantItems = props.finalRestaurants.filter(restaurant =>
+    (props.choices || []).includes(restaurant.id)
+  );
+	const dummyCount = 5;
+	const itemCount = restaurantItems.length + dummyCount;
+	const gridSize = Math.ceil(Math.sqrt(itemCount));
+	const gridStyle = {
+		gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+		gridTemplateRows: `repeat(${gridSize},  1fr)`
+	}
 
   useEffect(() => {
    	const getResultBarSize = () => {
@@ -27,9 +38,8 @@ export default function Vote(props) {
 return (
     <div className="voting-page">
     <div className="voting-title-container">
-      <h1 className="voting-title">VOTING BEGINS</h1>
+      <h1 className="voting-title">{formattedPhase[props.phaseState]}</h1>
       </div>
-      <h3 className="round-title">{formattedPhase[props.phaseState]}</h3>
 			<p> {props.timer} </p>
       <div className="voting-section">
         <div className="party-column">
@@ -44,26 +54,43 @@ return (
           );
           })}
         </div>
-
-        <div className="Voting-restaurant-grid">
-          {props.finalRestaurants.map(r => (
-            <div
-              key={r.id}
-              className={`Voting-restaurant-option ${props.vote === r.id ? "selected" : ""}`}
-              onClick={() => props.setVote(r.id)}
-            >
-              <img src={r.image} alt={r.name} />
-            </div>
-          ))}
-          <button className="Voting-submit-button" onClick={props.sendVote} >
-            Submit
-          </button>
-        </div>
+				<div className="Voting-restaurant-grid-container">
+        	<div className="Voting-restaurant-grid"
+						style={gridStyle}
+						>
+						{props.finalRestaurants.filter(restaurant => 
+							(props.choices || []).includes(restaurant.id)
+						).map(r => (
+        	    <div
+        	      key={r.id}
+        	      className={`Voting-restaurant-option ${props.vote === r.id ? "selected" : ""}`}
+        	      onClick={() => props.setVote(r.id)}
+        	    >
+        	      <img src={r.image} alt={r.name} />
+        	    </div>
+        	  ))}
+						{(() => {
+							const gridItems = [];
+							for (let i = 0; i < 5; i++) {
+								gridItems.push(
+									<div className="Voting-restaurant-option">
+        	      		<img src={props.finalRestaurants[0].image} alt="dummy" />
+        	    		</div>);
+							}
+							return gridItems
+						})()}
+        	</div>
+      	  <button className="Voting-submit-button" onClick={props.sendVote} >
+      	    Submit
+      	  </button>
+				</div>
       </div>
 
       <h2 className="Voting-results-title">Results</h2>
       <div className="Voting-results-section">
-        {props.finalRestaurants.map((r, i) => (
+        {props.finalRestaurants.filter(restaurant => 
+					(props.choices || []).includes(restaurant.id)
+				).map((r, i) => (
           <div key={i} className="result-row">
             <img src={r.image} alt={r.name} className="result-icon" />
             <div ref={resultBarRef} className="result-bar-container">
