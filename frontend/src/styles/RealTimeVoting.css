@@ -221,6 +221,7 @@
   
   .Voting-restaurant-option.selected {
     border-color: #3d2b6d;
+		border-style: solid;
   }
   
   .Voting-restaurant-option img {
