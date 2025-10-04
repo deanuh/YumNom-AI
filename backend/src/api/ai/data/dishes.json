@@ -1,14 +1,5 @@
 [
     {
-      "id": "margherita",
-      "name": "Margherita Pizza",
-      "cuisine": "Italian",
-      "ingredients": ["tomato", "mozzarella", "basil", "wheat"],
-      "dietTags": ["vegetarian"],
-      "price": "$$",
-      "img": "https://images.unsplash.com/photo-1548365328-9f547fb09530"
-    },
-    {
       "id": "chicken_bowl",
       "name": "Chicken Burrito Bowl",
       "cuisine": "Mexican",

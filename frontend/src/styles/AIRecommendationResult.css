@@ -122,3 +122,93 @@
     transform: scale(1.2);
   }
   
+  .review-section {
+    margin-top: 2rem;
+    text-align: center;            /* center everything in the block */
+  }
+  
+  .stars,
+  .review-stars {                  /* center the stars row */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 0.5rem;
+  }
+  
+  .review-rating-value {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #65558F;
+  }
+  
+  /* tag chips */
+  .chips {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .chip {
+    padding: 6px 10px;
+    border-radius: 9999px;
+    border: 1px solid #8f5ad3;
+    background: transparent;
+    color: #3c2a66;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .chip.is-selected {
+    background: #8f5ad3;
+    color: #fff;
+    border-color: #8f5ad3;
+  }
+  
+  /* comment box */
+  .review-textarea {
+    width: 100%;
+    max-width: 720px;
+    margin: 8px auto 0;
+    display: block;
+    border: 1px solid #dfdcf2;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif; 
+
+  }
+  
+  /* submit button */
+  .review-submit-btn {
+    margin: 15px auto 0;
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-weight: 700;
+    background-color: #8f5ad3;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color .15s ease, transform .05s ease;
+  }
+  .review-submit-btn:hover { background-color: #6f46a8; }
+  .review-submit-btn:active { transform: translateY(1px); }
+  .review-submit-btn:disabled {
+    background-color: #c8b6e7;
+    cursor: not-allowed;
+  }
+  
+  /* inline status banner */
+  .review-banner {
+    margin: 10px auto 0;
+    padding: 8px 12px;
+    max-width: 720px;
+    border-radius: 8px;
+    font-size: 14px;
+    border: 1px solid transparent;
+  }
+  .review-banner.success { background:#e6fbf1; color:#124a2f; border-color:#b6f0d5; }
+  .review-banner.error   { background:#ffe8e8; color:#7a1d1d; border-color:#f3b0b0; }
+  .review-banner.saving  { background:#f6f3ff; color:#3c2a66; border-color:#dfdcf2; }

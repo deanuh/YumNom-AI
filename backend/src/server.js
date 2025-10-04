@@ -5,7 +5,8 @@ import http from 'http';
 import 'dotenv/config';
 import aiRoutes from './api/ai/routes.js';
 import { getFoodFatSecret, getRestaurantFatSecret} from './api/fatsecret.js';
-import { getRestaurantTripAdvisor } from './api/tripadvisor.js';
+import { getRestaurantTripAdvisor, getTAPlaceDetails } from './api/tripadvisor.js';
+import { fetchFoodImageByDish, fetchUnsplashImageFor } from "./api/unsplash.js";
 import { getUserCityOpenCage } from './api/opencage.js';
 import { authMiddleware } from './auth/auth.js';
 import {
@@ -14,6 +15,7 @@ import {
   createFavorite, removeFavorite, listFavorites,
   createRecommendation, removeRecommendation,
   createVote, removeVote,
+  savePreferences, readPreferences,
 } from './api/firestore.js';
 import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
 import { addGroup, getGroup } from './firebase/dbFunctions.js'
@@ -183,8 +185,30 @@ io.on("connection", (socket) => {
 // These are all the routers available on the server. These will be moved
 // to their own file via a router export at a later time.
 app.get('/restaurant', getRestaurantTripAdvisor);
+app.get("/api/restaurants/:id", getTAPlaceDetails);  
 app.get('/food', getFoodFatSecret);
 app.get('/city', getUserCityOpenCage);
+// Return an image URL for a dish name/cuisine using Unsplash (server-side key)
+app.get("/api/images/dish", async (req, res) => {
+	try {
+	  const name = (req.query.name || "").trim();
+	  const cuisine = (req.query.cuisine || "").trim();
+	  const category = (req.query.category || cuisine || "food").trim();
+	  const seed = (req.query.seed || name || Date.now()).toString();
+  
+	  // 1) Prefer a specific dish match
+	  const byDish = name ? await fetchFoodImageByDish(name, cuisine) : null;
+  
+	  // 2) Otherwise use a category/cuisine fallback
+	  const url = byDish || (await fetchUnsplashImageFor(category, seed, name));
+  
+	  res.json({ url: url || null });
+	} catch (e) {
+	  console.error("GET /api/images/dish failed:", e.message);
+	  res.status(500).json({ url: null });
+	}
+  });
+  
 
 // Users
 app.post("/users", authMiddleware, createUser);
@@ -206,6 +230,10 @@ app.delete("/recommendations/:recommendationId", authMiddleware, removeRecommend
 // Votes
 app.post("/votes", authMiddleware, createVote);
 app.delete("/votes/:voteId", authMiddleware, removeVote);
+
+// Preferences
+app.get("/preferences", authMiddleware, readPreferences);
+app.post("/preferences", authMiddleware, savePreferences);
 
 
 

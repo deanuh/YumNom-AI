@@ -126,4 +126,36 @@ async function getRestaurantTripAdvisor(req, res, next) {
   }
 }
 
-export { getRestaurantTripAdvisor };
+/**
+ * GET /restaurants/:id/details
+ * Fetch detailed info for a specific TripAdvisor place.
+ *
+ * Params:
+ *  - id (location_id from TripAdvisor)
+ *
+ * Returns:
+ *  - id, name, address, phone, website, hours, rating
+ *  (safely extracted from API response)
+ */
+
+async function getTAPlaceDetails(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { data } = await axios.get(`${base_url}/v1/location/${id}/details`, {
+      params: { key: api_key, language: "en" },
+      headers: { accept: "application/json" },
+    });
+    res.json({
+      location_id: data?.location_id,
+      name: data?.name,
+      address: data?.address_obj || null,
+      phone: data?.phone || null,
+      website: data?.website || null,   // <- use this for “View Menu / Website”
+      hours: data?.hours || null,
+      rating: data?.rating || null,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+export { getRestaurantTripAdvisor, getTAPlaceDetails };

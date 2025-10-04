@@ -24,6 +24,7 @@ import VotingPage from "./pages/RealTimeVoting";
 import GroupMealParty from "./pages/GroupMealParty";
 import AIRecommendationPage from "./pages/AIRecommendationPage";
 import AIRecommendationResult from "./pages/AIRecommendationResult";
+import AIRestaurantResults from "./pages/AIRestaurantResults";
 
 // Settings Pages
 import Terms from "./pages/settingsInfo/terms";
@@ -65,6 +66,7 @@ function App() {
           <Route path="/group-meal" element={<GroupMealParty />} />
           <Route path="/ai-recommendation" element={<AIRecommendationPage />} />
           <Route path="/ai-result" element={<AIRecommendationResult />} />
+          <Route path="/restaurants" element={<AIRestaurantResults />} />  {/* <-- add this */}
           <Route path="/terms" element={<Terms />} />
           <Route path="/changePass" element={<ChangePassword />} />
           <Route path="/emailSettings" element={<EmailSettings />} />

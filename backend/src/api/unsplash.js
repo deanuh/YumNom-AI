@@ -149,3 +149,49 @@ export async function fetchUnsplashImageFor(category, seed, name = "") {
   const idx = hashSeed(seed) % set.length;
   return set[idx];
 }
+
+/**
+ * Fetch a food-related image based on dish name + cuisine.
+ * - Example: ("Pad Thai", "Thai") → search Unsplash
+ * - Filters results to ensure they look like food
+ */
+
+export async function fetchFoodImageByDish(name, cuisine = "") {
+  if (!unsplashKey) {
+    console.error("Missing UNSPLASH_ACCESS_KEY in .env");
+    return null;
+  }
+
+  const q = `${name} ${cuisine || ""} food dish plated`.trim();
+
+  try {
+    const { data } = await axios.get("https://api.unsplash.com/search/photos", {
+      params: {
+        query: q,
+        per_page: 12,
+        orientation: "portrait",
+        content_filter: "high",
+      },
+      headers: { Authorization: `Client-ID ${unsplashKey}` },
+    });
+
+    const results = Array.isArray(data?.results) ? data.results : [];
+    
+    // Check if photo looks like food
+    const looksFoody = (r) => {
+      const alt = (r?.alt_description || "").toLowerCase();
+      const tags = (r?.tags || []).map(t => (t.title || "").toLowerCase());
+      return (
+        /\b(food|dish|meal|cuisine|plate|bowl|noodles|soup|salad|sushi|pizza|burger|taco|stir[-\s]?fry)\b/.test(alt) ||
+        tags.some(t => /\b(food|dish|meal|cuisine|plate|bowl|restaurant|cooking)\b/.test(t))
+      );
+    };
+
+    // Pick the first "foody" image, or fallback to first result
+    const pick = results.find(looksFoody) || results[0];
+    return pick?.urls?.regular || pick?.urls?.small || null;
+  } catch (err) {
+    console.error("Unsplash dish fetch failed:", err.message);
+    return null;
+  }
+}
