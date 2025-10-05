@@ -8,6 +8,16 @@
   
 	/* -------------------------- JOIN LAYOUT ---------------------------------- */
  
+	.Join-section {
+    display: flex;
+		flex-direction: row;
+		max-height: 600px;
+		height: 100%;
+		max-width: 1200px;
+		width: 100%;
+		margin-bottom: 1rem;
+    /* margin-top: 0rem; */
+  }
   .Join-party-section {
 
 		background: #DDD8EF;
@@ -15,10 +25,10 @@
     flex-direction: column;
     border-radius: 10px;
     color: #3d2b6d;
-		width: 100%;
-		height: fit-content;
+		width: 50%;
+		height: 100%;
 		overflow-y: scroll;
-		max-height: 750px;
+		max-height: 1000px;
 		max-width: 750px;
     /* margin-top: 0rem; */
 
@@ -71,6 +81,43 @@
     border-radius: 50%;
     background-color: #ffffff;
   }
+
+	.Join-search-container {	
+		border-style: solid;
+		height: 100%;
+		max-height: 1000px;
+		width:50%;
+		margin-left: 1rem;
+	}
+	
+	.Join-section > .restaurant-wrapper {
+		border-style: none;
+		margin: 0 0 0 1rem;
+    background-color: #DDD8EF;
+		box-shadow: none;
+		height: 100%;
+	}
+
+	.Join-section > .restaurant-wrapper > .restaurant-section {
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+
+	.Join-section > .restaurant-wrapper > .restaurant-section > .group-search-results {
+		overflow-y: scroll;
+	}
+
+	.voting-page > .display-wrapper {
+		margin: 0;
+		border-style: none;
+    background-color: #DDD8EF;
+		box-shadow: none;
+		max-width: 1200px;
+	}
+
+
 
   	/* -------------------------- VOTE LAYOUT ---------------------------------- */
 .voting-page {

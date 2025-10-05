@@ -1,29 +1,22 @@
 import React from "react";
 // for the votin page to receive the iamge of the restaurant chosen
-import { useNavigate } from "react-router-dom";
 
 
-function SelectedRestaurantDisplay({ chosenRestaurant, selectedFriendObjects }) {
-  const navigate = useNavigate();
-
-  const handleContinue = () => {
-    navigate("/RealTimeVoting", { state: { chosenRestaurant, selectedFriendObjects } }); 
-    // Pass the restaurant name (or object) as state
-  };
+function SelectedRestaurantDisplay({ restaurantObject, handleContinue }) {
 
   return (
     <div className="display-wrapper">
       <h3>You Chose:</h3>
       <div className="selection-display">
-        {chosenRestaurant && (
+        {restaurantObject && (
           <>
             <div className="selected-image">
               <img
-                src={`/${chosenRestaurant.toLowerCase()}.png`}
-                alt={chosenRestaurant}
+                src={`${restaurantObject.logo_url}`}
+                alt={restaurantObject.name}
               />
             </div>
-            <button className="voting-button" onClick={handleContinue}>Continue to Voting</button>
+            <button className="voting-button" onClick={() => {handleContinue(restaurantObject.name)}}>Submit</button>
           </>
         )}
       </div>

@@ -1,6 +1,6 @@
 import React from "react";
 
-function SearchRestaurant({ restaurantOptions, search, setSearch, handleRestaurantSelect }) {
+function SearchRestaurant({ restaurantOptions, search, setSearch, setSelectedRestaurant}) {
   return (
     <div className="restaurant-wrapper">
 
@@ -13,17 +13,17 @@ function SearchRestaurant({ restaurantOptions, search, setSearch, handleRestaura
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search..."
         />
-        <button onClick={() => handleRestaurantSelect(search)}>Enter</button>
+        <button onClick={() => setSelectedRestaurant(search)}>Enter</button>
       </div>
 
       <div className="group-search-results">
         {restaurantOptions
-          .filter((r) => r.toLowerCase().includes(search.toLowerCase()))
+          .filter((r) => (r.toLowerCase().includes(search.toLowerCase()))).slice(0, 10)// maybe change later to change 10 to some other number.
           .map((r) => (
             <div
               className="restaurant-option"
               key={r}
-              onClick={() => handleRestaurantSelect(r)}
+              onClick={() => setSelectedRestaurant(r)}
             >
               {r}
             </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/GroupMealParty.css";
+import { useNavigate } from "react-router-dom";
 
 import InviteFriendList from "../components/GroupMealParty/InviteFriendList";
 import AcceptedMembers from "../components/GroupMealParty/AcceptedMembers";
@@ -20,14 +21,19 @@ const restaurantOptions = ["Chipotle", "Chick-fil-a", "Pizza Hut", "WingStop"];
 function GroupMealParty() {
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [search, setSearch] = useState("");
-  const [chosenRestaurant, setChosenRestaurant] = useState("");
-
-  const handleRestaurantSelect = (rest) => setChosenRestaurant(rest);
+  const [selectedRestaurant, setSelectedRestaurant] = useState("");
 
     // BUILD selectedFriendObjects HERE (right before return)
   const selectedFriendObjects = selectedFriends
     .map(username => friendsList.find(friend => friend.username === username))
     .filter(Boolean);
+
+  const navigate = useNavigate();
+
+  const handleContinue = () => {
+    navigate("/RealTimeVoting", { state: { selectedRestaurant } }); 
+    // Pass the restaurant name (or object) as state
+  };
 
 
   return (
@@ -55,11 +61,11 @@ function GroupMealParty() {
         restaurantOptions={restaurantOptions}
         search={search}
         setSearch={setSearch}
-        handleRestaurantSelect={handleRestaurantSelect}
+        setSelectedRestaurant={setSelectedRestaurant}
       />
       
 
-      <SelectedRestaurantDisplay chosenRestaurant={chosenRestaurant} selectedFriendObjects={ selectedFriendObjects}/>
+      <SelectedRestaurantDisplay restaurantObject={selectedRestaurant} handleContinue={handleContinue}/>
     </div>
   );
 }

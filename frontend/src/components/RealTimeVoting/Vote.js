@@ -1,7 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
 export default function Vote(props) {
-	const resultBarRef = useRef(null);
-	const [ resultBarSize, setResultBarSize] = useState({width: 0, height: 0});
 	const gridRef = useRef(null);
 	const [gridSize, setGridSize] = useState({width:0, height: 0});
 	const animationClass = props.timer <= 15 ? "animate" : "";
@@ -10,15 +8,14 @@ export default function Vote(props) {
   "round_two": "ROUND TWO",
   "tiebreaker":"TIEBREAKER"
   }
-
 	const restaurantItems = props.finalRestaurants.filter(restaurant =>
     (props.choices || []).includes(restaurant.id)
   );
-	const dummyCount = 10;
+	const dummyCount = 0;
 	const itemCount = restaurantItems.length + dummyCount;
 	const squareGridSize = Math.ceil(Math.sqrt(itemCount));
 	let { width } = gridSize
-	console.log(gridSize);
+
 	const max_grid_w = Math.trunc(width / 200); // approximately the size of the grid cell.
 	let gridStyle = {
 			gridTemplateColumns: `repeat(${squareGridSize}, 1fr)`,
@@ -42,17 +39,7 @@ export default function Vote(props) {
 		window.addEventListener("resize", getGridSize);
 
 
-   	const getResultBarSize = () => {
-			const { width, height } = resultBarRef.current.getBoundingClientRect();
-			setResultBarSize({ width, height });
-		}
-		if (resultBarRef.current) {
-			getResultBarSize();
-		}
-		window.addEventListener("resize", getResultBarSize);
-
     return () => {
-   		window.removeEventListener("resize", getResultBarSize);
    		window.removeEventListener("resize", getGridSize);
     };
 
@@ -116,10 +103,10 @@ return (
 				).map((r, i) => (
           <div key={i} className="result-row">
             <img src={r.image} alt={r.name} className="result-icon" />
-            <div ref={resultBarRef} className="result-bar-container">
+            <div className="result-bar-container">
               <div
                 className="result-bar"
-                style={{ width: `${(props.tally[r.id] || 0) / Object.keys(props.partyMembers).length * resultBarSize.width}px` }}  // the 110 is for how long the vote will appear on the bar
+                style={{ width: `${((props.tally[r.id] || 0) / Object.keys(props.partyMembers).length) * 100}%` }}  // the 110 is for how long the vote will appear on the bar
               />
             </div>
             <div className="vote-count">({props.tally[r.id] || 0})</div>

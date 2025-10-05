@@ -7,6 +7,7 @@ import { getFoodFatSecret, getRestaurantFatSecret} from './api/fatsecret.js';
 import { getRestaurantTripAdvisor } from './api/tripadvisor.js';
 import { getUserCityOpenCage } from './api/opencage.js';
 import { authMiddleware } from './auth/auth.js';
+import { getLogo, getLogoData } from './api/logo.js';
 import {
   createUser, removeUser,
   createGroup, removeGroup,
@@ -23,8 +24,6 @@ import deleteUserRouter from "./api/deleteUser.js";
 
 let app = express();
 app.use(express.json());
-let accessToken = null;
-let expirationDate = Date.now();
 
 //allow requests from development origin
 
@@ -76,7 +75,7 @@ io.use(async (socket, next) => {
   }
 });
 
-function startPhase(groupId, duration, phaseName, choices) {
+function startPhase(groupId, duration, phaseName, nominations) {
 	if (!groupInfo[groupId]) { // initialize object 
 		groupInfo[groupId] = { 
 			timer: {
@@ -88,18 +87,22 @@ function startPhase(groupId, duration, phaseName, choices) {
 				polling: {}, //current votes for voting phases. {"userIdOne": "1", "userIdTwo": "2", ...}
 				results: {} //result for waiting phases and end {"1": 10, "2": 3, "3": 0}
 			},
-			choices //available restaurants to choose ["1", "2", "3"]
+			choices: [], //available restaurants to choose ["1", "2", "3"]
+			nominations // On join, stores each user's restaurant string search entry. i.e. "Raising Cane". After the join phase, it holds the finalRestaurants format of all restaurants nominated. [{"id": "0", "name": "Raising Cane", "logo_url": "..."}, {...}]
 		};
 	}
 
 	const waitTime = 10;
 	const voteTime = 30;
+
+	if (!groupInfo[groupId]) return;
 	groupInfo[groupId].state = phaseName; //name of current phase.
 	groupInfo[groupId].timer.endsAt = Date.now() + duration * 1000;
 	console.log(`choices on ${phaseName}: ${groupInfo[groupId].choices}`);
 	io.to(groupId).emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state, choices: groupInfo[groupId].choices});
 	//send event and end after timeout
 	groupInfo[groupId].timer.main = setTimeout(() => {
+		if (!groupInfo[groupId]) return;
 		const baseVotes = Object.fromEntries(groupInfo[groupId].choices.map((choice) => [choice, 0])); 
 		//init object with key as restaurant and values 0
 		const tally = Object.values(groupInfo[groupId].votes.polling).reduce((acc, vote) => {
@@ -109,14 +112,54 @@ function startPhase(groupId, duration, phaseName, choices) {
 		const voteResult = {...baseVotes, ...tally}; //all restaurants and their vote count, even with 0 votes.
 		groupInfo[groupId].votes.results = voteResult;
 		groupInfo[groupId].votes.polling = {} //reset for next phase
+		if (groupInfo[groupId]?.timer.main) clearTimeout(groupInfo[groupId].timer.main);
+		if (groupInfo[groupId]?.timer.wait) clearTimeout(groupInfo[groupId].timer.wait);
 		delete groupInfo[groupId].timer.main; 
 
 		let nextPhase; // on null, end. on val, go to next phase.
 		switch (phaseName) {
 			case "join": 
-				nextPhase = "round_one";
-				startPhase(groupId,  voteTime, nextPhase); //skip wait.
+				console.log(groupInfo[groupId].nominations);
+				if (Object.keys(groupInfo[groupId].nominations).length === 0) {
+					console.log("no nominations");
+					delete groupInfo[groupId].timer; //lose all timers
+					groupInfo[groupId].state = "end_phase"; // unique end event, group will be deleted before sending.
+					getGroupFromGroupId(groupId)
+					.then(groupData => {	
+						return deleteGroup(groupData.owner_id)
+					})
+					.catch(err => {
+						console.error(err);
+					});
+					if (groupInfo[groupId]?.timer.main) clearTimeout(groupInfo[groupId].timer.main);
+					if (groupInfo[groupId]?.timer.wait) clearTimeout(groupInfo[groupId].timer.wait);
+					delete groupInfo[groupId];
 				return;
+				}
+				else {
+					nextPhase = "round_one";
+					const nominationList = Object.values(groupInfo[groupId].nominations);
+					console.log(nominationList);
+					const uniqueRestaurantObjects = Object.values(nominationList.reduce((acc, nomination) => {
+						acc[nomination.logo_url] = { ...nomination };
+						return acc;
+					}, {}));
+					console.log(`uniqueRestaurantObjects: ${JSON.stringify(uniqueRestaurantObjects)}`);
+					const restaurantWithId = uniqueRestaurantObjects.map((obj, i) => ({
+						id: `${i}`,
+						image: obj.logo_url,
+						name: obj.name
+					}));
+					console.log(`restaurantWithId: ${JSON.stringify(restaurantWithId)}`);
+
+					groupInfo[groupId].nominations = restaurantWithId;
+					console.log(groupInfo[groupId].nominations);
+					groupInfo[groupId].choices = groupInfo[groupId].nominations.map(obj => obj.id);
+					console.log(groupInfo[groupId].choices);
+					io.to(groupId).emit("receive_nominations", groupInfo[groupId].nominations);
+					startPhase(groupId,  voteTime, nextPhase); //skip wait.
+					return;
+				}
 			case "round_one":
 				nextPhase = "round_two";
 				break;
@@ -135,6 +178,7 @@ function startPhase(groupId, duration, phaseName, choices) {
 		io.to(groupId).emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state, results: groupInfo[groupId].votes.results});
 		//send event and start wait phase
 		groupInfo[groupId].timer.wait = setTimeout(() => {
+			if (!groupInfo[groupId]) return;
 			const highestVote = Math.max(...Object.values(groupInfo[groupId].votes.results));
 			//console.log(`results: ${JSON.stringify(groupInfo[groupId].votes.results)}`);
 			const topVotes = Object.keys(groupInfo[groupId].votes.results).filter(result => groupInfo[groupId].votes.results[result] === highestVote);
@@ -146,7 +190,7 @@ function startPhase(groupId, duration, phaseName, choices) {
 					nextPhase = null; // end phase early if there was a clear winner.
 			}
 			if (nextPhase) {
-								startPhase(groupId,  voteTime, nextPhase, groupInfo[groupId].choices);
+								startPhase(groupId,  voteTime, nextPhase);
 			} else { // only if nextPhase is null. meaning no more voting
 				delete groupInfo[groupId].timer; //lose all timers
 				groupInfo[groupId].state = "end_phase"; // unique end event, group will be deleted before sending.
@@ -160,6 +204,7 @@ function startPhase(groupId, duration, phaseName, choices) {
 				io.to(groupId).emit("change_phase", { endsAt: Date.now(), phaseName: groupInfo[groupId].state, winner: groupInfo[groupId].choices[0]});
 				// group is now officially gone
 			}
+			delete groupInfo[groupId];
 			return; // all nextPhase values reach this eventually.
 		}, waitTime * 1000); //  (duration) ms * 1000 = (duration) sec
 
@@ -204,7 +249,7 @@ io.on("connection", (socket) => {
 				console.log(`groupId: ${groupId}, createdGroup: ${createdGroup}`);
 
 				if (createdGroup) {
-					startPhase(groupId, 30, "join", ["1", "2", "3"]); // placeholder array. starts voting here
+					startPhase(groupId, 30, "join", {}); // bring GroupMealParty state here.
 				}
 				socket.groupId = groupId;
         socket.join(socket.groupId);
@@ -223,15 +268,32 @@ io.on("connection", (socket) => {
           username: uidInfo[socket.uid].username
 				});
 				console.log(`socket.uid: ${socket.uid}, profile_picture: ${uidInfo[socket.uid].profile_picture}, uidInfo: ${JSON.stringify(uidInfo)}`);
+				if (!groupInfo[groupId]) return;
 				socket.emit("change_phase", { endsAt: groupInfo[groupId].timer.endsAt, phaseName: groupInfo[groupId].state, results: groupInfo[groupId].votes.results, choices: groupInfo[groupId].choices});
+				socket.emit("receive_nominations", groupInfo[groupId].nominations);
 				//client is sent info on current phase's state.
       } catch (err) {
         socket.emit("join_error", { message: err.message });
       }
     });
 
+		socket.on("send_nomination", async ( nomination ) => {
+			if (!socket.groupId) return socket.emit("join_error", { message: "User not in room."});
+			if (!nomination || typeof nomination != "string") return;
+			if (!groupInfo[socket.groupId]) return;
+			if (groupInfo[socket.groupId].state == "join") {
+				const logoData = await getLogoData(nomination);
+				groupInfo[socket.groupId].nominations[socket.uid] = logoData;
+				console.log(`UID: ${socket.uid}`);
+				console.log(`nomination: ${JSON.stringify(nomination)}`);
+				console.log(`nominations: ${JSON.stringify(groupInfo[socket.groupId].nominations)}`);
+			}
+		});
+
+
     socket.on("send_vote", ( vote ) => {
 			if (!socket.groupId) return socket.emit("join_error", { message: "User not in room."});
+			if (!groupInfo[socket.groupId]) return;
 			if (
 				groupInfo[socket.groupId].state ==  "round_one" ||  // only accept votes that are valid.
 				groupInfo[socket.groupId].state ==  "round_two" || 
@@ -248,6 +310,10 @@ io.on("connection", (socket) => {
     });
 	socket.on("disconnect", (reason) => {
 		delete users[socket.uid]; //socket is no longer valid, delete incase client rejoins.
+		if (socket.groupId && groupInfo[socket.groupId]) {
+		  delete groupInfo[socket.groupId].nominations[socket.uid];
+		  delete groupInfo[socket.groupId].votes.polling[socket.uid];
+		}
 		io.to(socket.groupId).emit("left_room", socket.uid); //tell clients to drop leaver's data.
 		console.log(`User ${socket.uid} disconnected`);
 		
@@ -261,7 +327,8 @@ io.on("connection", (socket) => {
 // These are all the routers available on the server. These will be moved
 // to their own file via a router export at a later time.
 app.get('/restaurant', getRestaurantTripAdvisor);
-app.get('/food', getFoodFatSecret);
+app.get('/restaurantFatSecret', getRestaurantFatSecret);
+app.get('/logo', getLogo);
 app.get('/city', getUserCityOpenCage);
 
 // Users

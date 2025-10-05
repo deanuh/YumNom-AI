@@ -17,19 +17,6 @@ return (
       	      </div>
       	    );
       	    })}
-						{(() => {
-							const dummies = [];
-							for (let i = 0; i < 7; i++) {
-								dummies.push(
-									<div className="party-avatar">
-										<img src="/ban_gato.png" alt="gato" />
-										<div>dummy</div> 
-									</div>
-								);
-							}
-							return dummies;
-						})()}
-
 				</div>
 			<div className="End-results-section">
 			{(() => { 

@@ -9,11 +9,6 @@ import Vote from "../components/RealTimeVoting/Vote.js"
 import Wait from "../components/RealTimeVoting/Wait.js"
 import End from "../components/RealTimeVoting/End.js"
 
-const restaurants = [
-  { id: "1", name: "Chipotle", image: "chipotle.png" },
-  { id: "2", name: "Pizza Hut", image: "pizzahut.png" },
-  { id: "3", name: "Wingstop", image: "wingstop.png" },
-];
 
 // const partyMembers = [
 //   { name: "Banana", role: "Host", image: "/ban_gato.png" },
@@ -42,18 +37,16 @@ export default function VotingPage() {
 	const [winner, setWinner] = useState(null);
 
 	// create a "finalRestaurants" array to display
-	const finalRestaurants = [...restaurants];
+	const [finalRestaurants, setFinalRestaurants] =  useState([]);
 	
 	
 	// If the chosenRestaurant is NOT already in the list, add it
-	if (chosenRestaurant && !restaurants.some(r => r.name.toLowerCase() === chosenRestaurant.toLowerCase())) {
-	finalRestaurants.push({
-	    // id: restaurants.length + 1,  // unique id
-	    id: 4,
-	    name: chosenRestaurant,
-	    image: `${chosenRestaurant.toLowerCase()}.png`
-	});
-	}
+	//
+	const sendNomination = (nomination) => {
+		if (socketRef.current) {
+			socketRef.current.emit("send_nomination", nomination)
+		}
+	};
 
 	const sendVote = () => { // ------------------------------------- Submitted by martin
 		if (socketRef.current) {
@@ -114,6 +107,10 @@ export default function VotingPage() {
 					    return updated;
 					  });
 					});
+
+					socketRef.current.on("receive_nominations", (nominations) => {
+						setFinalRestaurants(nominations);
+					});
 					
 					socketRef.current.on("get_members", (party) => {
 						setPartyMembers(party);
@@ -165,7 +162,7 @@ export default function VotingPage() {
 	function renderPhase(phaseState) {
 		switch (phaseState) { 
   	      case "join":
-  	          return(<Join timer={timer} partyMembers={partyMembers} />);
+  	          return(<Join timer={timer} partyMembers={partyMembers} sendNomination={sendNomination} finalRestaurants={finalRestaurants} />);
   	      case "waiting_phase":
   	          return(<Wait timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} tally={tally} results={results} />);
   	      case "round_one": 
