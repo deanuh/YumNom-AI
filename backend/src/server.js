@@ -122,7 +122,6 @@ function startPhase(groupId, duration, phaseName, nominations) {
 				console.log(groupInfo[groupId].nominations);
 				if (Object.keys(groupInfo[groupId].nominations).length === 0) {
 					console.log("no nominations");
-					delete groupInfo[groupId].timer; //lose all timers
 					groupInfo[groupId].state = "end_phase"; // unique end event, group will be deleted before sending.
 					getGroupFromGroupId(groupId)
 					.then(groupData => {	
@@ -133,6 +132,7 @@ function startPhase(groupId, duration, phaseName, nominations) {
 					});
 					if (groupInfo[groupId]?.timer.main) clearTimeout(groupInfo[groupId].timer.main);
 					if (groupInfo[groupId]?.timer.wait) clearTimeout(groupInfo[groupId].timer.wait);
+					delete groupInfo[groupId].timer; //lose all timers
 					delete groupInfo[groupId];
 				return;
 				}

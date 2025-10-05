@@ -23,7 +23,7 @@ export default function VotingPage() {
 
 
 	const location = useLocation();
-	const { chosenRestaurant, selectedFriendObjects } = location.state || {}; 
+	const { selectedRestaurant } = location.state || {}; // either holds the restaurant name from GroupMealParty.js or not.
 	// pull it safely (in case state is missing)
 	const [vote, setVote] = useState(null); // Own user's vote
   const [receivedVotes, setReceivedVotes] = useState({}); //Each user's vote including own {userIdOne: 1, userIdTwo: 2, ...}
@@ -40,9 +40,10 @@ export default function VotingPage() {
 	const [finalRestaurants, setFinalRestaurants] =  useState([]);
 	
 	
-	// If the chosenRestaurant is NOT already in the list, add it
+	// If the selectedRestaurant is NOT already in the list, add it
 	//
 	const sendNomination = (nomination) => {
+		console.log(`nomination: ${nomination}`);
 		if (socketRef.current) {
 			socketRef.current.emit("send_nomination", nomination)
 		}
@@ -53,6 +54,15 @@ export default function VotingPage() {
 			socketRef.current.emit("send_vote",  vote);
 		}
 	}
+
+	useEffect(() => { // if the selectedRestaurant is updated, check if its not null (came from GroupMealParty), then nominate it for the user.
+		setTimeout(() => {  // add check or something to stop re-renders from nominating more than once.
+			if (selectedRestaurant && socketRef.current) {
+				console.log(`selectedRestaurant: ${selectedRestaurant}`);
+				sendNomination(selectedRestaurant);
+			}
+		}, 500); // 1 second for socket to connect
+	}, [selectedRestaurant]);
 
   useEffect(() => {
 		const interval = setInterval(() => { 
