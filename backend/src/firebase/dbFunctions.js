@@ -438,3 +438,51 @@ export async function getPreferences(userId) {
     throw new Error(`getPreferences failed: ${err.message}`);
   }
 }
+
+// --- PROFILE (basic) ---
+export async function getUserBasic(userId) {
+  const ref = db.collection("User").doc(userId);
+  const snap = await ref.get();
+  if (!snap.exists) throw new Error("User does not exist.");
+  const d = snap.data() || {};
+  return {
+    username: d.username || "",
+    first_name: d.first_name || "",
+    last_name: d.last_name || "",
+    profile_picture: d.profile_picture || "",
+  };
+}
+// Creates the User/{uid} doc if missing, or merges provided fields.
+// Returns the full document after upsert.
+export async function ensureUserBasic(userId, defaults = {}) {
+  const ref = db.collection("User").doc(userId);
+  const snap = await ref.get();
+
+  // sensible defaults if caller didn't pass any
+  const base = {
+    username: "",
+    first_name: "",
+    last_name: "",
+    profile_picture: "",
+    date_created: new Date().toISOString(),
+  };
+
+  // if it exists, just merge; if not, set base + defaults
+  const payload = snap.exists ? defaults : { ...base, ...defaults };
+  await ref.set(payload, { merge: true });
+  return (await ref.get()).data();
+}
+
+
+export async function updateUserBasic(userId, { username, first_name, last_name, profile_picture }) {
+  const ref = db.collection("User").doc(userId);
+  const snap = await ref.get();
+  if (!snap.exists) throw new Error("User does not exist.");
+  const payload = {};
+  if (typeof username === "string") payload.username = username;
+  if (typeof first_name === "string") payload.first_name = first_name;
+  if (typeof last_name === "string") payload.last_name = last_name;
+  if (typeof profile_picture === "string") payload.profile_picture = profile_picture;
+  await ref.set(payload, { merge: true });
+  return true;
+}

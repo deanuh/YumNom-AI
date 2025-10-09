@@ -70,17 +70,6 @@
   gap: 1rem;
 }
 
-
-.profile-header .edit-button {
-background-color: white;
-color: #6b36ba;
-border: 2px solid #6b36ba;
-border-radius: 20px;
-padding: 0.4rem 1rem;
-font-weight: 600;
-cursor: pointer;
-}
-
 .section-block {
   background-color: #ebe2f9;
   border-radius: 12px;
@@ -185,15 +174,6 @@ cursor: pointer;
   margin: 0;
 }
 
-.edit-button {
-  background-color: white;
-  color: #6b36ba;
-  border: 2px solid #3d2074;
-  border-radius: 20px;
-  padding: 0.4rem 1rem;
-  font-weight: 600;
-  cursor: pointer;
-}
 .userpro-avatar {
   width: 120px;
   height: 120px;
@@ -248,4 +228,107 @@ cursor: pointer;
     margin-bottom: 1.5rem;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
     border: 1.5px solid #6b36ba
+}
+
+.profile-card{
+  position: relative;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+  padding:18px 22px;
+  border-radius:16px;
+  background:#D0C9EB;            /* matches your theme */
+  margin-bottom: 1.5rem;
+}
+
+.profile-left{
+  display:flex; 
+  gap:16px; 
+  align-items:center;
+}
+
+.avatar{
+  width:100%; 
+  height:100%; 
+  object-fit:cover;
+}
+
+.name-block{
+  display:flex; 
+  flex-direction:column; 
+  gap:6px;}
+
+.u-name{
+  font-weight:800; 
+  font-size:20px; 
+  color:#2a1e38;
+}
+
+.u-full{
+  font-size:14px; 
+  color:#5d4a78;
+}
+
+
+.profile-right{
+  display:flex; 
+  align-items:flex-start; 
+  justify-content:flex-end; 
+  flex:1;
+}
+.edit-ic{
+  width:14px; 
+  height:14px; 
+  margin-left:8px;
+}
+
+/* Buttons */
+/* Make ONLY the Edit Profile pill white */
+.profile-card .btn-primary,
+.profile-card .btn-primary.pill {
+  background: #ffffff !important;      /* white bg */
+  color: #3d2074 !important;            /* purple text */
+  border: 2px solid #3d2074;            /* purple border */
+}
+
+/* optional: nicer hover */
+.profile-card .btn-primary:hover,
+.profile-card .btn-primary.pill:hover {
+  background: #f3edff;
+}
+
+.btn-secondary{
+  background:#ABA0D6; 
+  color:#190352; 
+  border:1px solid #9a94a4;
+  padding:8px 14px; 
+  border-radius:10px; 
+  font-weight:700; 
+  cursor:pointer;
+}
+
+.btn-primary.sm, .btn-secondary.sm{
+  padding:6px 10px; 
+  font-size:12px
+}
+
+.edit-panel{
+  min-width:340px;
+  background:#e7dffa;
+  border:1.5px solid #d2bbee;
+  border-radius:14px;
+  padding:14px;
+}
+.panel-title{font-weight:800; color:#2d1447; margin-bottom:8px;}
+.row{display:flex; align-items:center; gap:12px; margin:10px 0;}
+.row > span{width:160px; font-size:13px; color:#4b2c83;}
+.row input{flex:1; padding:8px 10px; border:1px solid #bfa9e6; border-radius:10px; background:#fff;}
+.row.two{gap:14px;}
+.row.two label{flex:1; display:flex; flex-direction:column; gap:6px;}
+.row.two label > span{width:auto;}
+.actions{display:flex; justify-content:flex-end; gap:10px; margin-top:8px;}
+.edit-panel input:disabled {
+  background: #f4f1fb;
+  color: #6f62a1;
 }

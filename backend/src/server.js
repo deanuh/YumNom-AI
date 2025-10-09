@@ -9,6 +9,7 @@ import { getRestaurantTripAdvisor, getTAPlaceDetails } from './api/tripadvisor.j
 import { fetchFoodImageByDish, fetchUnsplashImageFor } from "./api/unsplash.js";
 import { getUserCityOpenCage } from './api/opencage.js';
 import { authMiddleware } from './auth/auth.js';
+import { ensureUserBasic } from "./firebase/dbFunctions.js";
 import {
   createUser, removeUser,
   createGroup, removeGroup,
@@ -22,6 +23,8 @@ import { addGroup, getGroup } from './firebase/dbFunctions.js'
 import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
 import deleteUserRouter from "./api/deleteUser.js";
+import { getUserBasic, updateUserBasic } from './firebase/dbFunctions.js';
+
 
 let app = express();
 app.use(express.json());
@@ -214,6 +217,17 @@ app.get("/api/images/dish", async (req, res) => {
 app.post("/users", authMiddleware, createUser);
 app.delete("/users", authMiddleware, removeUser);
 
+// Create/merge the user's profile if missing, then return it
+app.post("/api/me/ensure", authMiddleware, async (req, res) => {
+	try {
+	  const uid = req.uid;                      // set by auth middleware
+	  const data = await ensureUserBasic(uid, req.body || {});
+	  res.json(data);
+	} catch (e) {
+	  res.status(400).json({ error: e.message });
+	}
+  });
+  
 // Groups
 app.post("/groups", authMiddleware, createGroup);
 app.delete("/groups", authMiddleware, removeGroup);
@@ -263,4 +277,26 @@ server.listen(7001, () => {
   console.log('Server is running on port 7001');
 });
 
+// Current user's profile
+app.get("/api/me", authMiddleware, async (req, res) => {
+	try {
+		const uid = req.uid;           // set by authMiddleware
+		const data = await getUserBasic(uid);
+		res.json(data);
+	} catch (e) {
+	  res.status(400).json({ error: e.message });
+	}
+  });
+  
+  app.put("/api/me", authMiddleware, async (req, res) => {
+	try {
+		const uid = req.uid;
+		await updateUserBasic(uid, req.body || {});
+		const fresh = await getUserBasic(uid);
+		res.json(fresh);
+	} catch (e) {
+	  res.status(400).json({ error: e.message });
+	}
+  });
+  
 export default app;
