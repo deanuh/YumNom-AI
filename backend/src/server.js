@@ -19,6 +19,7 @@ import { addGroup, getGroup } from './firebase/dbFunctions.js'
 import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
 import deleteUserRouter from "./api/deleteUser.js";
+import chatBotRouter from "./api/chatBot.js";  // had to change from { chatBotRouter} to w/o {} bc it would not actually connect
 
 let app = express();
 app.use(express.json());
@@ -208,9 +209,11 @@ app.delete("/votes/:voteId", authMiddleware, removeVote);
 
 app.use("/api", reportIssueRouter);
 
-
 // delete account NEW
 app.use("/api", deleteUserRouter);
+
+// this is for the chatBot api calling
+app.use("/api/chatBot", chatBotRouter)
 
 // THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING  -- update it works
 // // quick request logger

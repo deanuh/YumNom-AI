@@ -10,128 +10,226 @@
   width: 400px;
   height: 370px; 
   background: #f5f0fb;
-  padding: 1rem;
-  border-radius: 12px;
+  /* padding: 0.4rem; */  /* got rid of this to make the chatbot look a little better--got rid of the light purple border*/
+  border-radius: 16px;  /* changed from 12 to 16 */
   border: 4px solid #65558F;
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   z-index: 1000;
 }
 
   
-  .chatbot-header {
-    background-color: #3c2a66;
-    color: white;
-    /* padding: 0.6rem; */
-    /* font-size: 2rem; */
-    text-align: center;
-    /* font-weight:bolder; */
-    font-family: 'Cherry Bomb One', cursive;
-    font-size: 1.2rem;   /* smaller title */
-    padding: 0.5rem;
-    letter-spacing: 2px;
-    border-radius: 12px 12px 0 0;
-    margin-bottom: 0;
-    margin-top: 0;
-  }
-  
-  .chat-window {
-    flex-grow: 1;
-    background: #ffffff;
-    border-radius: 0 0 12px 12px;
-    overflow-y: auto;  /* <== scrolling enabled */
-    padding: 0.5rem;
-    display: flex;
-    flex-direction: column;
-  }
-  .message-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    overflow-y: auto;
-    max-height: 200px;  /* <== control max message height */
-  }
-  
+.chatbot-header {
+  background-color: #3c2a66;
+  color: white;
+  /* padding: 0.6rem; */
+  /* font-size: 2rem; */
+  text-align: center;
+  /* font-weight:bolder; */
+  font-family: 'Cherry Bomb One', cursive;
+  font-size: 1.2rem;   /* smaller title */
+  padding: 0.5rem;
+  letter-spacing: 2px;
+  border-radius: 12px 12px 0 0;
+  margin-bottom: 0;
+  margin-top: 0;
+}
 
+.chat-window {
+  background: #ffffff;
+  border-radius: 0 0 12px 12px;
+  overflow-y: auto;  /* <== scrolling enabled */
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 230px;   /* always at least this tall */
+  max-height: 230px;   /* but never taller than this */
+  flex: 1;             
+}
+.message-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+  max-height: 200px;  /* <== control max message height */
   
-  
-  .message-row {
-    display: flex;
-    margin-bottom: 0.4rem;
-  }
-  
-  .message-row.bot {
-    justify-content: flex-start;
-    font-family: 'Chivo', monospace;
-    font-weight:bold;
-  }
-  
-  .message-row.user {
-    justify-content: flex-end;
-    font-family: 'Chivo', monospace;
-    font-weight:bold;
+}
 
-  }
-  .bubble {
-    padding: 0.2rem 0.8rem;
-    margin-bottom: 0rem;
-    max-width: 60%;
-    border-radius: 20px;
-    font-size: 0.95rem;
-    word-break: break-word;
-    display: inline-block;
-    line-height: 1.4;
-  }
+.message-row {
+  display: flex;
+  margin-bottom: 0.4rem;
+}
+
+.message-row.bot {
+  justify-content: flex-start;
+  font-family: 'Chivo', monospace;
+  /* font-weight:bold; */
+}
+
+.message-row.user {
+  justify-content: flex-end;
+  font-family: 'Chivo', monospace;
+  /* font-weight:bold; */
+
+}
+.bubble {
+  padding: 0.2rem 0.8rem;
+  margin-bottom: 0rem;
+  max-width: 60%;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  word-break: break-word;
+  display: inline-block;
+  line-height: 1.4;
+}
+
+.bubble.bot {  /* this is where i changed the message bubble border (to be more square ish) */
+  background-color: #D0C9EB;
+  color: #190352;
+  align-self: flex-start;
+  text-align: left;
+  border-radius: 12px;
+  padding-bottom: 8px;
+}
+
+.bubble.user {
+  background-color: #65558F;
+  color: white;
+  align-self:flex-end;
+  text-align: left;
+  /* font-family: 'Andale Mono', monospace;
+  font-weight:bold; */
+  border-radius: 12px;
+}
+
+.chatBot-input-area {
+  display: flex;
+  margin-top: 0.5rem;
+  gap: 0.3rem;
+  margin-left: 10px;
+}
+
+.chatBot-input-area input {
+  flex: 1;
+  padding: 0.6rem;
+  border-radius: 20px;
+  border: 2px solid #65558F;
+}
+
+.chatBot-input-area button {
+  background-color: #3c2a66;
+  color: white;
+  padding: 0.1rem 0.6rem;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Chivo', monospace;
+  font-weight: bold;
+  margin-right: 10px; /* added this for distance from the right edge of the  */
+}
   
-  .bubble.bot {
-    background-color: #D0C9EB;
-    color: #190352;
-    align-self: flex-start;
-    text-align: left;
+.exit-button {
+  position: absolute;  /* to position it inside the chatbox */
+  top: 8px;       /* distance from the top edge */
+  left: 10px;     /* distance from the left edge */
+  background: transparent;
+  color: white;
+  border: none;       /* removes the og button box from the shape */
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 0;
+  padding: 0;     /* removes the bubble padding i fear */
+  line-height: 1;
+}
+.exit-button:hover {
+  /* color: #b49ae5;   */
+  transform: scale(1.5)
+
+
+}
+
+
+
+/* spacing under the bot's text */
+.bubble.bot .chatbot-bot-actions { margin-top: 0.5rem; }
+
+/* shared pill baseline */
+.chatbot-cta,
+.chatbot-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.75rem;             /* smaller */
+  border-radius: 30px;               /* pill */
+  text-decoration: none;
+  border: 1px solid #b8addd;           /* light lavender border */
+  background: #ffffff;                 /* light background */
+  color: #1b1740;                      /* dark text from your palette */
+  /* font-weight: 600; */
+  font-size: clamp(0.84rem, 1.6vw, 0.92rem); /* shrink if needed */
+  line-height: 1.2;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+  white-space: normal;                 /* allow wrapping */
+  max-width: 100%;
+}
+
+/* subtle hover/active */
+.chatbot-cta:hover,
+.chatbot-pill:hover {
+  background: #f8f6ff;                 /* very light lavender */
+  border-color: #9e91cf;
+}
+.chatbot-cta:active,
+.chatbot-pill:active {
+  transform: translateY(1px);
+}
+
+/* primary CTA: just a touch more emphasis, still a pill */
+.chatbot-cta {
+  background: #f9f7ff;                 /* slightly tinted */
+  border-color: #a99bd6;
+}
+
+/* rows/labels */
+.chatbot-meta-row { 
+  margin-top: 0.45rem; 
+}
+.chatbot-meta-label { 
+  display: inline-block;
+  margin-right: 0.4rem;
+  margin-bottom: 0.25rem;
+  /* font-weight: 700;  */
+  font-size: 0.92rem; 
+  color: #2f2466; 
+}
+.chatbot-pill-row { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 0.35rem;   /* tighter gap */
+}
+
+/* container for the main CTA */
+.chatbot-cta-wrap { 
+  margin-bottom: 0.4rem; 
+}
+
+/* optional: compress on very small widths */
+@media (max-width: 420px) {
+  .chatbot-cta, .chatbot-pill {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
   }
-  
-  .bubble.user {
-    background-color: #65558F;
-    color: white;
-    align-self:flex-end;
-    text-align: left;
-    /* font-family: 'Andale Mono', monospace;
-    font-weight:bold; */
-  }
-  
-  .input-area {
-    display: flex;
-    margin-top: 1rem;
-    gap: 0.5rem;
-  }
-  
-  .input-area input {
-    flex: 1;
-    padding: 0.6rem;
-    border-radius: 20px;
-    border: 2px solid #65558F;
-  }
-  
-  .input-area button {
-    background-color: #3c2a66;
-    color: white;
-    padding: 0.6rem 1rem;
-    border: none;
-    border-radius: 12px;
-    font-family: 'Chivo', monospace;
-    font-weight: bold;
-  }
-  
-  .exit-button {
-    margin-top: 1rem;
-    padding: 0.6rem 1.2rem;
-    border: none;
-    background-color: #3c2a66;
-    color: white;
-    border-radius: 12px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    font-family: 'Chivo', monospace;
-    font-weight:bold;
-  }
-  
+  .chatbot-pill-row { gap: 0.3rem; }
+}
+
+.chatbot-pill {
+  appearance: none;
+  border: 1px solid #d9d3f2;
+  background: #f2effd;
+  color: #2d2157;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 13px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.chatbot-pill:disabled { opacity: .6; cursor: default; }

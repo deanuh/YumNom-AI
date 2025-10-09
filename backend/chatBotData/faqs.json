@@ -1,17 +1,277 @@
 [
-    {
-      "id": "acct-password-change",
-      "question": "How do I change my password?",
-      "answer": "Go to Settings → Account → Change Password. Enter your current password and a new one, then Save.",
-      "route": "/settings/account#password",
-      "tags": ["account","password","security"]
-    },
-    {
-      "id": "prefs-edit",
-      "question": "Where do I update my food preferences?",
-      "answer": "Open Profile → Preferences. Adjust cuisines, price range, and allergens, then Save.",
-      "route": "/profile/preferences",
-      "tags": ["preferences","profile","dietary"]
-    }
-  ]
+  {
+    "id": "acct-password-forgot",
+    "question": "I forgot my password — how can I reset it?",
+    "answer": "Open Settings → Account → Change Password and use “Forgot Password” to get a reset link.",
+    "route": "/changePass",
+    "tags": ["account","password","reset","security"]
+  },
+  {
+    "id": "acct-password-where",
+    "question": "Click here to change your password",
+    "answer": "Go to Settings → Account and select Change Password.",
+    "route": "/changePass",
+    "tags": ["account","password","security","settings"]
+  },
+  {
+    "id": "acct-password-rules",
+    "question": "What are the password requirements?",
+    "answer": "Use at least 8 characters with a mix of letters, numbers, and symbols.",
+    "route": "/changePass",
+    "tags": ["account","password","rules","security"]
+  },
+  {
+    "id": "acct-password-email-missing",
+    "question": "I didn’t receive the password reset email. What should I do?",
+    "answer": "Check spam, then resend from Change Password. If it still doesn’t arrive, contact us.",
+    "route": "/contact",
+    "tags": ["account","password","email","support"]
+  },
+
+  {
+    "id": "dietary-restrictions",
+    "question": "How do I change my dietary restrictions",
+    "answer": "Go to Profile → Dietary Restrictions, edit, and Save.",
+    "route": "/userProfile",
+    "tags": ["dietary","allergy","profile", "restrictions"]
+  },
+  {
+    "id": "dietary-preferences",
+    "question": "How do I update change my dietary preferences",
+    "answer": "Go to Profile → Dietary Restrictions, edit, and Save.",
+    "route": "/userProfile",
+    "tags": ["dietary","allergy","profile", "restrictions", "preferences"]
+  },
+
+  {
+    "id": "dietary-add-allergen",
+    "question": "How do I add a new allergen?",
+    "answer": "Go to Profile → Dietary Restrictions, add the allergen, and Save.",
+    "route": "/userProfile",
+    "tags": ["dietary","allergy","profile"]
+  },
+  {
+    "id": "dietary-remove-allergen",
+    "question": "How do I remove an allergen I previously added?",
+    "answer": "Open Profile → Dietary Restrictions, uncheck the allergen, and Save.",
+    "route": "/userProfile",
+    "tags": ["dietary","allergy","profile","remove"]
+  },
+  {
+    "id": "dietary-vegetarian-vegan",
+    "question": "Where do I mark vegetarian or vegan?",
+    "answer": "Profile → Dietary Restrictions. Toggle Vegetarian/Vegan and Save.",
+    "route": "/userProfile",
+    "tags": ["dietary","vegetarian","vegan","profile"]
+  },
+
+  {
+    "id": "prefs-cuisines",
+    "question": "How do I choose my favorite cuisines?",
+    "answer": "Go to Profile → Preferences and select cuisines you like.",
+    "route": "/userProfile",
+    "tags": ["preferences","cuisine","profile"]
+  },
+
+  {
+    "id": "prefs-spice",
+    "question": "Can I set a spice level preference?",
+    "answer": "Yes. Profile → Preferences → Spice Level, then Save.",
+    "route": "/userProfile",
+    "tags": ["preferences","spice","profile"]
+  },
+
+  {
+    "id": "profile-photo-add",
+    "question": "How do I upload a profile photo?",
+    "answer": "Go to Profile → Edit, click the photo area, upload, and Save.",
+    "route": "/userProfile",
+    "tags": ["profile","photo","avatar","upload"]
+  },
+  {
+    "id": "profile-photo-remove",
+    "question": "How do I remove my profile picture?",
+    "answer": "Profile → Edit → Photo, choose Remove/Reset and Save.",
+    "route": "/userProfile",
+    "tags": ["profile","photo","remove","avatar"]
+  },
+
+  {
+    "id": "favorites-where",
+    "question": "Where are my saved favorites?",
+    "answer": "Open the Favorites page to view saved restaurants and dishes.",
+    "route": "/favorites",
+    "tags": ["favorites","saved","restaurants","dishes"]
+  },
+  {
+    "id": "favorites-remove-item",
+    "question": "How do I remove something from Favorites?",
+    "answer": "On Favorites, click the heart in the items card and it removes it.",
+    "route": "/favorites",
+    "tags": ["favorites","remove","saved"]
+  },
+
+  {
+    "id": "group-create",
+    "question": "How do I start a Group Meal Party?",
+    "answer": "Go to Group Meal Party, create a party, add options, and invite friends.",
+    "route": "/GroupMealParty",
+    "tags": ["group","party","create","vote"]
+  },
+  {
+    "id": "group-invite",
+    "question": "How do I invite friends to my party?",
+    "answer": "Open your party and use Invite/Share to send the link to friends.",
+    "route": "/GroupMealParty",
+    "tags": ["group","invite","share","party"]
+  },
+  {
+    "id": "group-change-vote",
+    "question": "Can I change my vote?",
+    "answer": "Once you submit your vote, you can't change it. Just redo a voting",
+    "route": "/GroupMealParty",
+    "tags": ["group","vote","poll"]
+  },
+  {
+    "id": "group-close-poll",
+    "question": "How do I close voting and pick a winner?",
+    "answer": "From your party, click Close Vote to finalize the winner.",
+    "route": "/GroupMealParty",
+    "tags": ["group","vote","close","winner"]
+  },
+
+  {
+    "id": "location-enable",
+    "question": "How do I enable location for nearby results?",
+    "answer": "Settings → Location. Turn on location access for better recommendations.",
+    "route": "/locationPref",
+    "tags": ["location","permissions","settings"]
+  },
+  {
+    "id": "location-disable",
+    "question": "How do I turn off location sharing?",
+    "answer": "Settings → Location. Toggle off location access anytime.",
+    "route": "/locationPref",
+    "tags": ["location","privacy","settings","disable"]
+  },
+  {
+    "id": "location-not-working",
+    "question": "My location isn’t working — how can I fix it?",
+    "answer": "Ensure browser/location permissions are allowed, then refresh. If it persists, contact us.",
+    "route": "/locationPref",
+    "tags": ["location","troubleshoot","permissions"]
+  },
+
+  {
+    "id": "search-filters",
+    "question": "How do I filter restaurant search results?",
+    "answer": "On Search, set distance, price, and type filters before searching.",
+    "route": "/restaurantSearch",
+    "tags": ["search","filters","restaurants"]
+  },
+  {
+    "id": "search-sort",
+    "question": "Can I sort by rating or distance?",
+    "answer": "Yes, you can sort restaurants by distance, not by rating",
+    "route": "/restaurantSearch",
+    "tags": ["search","sort","rating","distance"]
+  },
+  {
+    "id": "search-open-now",
+    "question": "How do I show only places that are open now?",
+    "answer": "Once you click on view restaurant, you should see their hours of operation",
+    "route": "/restaurantSearch",
+    "tags": ["search","open now","filters"]
+  },
+
+  {
+    "id": "ai-ask",
+    "question": "How do I ask NomBot for a recommendation?",
+    "answer": "Open AI Recommendations, describe your craving (e.g., “spicy noodles with beef”), and submit.",
+    "route": "/ai-recommendation",
+    "tags": ["ai","recommendations","cravings"]
+  },
+  {
+    "id": "ai-refine",
+    "question": "Can I refine or regenerate suggestions?",
+    "answer": "Yes—adjust your prompt or click Regenerate to see new dishes.",
+    "route": "/ai-recommendation",
+    "tags": ["ai","regenerate","refine","recommendations"]
+  },
+  {
+    "id": "ai-exclude-ingredient",
+    "question": "How do I exclude certain ingredients from suggestions?",
+    "answer": "Mention exclusions in your prompt (e.g., “no dairy, no shellfish”).",
+    "route": "/ai-recommendation",
+    "tags": ["ai","exclude","dietary","recommendations"]
+  },
+
+  {
+    "id": "contact-general",
+    "question": "How do I contact support?",
+    "answer": "Use the Contact Us page to send us your message.",
+    "route": "/contact",
+    "tags": ["support","contact","help","email","message","reach","get in touch","phone","call","customer service"]
+
+  },
+  {
+    "id": "contact-feature",
+    "question": "Where can I suggest a feature?",
+    "answer": "Submit your idea on Contact Us and choose “Feature Request.”",
+    "route": "/contact",
+    "tags": ["feedback","feature","support"]
+  },
+  {
+    "id": "report-issue",
+    "question": "How do I report a bug?",
+    "answer": "Go to Report Issue, and fill out the form.",
+    "route": "/ReportIssue",
+    "tags": ["bug","report","support"]
+  },
+
+  {
+    "id": "account-delete-steps",
+    "question": "How do I permanently delete my account?",
+    "answer": "Settings → Account → Delete Account, then follow the confirmation steps.",
+    "route": "/deleteAccount",
+    "tags": ["account","delete","privacy"]
+  },
+  {
+    "id": "account-deactivate",
+    "question": "Can I temporarily deactivate my account?",
+    "answer": "We do not have that set up. If you want to deactivate it just delete it.",
+    "route": "/settings",
+    "tags": ["account","deactivate","privacy","settings"]
+  },
+  {
+    "id": "data-export",
+    "question": "Can I download my data?",
+    "answer": "We do not have that set up as of yet, your data will not be shared. Whatever you see is what we see.",
+    "route": "/privacyPolicy",
+    "tags": ["privacy","data","export"]
+  },
+
+  {
+    "id": "notifications-email",
+    "question": "How do I change email notification settings?",
+    "answer": "There are no notifications in YumNom, so no need to worry.",
+    "route": "/settings",
+    "tags": ["notifications","email","settings"]
+  },
+  {
+    "id": "email-change",
+    "question": "How do I update the email on my account?",
+    "answer": "Settings → Account → Email. Enter the new email and verify it.",
+    "route": "/emailSettings",
+    "tags": ["account","email","settings"]
+  },
+  {
+    "id": "privacy-manage",
+    "question": "Where can I manage my privacy settings?",
+    "answer": "Settings → Privacy. Review permissions and opt-outs. YumNom tracks your location and your preferences only, but you can turn off location and just delete your preferences if needed.",
+    "route": "/privacyPolicy",
+    "tags": ["privacy","permissions","settings"]
+  }
+]
+
   
