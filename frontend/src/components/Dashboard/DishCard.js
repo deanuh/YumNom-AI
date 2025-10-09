@@ -1,7 +1,25 @@
 import React, { useState } from "react";
 
+/**
+ * DishCard Component
+ *
+ * Displays a restaurant "card" with:
+ *  - Image (with fallback if missing)
+ *  - Restaurant name + distance
+ *  - Favorite (heart) button (local toggle only)
+ *  - "View Restaurant" button that triggers callback
+ *
+ * Props:
+ *  - name: string (restaurant name)
+ *  - address: string (not currently displayed, but passed in)
+ *  - distance: string (e.g., "2.3 mi")
+ *  - imageUrl: string (URL of restaurant photo)
+ *  - onViewMenu: function callback when user clicks "View Restaurant"
+ */
 const DishCard = ({ name, address, distance, imageUrl, onViewMenu }) => {
+// Track local "favorite" state for this card (not persisted anywhere yet)
   const [isFavorite, setIsFavorite] = useState(false);
+  // Fallback image if no restaurant photo available
   const fallback = "/chicken.png";
 
   return (

@@ -1,0 +1,176 @@
+[
+    {
+      "id": "chicken_bowl",
+      "name": "Chicken Burrito Bowl",
+      "cuisine": "Mexican",
+      "ingredients": ["chicken", "rice", "beans", "avocado"],
+      "dietTags": ["gluten-free"],
+      "price": "$$",
+      "img": "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85"
+    },
+    {
+        "id": "spicy_miso_ramen",
+        "name": "Spicy Miso Ramen",
+        "cuisine": "Japanese",
+        "ingredients": ["wheat", "egg", "pork", "miso", "scallion"],
+        "dietTags": ["spicy"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"
+      },
+      {
+        "id": "salmon_nigiri",
+        "name": "Salmon Nigiri",
+        "cuisine": "Japanese",
+        "ingredients": ["salmon", "rice", "nori"],
+        "dietTags": ["gluten-free", "dairy-free"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1544025162-d76694265947"
+      },
+      {
+        "id": "tofu_veggie_stirfry",
+        "name": "Tofu & Veggie Stir-fry",
+        "cuisine": "Chinese",
+        "ingredients": ["tofu", "broccoli", "bell pepper", "mushroom", "soy sauce"],
+        "dietTags": ["vegan", "vegetarian"],
+        "price": "$",
+        "img": "https://images.unsplash.com/photo-1505577058444-a3dab90d4253"
+      },
+      {
+        "id": "pad_thai",
+        "name": "Pad Thai",
+        "cuisine": "Thai",
+        "ingredients": ["rice noodles", "egg", "peanut", "shrimp", "tamarind"],
+        "dietTags": ["contains-nuts"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1544025162-8e9d3d0f4b1a"
+      },
+      {
+        "id": "butter_chicken",
+        "name": "Butter Chicken",
+        "cuisine": "Indian",
+        "ingredients": ["chicken", "tomato", "cream", "butter", "spices"],
+        "dietTags": ["contains-dairy"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1604908176997-431122f07e5c"
+      },
+      {
+        "id": "chana_masala",
+        "name": "Chana Masala",
+        "cuisine": "Indian",
+        "ingredients": ["chickpeas", "tomato", "onion", "garlic", "spices"],
+        "dietTags": ["vegan", "gluten-free"],
+        "price": "$",
+        "img": "https://images.unsplash.com/photo-1617191518004-3e76c0e9f6f4"
+      },
+      {
+        "id": "beef_pho",
+        "name": "Beef Phở",
+        "cuisine": "Vietnamese",
+        "ingredients": ["rice noodles", "beef", "broth", "cilantro", "lime"],
+        "dietTags": ["gluten-free", "dairy-free"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1544025162-d76694265947"
+      },
+      {
+        "id": "falafel_bowl",
+        "name": "Falafel Bowl",
+        "cuisine": "Middle Eastern",
+        "ingredients": ["chickpeas", "tahini", "lettuce", "tomato", "cucumber"],
+        "dietTags": ["vegan", "vegetarian", "dairy-free"],
+        "price": "$",
+        "img": "https://images.unsplash.com/photo-1512058564366-18510be2db19"
+      },
+      {
+        "id": "greek_salad",
+        "name": "Greek Salad",
+        "cuisine": "Greek",
+        "ingredients": ["cucumber", "tomato", "feta", "olive", "red onion"],
+        "dietTags": ["vegetarian", "gluten-free"],
+        "price": "$",
+        "img": "https://images.unsplash.com/photo-1568605114967-8130f3a36994"
+      },
+      {
+        "id": "caesar_salad",
+        "name": "Chicken Caesar Salad",
+        "cuisine": "Italian-American",
+        "ingredients": ["romaine", "chicken", "parmesan", "croutons", "egg"],
+        "dietTags": ["contains-egg", "contains-dairy"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1550547660-d9450f859349"
+      },
+      {
+        "id": "shrimp_tacos",
+        "name": "Shrimp Tacos",
+        "cuisine": "Mexican",
+        "ingredients": ["shrimp", "corn tortilla", "cabbage", "lime", "cilantro"],
+        "dietTags": ["gluten-free", "dairy-free", "contains-shellfish"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1605478257974-9d6a6c57e9df"
+      },
+      {
+        "id": "quinoa_kale_bowl",
+        "name": "Quinoa Kale Bowl",
+        "cuisine": "Californian",
+        "ingredients": ["quinoa", "kale", "avocado", "lemon", "almond"],
+        "dietTags": ["vegan", "gluten-free", "contains-nuts"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1568605114967-8130f3a36994"
+      },
+      {
+        "id": "omelette_spinach_mushroom",
+        "name": "Spinach & Mushroom Omelette",
+        "cuisine": "French",
+        "ingredients": ["egg", "spinach", "mushroom", "cheese"],
+        "dietTags": ["vegetarian", "contains-egg", "contains-dairy"],
+        "price": "$",
+        "img": "https://images.unsplash.com/photo-1525351484163-7529414344d8"
+      },
+      {
+        "id": "bbq_pulled_pork_sandwich",
+        "name": "BBQ Pulled Pork Sandwich",
+        "cuisine": "American",
+        "ingredients": ["pork", "bbq sauce", "wheat bun", "pickle"],
+        "dietTags": [],
+        "price": "$",
+        "img": "https://images.unsplash.com/photo-1552332386-8b0d3c2b0f6b"
+      },
+      {
+        "id": "pesto_pasta",
+        "name": "Pesto Pasta",
+        "cuisine": "Italian",
+        "ingredients": ["wheat pasta", "basil", "pine nuts", "parmesan", "olive oil"],
+        "dietTags": ["vegetarian", "contains-nuts", "contains-dairy"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1523986371872-9d3ba2e2f642"
+      },
+      {
+        "id": "spicy_tuna_roll",
+        "name": "Spicy Tuna Roll",
+        "cuisine": "Japanese",
+        "ingredients": ["tuna", "rice", "nori", "chili mayo"],
+        "dietTags": ["dairy-free", "spicy"],
+        "price": "$$",
+        "img": "https://images.unsplash.com/photo-1562158070-1b4ba9b3a6b8"
+      },
+      {
+        "id": "chicken_shawarma_wrap",
+        "name": "Chicken Shawarma Wrap",
+        "cuisine": "Middle Eastern",
+        "ingredients": ["chicken", "pita", "garlic sauce", "lettuce", "tomato"],
+        "dietTags": [],
+        "price": "$",
+        "img": "https://images.unsplash.com/photo-1604908553729-8e9e6a6f21e5"
+      },
+      {
+        "id": "lentil_soup",
+        "name": "Hearty Lentil Soup",
+        "cuisine": "Mediterranean",
+        "ingredients": ["lentils", "carrot", "celery", "onion", "tomato"],
+        "dietTags": ["vegan", "gluten-free"],
+        "price": "$",
+        "img": "https://images.unsplash.com/photo-1543353071-873f17a7a088"
+      }
+
+
+  ]
+  
