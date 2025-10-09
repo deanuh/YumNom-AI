@@ -403,3 +403,55 @@ export async function deleteVote(userId, voteId) {
   }
 }
 
+// ---------- PREFERENCES ----------
+
+/**
+ * Upsert (insert or update) user preferences.
+ * - Normalizes input (lowercase, dedupe, sort)
+ */
+
+export async function upsertPreferences(userId, { likes = [], restrictions = [] }) {
+  try {
+    const userRef = db.collection("User").doc(userId);
+    const snap = await userRef.get();
+    if (!snap.exists) throw new Error("User does not exist.");
+
+    // normalize/dedupe/sort
+    const norm = (arr) =>
+      Array.from(new Set((arr || []).map(s => String(s).toLowerCase().trim()))).sort();
+
+    await userRef.set(
+      {
+        likes: norm(likes),
+        restrictions: norm(restrictions),
+        prefs_updated_at: FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+    return true;
+  } catch (err) {
+    console.error(`upsertPreferences failed: ${err.message}`);
+    throw new Error(`upsertPreferences failed: ${err.message}`);
+  }
+}
+
+/**
+ * Fetch user preferences (likes, restrictions).
+ */
+
+export async function getPreferences(userId) {
+  try {
+    const userRef = db.collection("User").doc(userId);
+    const doc = await userRef.get();
+    if (!doc.exists) throw new Error("User does not exist.");
+    const data = doc.data() || {};
+    return {
+      likes: Array.isArray(data.likes) ? data.likes : [],
+      restrictions: Array.isArray(data.restrictions) ? data.restrictions : [],
+      prefs_updated_at: data.prefs_updated_at || null,
+    };
+  } catch (err) {
+    console.error(`getPreferences failed: ${err.message}`);
+    throw new Error(`getPreferences failed: ${err.message}`);
+  }
+}

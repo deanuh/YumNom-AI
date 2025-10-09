@@ -1,7 +1,8 @@
 import React from "react";
 import "../styles/restaurantSearch.css";
 
-// If your icons are in public/assets/, list just the filenames here.
+// Static list of category options.
+// Each has a display name + matching image filename (from /public assets).
 const categories = [
   { name: "Bakery",   img: "Baked.png" },
   { name: "Burger",   img: "Burger.png" },
@@ -10,7 +11,16 @@ const categories = [
   { name: "Pizza",    img: "pizza.png" },
   { name: "Seafood",  img: "fish.png" },
 ];
-
+/**
+ * Category component
+ *
+ * Props:
+ *  - onPick(name): callback when user clicks a category
+ *  - active: name of the currently selected category
+ *
+ * Renders a grid of category buttons (Bakery, Burger, etc).
+ * Highlights the active one and calls onPick() when clicked.
+ */
 export default function Category({ onPick, active }) {
   return (
     <div className="main-body">

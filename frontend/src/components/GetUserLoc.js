@@ -97,6 +97,7 @@ export const getUserCity = async () => {
   // get information of the user's preference of the location (respect if they have it on or off)
   try {
     const optOut = JSON.parse(localStorage.getItem("yumNomLocationOptOut") || "false");  // gets whether the location is on or off from locationPref local storage!
+    console.log("Location opt-out flag:", optOut);
     if (optOut) {
       const e = new Error("Location sharing is OFF");  
       e.code = "GEO_OPT_OUT";
@@ -139,6 +140,7 @@ export const getUserCity = async () => {
         }
       },
       (err) => {
+        console.error("Geolocation raw error:", err);
         const denied = typeof err?.code !== "undefined" && err.code === err.PERMISSION_DENIED;
         const e = new Error(denied ? "Geolocation permission denied." : "Geolocation error.");
         e.code = denied ? "GEO_DENIED" : "GEO_ERROR";

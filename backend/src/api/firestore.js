@@ -11,6 +11,8 @@ import {
 	deleteRecommendation,
 	addVote,
 	deleteVote, 
+  upsertPreferences,
+  getPreferences as getPrefsFromDb,
 } from '../firebase/dbFunctions.js'
 
 // ------------------- USERS ------------------- //
@@ -193,3 +195,41 @@ export async function removeVote(req, res) {
   }
 }
 
+
+// ---------- PREFERENCES API ----------
+
+/**
+ * Save user preferences
+ * - Requires req.uid
+ * - Updates likes and restrictions
+ */
+
+export async function savePreferences(req, res) {
+  try {
+    const userId = req.uid; // from authMiddleware
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const { likes = [], restrictions = [] } = req.body || {};
+    await upsertPreferences(userId, { likes, restrictions });
+    return res.status(200).json({ ok: true });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+/**
+ * Read user preferences
+ * - Requires req.uid
+ */
+
+export async function readPreferences(req, res) {
+  try {
+    const userId = req.uid; // from authMiddleware
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const prefs = await getPrefsFromDb(userId);
+    return res.status(200).json(prefs);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}

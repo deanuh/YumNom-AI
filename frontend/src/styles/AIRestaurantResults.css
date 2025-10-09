@@ -1,0 +1,165 @@
+/* src/styles/AIRestaurantResults.css
+   Make /restaurants match Restaurant Search colors + fonts
+*/
+@import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Poppins:wght@400;600;700&family=Chivo:wght@400;600&display=swap');
+
+:root{
+  --purple-700:#3c2b7f;
+  --purple-600:#6a41c1;
+  --purple-500:#6d4dc3;
+  --ink:#1f2937;
+  --surface: rgb(251, 250, 255);
+  --border:#65558F;
+}
+
+.restaurants-page{
+  max-width:1040px;
+  margin:0 auto;
+  padding:24px;
+  background: var(--surface);
+  font-family: 'Chivo', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Titles like the rest of the app */
+.restaurants-title{
+  text-align:center;
+  font-family:'Cherry Bomb One', cursive;
+  color:#190352;
+  font-size:36px;
+  letter-spacing:.3px;
+  margin:6px 0 4px;
+}
+.restaurants-subtitle{
+  text-align:center;
+  font-family:'Poppins', sans-serif;
+  color:var(--purple-700);
+  font-size:20px;
+  margin:0 0 8px;
+}
+.restaurants-back{
+  text-align:center;
+  margin-bottom:16px;
+}
+.restaurants-back a{
+  color:var(--purple-600);
+  text-decoration:underline;
+  font-weight:600;
+  font-family:'Poppins',sans-serif;
+}
+
+/* Hero card (dish preview) */
+.restaurants-hero{ display:flex; justify-content:center; margin:8px 0 16px; }
+.hero-card{
+  width:420px;
+  background:#fff;
+  border: .5px solid #e8e6f3;
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 6px 18px rgba(84,63,146,0.08);
+  text-align:center;
+}
+.hero-name{
+  font-weight:700;
+  color:var(--purple-700);
+  margin-bottom:8px;
+  font-family:'Poppins',sans-serif;
+}
+.hero-img{
+  width:100%;
+  height:240px;
+  object-fit:cover;
+  border-radius:12px;
+}
+.hero-placeholder{
+  height:240px; display:grid; place-items:center;
+  color:#777; border:1px dashed #ccc; border-radius:12px;
+}
+
+/* Little descriptor under hero */
+.restaurants-hint{
+  text-align:left;
+  opacity:.9;
+  margin-bottom:8px;
+  color:var(--purple-700);
+  font-family:'Poppins',sans-serif;
+}
+.restaurants-loading,
+.restaurants-empty,
+.restaurants-note{
+  padding:12px; text-align:center; opacity:.9;
+  color:var(--ink);
+}
+
+/* Card grid — visually align with Restaurant Search */
+.results-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1.5rem;
+  align-items:stretch;
+}
+
+/* Exactly 5 per row on big screens, fluid below */
+@media (min-width:1200px){
+  .results-grid .restaurant-card{
+    box-sizing:border-box;
+    flex:0 0 calc((100% - (4 * 1.5rem)) / 5);
+    max-width: calc((100% - (4 * 1.5rem)) / 5);
+  }
+}
+
+.restaurant-card{
+  background:#fff;
+  border-radius:12px;
+  padding:1rem;
+  width:100%;
+  text-align:center;
+  box-shadow:0 2px 5px rgba(0,0,0,0.06);
+  border:1px solid #e8e6f3;
+  transition: box-shadow .2s ease;
+}
+.restaurant-card:hover{ box-shadow:0 4px 10px rgba(0,0,0,0.12); }
+
+.restaurant-thumb{
+  display:flex; justify-content:center; align-items:center; margin-bottom:.75rem;
+}
+.restaurant-thumb img{
+  width:200px; height:200px;
+  object-fit:cover;
+  border-radius:50%;          /* circular thumbnails like Search */
+}
+
+/* Name + meta lines match Search sizing/colors */
+.restaurant-name{
+  margin:.5rem 0 .25rem;
+  font-size:1rem;
+  font-weight:700;
+  color:var(--ink);
+  font-family:'Poppins',sans-serif;
+}
+.restaurant-meta{
+  font-size:.9rem;
+  color:#666;
+  margin-bottom:.75rem;
+}
+.restaurant-meta span:first-child{
+  color:var(--purple-600);
+  font-weight:600;
+}
+
+/* Buttons matching Search CTA style */
+.restaurant-actions{ display:flex; gap:.5rem; flex-wrap:wrap; justify-content:center; }
+.btn{
+  padding:.55rem .9rem;
+  border-radius:12px;
+  border:1px solid #ddd;
+  background:#fafafa;
+  font-family:'Poppins',sans-serif;
+  cursor:pointer;
+}
+.btn-primary{
+  background:var(--purple-600);
+  color:#fff;
+  border:none;                 /* Search page uses solid purple cta */
+  font-weight:700;
+}
+.btn:hover{ filter:brightness(.97); }

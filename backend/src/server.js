@@ -3,8 +3,10 @@ import axios from 'axios';
 import cors from 'cors';
 import http from 'http';
 import 'dotenv/config';
+import aiRoutes from './api/ai/routes.js';
 import { getFoodFatSecret, getRestaurantFatSecret} from './api/fatsecret.js';
-import { getRestaurantTripAdvisor } from './api/tripadvisor.js';
+import { getRestaurantTripAdvisor, getTAPlaceDetails } from './api/tripadvisor.js';
+import { fetchFoodImageByDish, fetchUnsplashImageFor } from "./api/unsplash.js";
 import { getUserCityOpenCage } from './api/opencage.js';
 import { authMiddleware } from './auth/auth.js';
 import { getLogo, getLogoData } from './api/logo.js';
@@ -14,6 +16,7 @@ import {
   createFavorite, removeFavorite, listFavorites,
   createRecommendation, removeRecommendation,
   createVote, removeVote,
+  savePreferences, readPreferences,
 } from './api/firestore.js';
 import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
 import usersRouter from "./api/deleteUser.js";
@@ -45,6 +48,8 @@ app.use((req, _res, next) => {
 // }
   
 app.use(cors());
+
+app.use('/api/ai', aiRoutes);
 
 // #################### WEBSOCKET SERVER ###############################
 // This is a seperate server used with Socket.IO in order to start the real-time voting
@@ -329,7 +334,30 @@ io.on("connection", (socket) => {
 app.get('/restaurant', getRestaurantTripAdvisor);
 app.get('/restaurantFatSecret', getRestaurantFatSecret);
 app.get('/logo', getLogo);
+app.get("/api/restaurants/:id", getTAPlaceDetails);  
+app.get('/food', getFoodFatSecret);
 app.get('/city', getUserCityOpenCage);
+// Return an image URL for a dish name/cuisine using Unsplash (server-side key)
+app.get("/api/images/dish", async (req, res) => {
+	try {
+	  const name = (req.query.name || "").trim();
+	  const cuisine = (req.query.cuisine || "").trim();
+	  const category = (req.query.category || cuisine || "food").trim();
+	  const seed = (req.query.seed || name || Date.now()).toString();
+  
+	  // 1) Prefer a specific dish match
+	  const byDish = name ? await fetchFoodImageByDish(name, cuisine) : null;
+  
+	  // 2) Otherwise use a category/cuisine fallback
+	  const url = byDish || (await fetchUnsplashImageFor(category, seed, name));
+  
+	  res.json({ url: url || null });
+	} catch (e) {
+	  console.error("GET /api/images/dish failed:", e.message);
+	  res.status(500).json({ url: null });
+	}
+  });
+  
 
 // Users
 app.post("/users", authMiddleware, createUser);
@@ -351,6 +379,10 @@ app.delete("/recommendations/:recommendationId", authMiddleware, removeRecommend
 // Votes
 app.post("/votes", authMiddleware, createVote);
 app.delete("/votes/:voteId", authMiddleware, removeVote);
+
+// Preferences
+app.get("/preferences", authMiddleware, readPreferences);
+app.post("/preferences", authMiddleware, savePreferences);
 
 
 
