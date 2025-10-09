@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import axios from "axios";
 import "../styles/GroupMealParty.css";
 import { useNavigate } from "react-router-dom";
 
@@ -15,13 +16,70 @@ const friendsList = [
     { username: "banana_gato", image: "ban_gato.png" },
     { username: "cattt", image: "gato.png" },
   ];
-const restaurantOptions = ["Chipotle", "Chick-fil-a", "Pizza Hut", "WingStop"];
-
 
 function GroupMealParty() {
+
+	const base_url = process.env.REACT_APP_BACKEND_URL;
   const [selectedFriends, setSelectedFriends] = useState([]);
   const [search, setSearch] = useState("");
+	const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [selectedRestaurant, setSelectedRestaurant] = useState("");
+	const [restaurantObject, setRestaurantObject] = useState(null);
+	const [restaurantOptions, setRestaurantOptions] = useState([]);
+	const searchRestaurant = useCallback(async () => {
+
+		const response = await axios.get(`${base_url}/restaurantFatSecret`, {
+			params: {
+				q: debouncedSearch,
+			}
+		});
+		const objectData = response.data;
+
+    let restaurantList = Array.isArray(objectData?.food_brands.food_brand) ? objectData.food_brands.food_brand : [];
+		return restaurantList
+	}, [base_url, debouncedSearch]);
+
+
+	const searchLogo = useCallback(async () => {
+		const response = await axios.get(`${base_url}/logo`, {
+			params: {
+				q: selectedRestaurant,
+			}
+		});
+		return response.data;
+	}, [base_url, selectedRestaurant]);
+		
+	useEffect(() => {
+		const timeoutRef = setTimeout(() => {
+				setDebouncedSearch(search);
+		}, 2 * 1000);
+
+		return () => {
+			clearTimeout(timeoutRef)
+		};
+	}, [search]);
+	
+	useEffect(() => {
+	  (async () => {
+			if (debouncedSearch === "") {
+				setRestaurantOptions([]);
+			} else {
+	    	const data = await searchRestaurant();
+	    	setRestaurantOptions(data);
+			}
+	  })();
+	}, [debouncedSearch, searchRestaurant]);
+	
+	// Fetch logo when selectedRestaurant changes
+	useEffect(() => {
+	  if (!selectedRestaurant) return;
+	
+	  (async () => {
+	    const logoData = await searchLogo();
+			console.log(logoData);
+	    setRestaurantObject(logoData);
+	  })();
+	}, [selectedRestaurant, searchLogo]);
 
     // BUILD selectedFriendObjects HERE (right before return)
   const selectedFriendObjects = selectedFriends
@@ -65,7 +123,7 @@ function GroupMealParty() {
       />
       
 
-      <SelectedRestaurantDisplay restaurantObject={selectedRestaurant} handleContinue={handleContinue}/>
+      <SelectedRestaurantDisplay restaurantObject={restaurantObject} handleContinue={handleContinue}/>
     </div>
   );
 }
