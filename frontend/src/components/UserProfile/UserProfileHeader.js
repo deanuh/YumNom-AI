@@ -1,15 +1,14 @@
 // components/UserProfile/UserProfileHeader.js
 import React, { useRef, useState } from "react";
-import { getAuth } from "firebase/auth";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "../../styles/UserProfile.css";
+import { uploadToCloudinary } from "../../lib/uploadCloudinary";
 
 export default function UserProfileHeader({
   username,
   firstName,
   lastName,
   avatarUrl,
-  onSave,            // (partial) => Promise<updatedUser>
+  onSave, // (partial) => Promise<void>
 }) {
   const [editing, setEditing] = useState(false);
   const [newUsername, setNewUsername] = useState(username || "");
@@ -17,65 +16,61 @@ export default function UserProfileHeader({
   const [savingPhoto, setSavingPhoto] = useState(false);
   const fileRef = useRef(null);
 
-  const displayAvatar = pic || avatarUrl || "/default_avatar.png";
-  const displayUsername = username || "username";
-  const displayFullName = `${firstName || "First"}, ${lastName || "Last"} Name`;
+  const displayFullName = `${firstName || "First"}, ${lastName || "Last"}`;
+  const baseAvatar = pic || avatarUrl || "/default_avatar.png";
+  // Optional: serve a nice square/round thumbnail from Cloudinary
+  const displayAvatar = baseAvatar.includes("res.cloudinary.com")
+    ? baseAvatar.replace("/upload/", "/upload/c_fill,w_160,h_160,g_face,r_max/")
+    : baseAvatar;
 
-  const openEdit = () => {
-    setNewUsername(username || "");
-    setEditing(true);
-  };
+  const openEdit = () => { setNewUsername(username || ""); setEditing(true); };
+  const pickFile = () => fileRef.current?.click();
 
-  // Upload to Firebase Storage and persist URL to Firestore
+  // ---- Cloudinary upload ----
   const onFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Show instant preview
+    // instant local preview
     const preview = URL.createObjectURL(file);
     setPic(preview);
 
     try {
       setSavingPhoto(true);
-      const uid = getAuth().currentUser?.uid;
-      if (!uid) throw new Error("Not signed in");
 
-      const storage = getStorage();
-      const fileRef = ref(storage, `avatars/${uid}/${Date.now()}_${file.name}`);
-      await uploadBytes(fileRef, file);
-      const url = await getDownloadURL(fileRef);
+      // 1) upload to Cloudinary (goes to /avatars via your preset)
+      const data = await uploadToCloudinary(file);
+      const url = data.secure_url;
 
-      setPic(url);
-      // Persist to Firestore
+      // 2) save URL into Firestore via your existing API
       await onSave?.({ profile_picture: url });
+
+      // 3) show the final URL
+      setPic(url);
+      console.log("Avatar uploaded:", data.public_id);
     } catch (err) {
       console.error("Avatar upload failed:", err);
-      // Revert to previous avatar if needed
       setPic(avatarUrl || "");
     } finally {
       setSavingPhoto(false);
     }
   };
 
-  const pickFile = () => fileRef.current?.click();
-
   const handleSave = async () => {
     const payload = {};
     if (newUsername && newUsername !== username) payload.username = newUsername.trim();
-    // profile picture is saved immediately after upload; no need to send again
     if (Object.keys(payload).length) await onSave?.(payload);
     setEditing(false);
   };
 
   return (
     <div className="profile-card no-utils">
-      {/* LEFT: avatar + info */}
       <div className="profile-left">
         <div className="avatar-wrap ring">
           <img className="avatar" src={displayAvatar} alt="avatar" />
         </div>
         <div className="name-block">
-          <div className="u-name">{displayUsername}</div>
+          <div className="u-name">{username || "username"}</div>
           <div className="u-full">{displayFullName}</div>
 
           <button className="btn-secondary sm" onClick={pickFile} disabled={savingPhoto}>
@@ -91,7 +86,6 @@ export default function UserProfileHeader({
         </div>
       </div>
 
-      {/* RIGHT: edit pill OR inline panel */}
       <div className="profile-right">
         {!editing ? (
           <button className="btn-primary pill" onClick={openEdit}>
@@ -100,12 +94,10 @@ export default function UserProfileHeader({
         ) : (
           <div className="edit-panel tight">
             <div className="panel-title">Edit Profile</div>
-
             <label className="row">
               <span>Current Username:</span>
               <input value={username || ""} disabled />
             </label>
-
             <label className="row">
               <span>Changed Username:</span>
               <input
@@ -114,7 +106,6 @@ export default function UserProfileHeader({
                 placeholder="changed_user"
               />
             </label>
-
             <div className="actions">
               <button className="btn-secondary hollow" onClick={() => setEditing(false)}>
                 Cancel

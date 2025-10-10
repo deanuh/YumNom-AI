@@ -468,8 +468,16 @@ export async function ensureUserBasic(userId, defaults = {}) {
   };
 
   // if it exists, just merge; if not, set base + defaults
-  const payload = snap.exists ? defaults : { ...base, ...defaults };
+  // if exists, don't override username
+  let payload;
+  if (snap.exists) {
+    payload = { ...defaults };
+    delete payload.username; // prevent overwriting username if doc exists
+  } else {
+    payload = { ...base, ...defaults };
+  }
   await ref.set(payload, { merge: true });
+
   return (await ref.get()).data();
 }
 

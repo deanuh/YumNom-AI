@@ -21,28 +21,61 @@ const UserProfilePage = () => {
   useEffect(() => {
     (async () => {
       try {
+        // 1) Try to read the existing profile first.
+        const existing = await fetchMe();
+        if (existing && existing.username) {
+          setMe(existing);
+          return;
+        }
+  
+        // 2) If no profile (or missing username), create it with a safe default.
         const user = getAuth().currentUser;
-        const suggestedUsername =
-          user?.email ? user.email.split("@")[0] : "";
+        const suggested =
+          (user?.displayName?.trim()?.replace(/\s+/g, ".") ||
+           user?.email?.split("@")[0] ||
+           "user") + "";
   
-        // 1) ensure profile doc exists (idempotent)
-        await ensureMe({ username: suggestedUsername });
+        await ensureMe({ username: suggested });
   
-        // 2) now read it
-        const data = await fetchMe();
-        setMe(data);
+        // 3) Read again after creation.
+        const created = await fetchMe();
+        setMe(created);
       } catch (err) {
-        console.error("profile load failed:", err?.response?.data || err.message);
+        // If fetchMe throws a 404/NotFound, create then refetch
+        const user = getAuth().currentUser;
+        const suggested =
+          (user?.displayName?.trim()?.replace(/\s+/g, ".") ||
+           user?.email?.split("@")[0] ||
+           "user") + "";
+  
+        try {
+          await ensureMe({ username: suggested });
+          const created = await fetchMe();
+          setMe(created);
+        } catch (innerErr) {
+          console.error("profile load failed:", innerErr?.response?.data || innerErr.message);
+        }
       } finally {
         setLoading(false);
       }
     })();
   }, []);
+  
 
   const handleSaveProfile = async (partial) => {
-    const next = await updateMe({ ...me, ...partial });
-    setMe(next);
+    try {
+      // Update only the fields changed (username, profile_picture, etc.)
+      await updateMe(partial);
+  
+      // Fetch the fresh version of the user after updating
+      const updated = await fetchMe();
+      setMe(updated);
+      console.log("Profile updated successfully:", updated);
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+    }
   };
+  
 
   if (loading) return <div className="profile-container">Loading…</div>;
 
