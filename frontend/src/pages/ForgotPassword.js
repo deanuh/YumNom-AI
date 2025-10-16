@@ -48,7 +48,7 @@ function ForgotPassword() {
           type="email"
           placeholder="Enter your email"
           value={email}
-          onChange={(e) => setEmail(e.value)}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
         

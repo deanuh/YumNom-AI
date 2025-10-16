@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Login.css";
-import { auth } from "../firebase/firebaseConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 
 function Login() {
   const navigate = useNavigate();
@@ -11,21 +10,85 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState('');
 
-  // Form submission handler for email/password login
-  // Calls Firebase auth to sign the user in with auth, email, and password
-  // On success, navigates to the dashboard
-  // on failiure, sets an error message to be displayed to the user
+  // Handles the entire Google Sign-In flow
+  const handleGoogleSignIn = async () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await handleSocialSignIn(result.user);
+    } catch (error) {
+      console.error("Google Sign-In error:", error);
+      setError("Failed to sign in with Google. Please try again.");
+    }
+  };
+
+  // Handles the entire Facebook Sign-In flow
+  const handleFacebookSignIn = async () => {
+    const auth = getAuth();
+    const provider = new FacebookAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await handleSocialSignIn(result.user);
+    } catch (error) {
+      console.error("Facebook Sign-In error:", error);
+      setError("Failed to sign in with Facebook. Please try again.");
+    }
+  };
+
+  // Handles the entire Apple Sign-In flow
+  const handleAppleSignIn = async () => {
+    const auth = getAuth();
+    const provider = new OAuthProvider('apple.com');
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await handleSocialSignIn(result.user);
+    } catch (error) {
+      console.error("Apple Sign-In error:", error);
+      setError("Failed to sign in with Apple. Please try again.");
+    }
+  };
+
+  // A shared function to handle user creation for all social logins
+  const handleSocialSignIn = async (user) => {
+    const token = await user.getIdToken();
+    const response = await fetch(`http://localhost:5001/users/${user.uid}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (response.status === 404) {
+      console.log("User does not exist, creating new user...");
+      const nameParts = user.displayName ? user.displayName.split(' ') : ['New', 'User'];
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ');
+
+      await fetch('http://localhost:5001/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          username: user.email,
+          email: user.email
+        })
+      });
+    }
+    navigate('/dashboard');
+  };
+
+  // Handles traditional email and password login
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-
+    const auth = getAuth(); 
     try {
-      // Firebase Auth performs email/password log in and returns a Promise<UserCredential>
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/dashboard');
     } catch (firebaseError) {
       console.error("Firebase login error:", firebaseError.message);
-      
       setError("Invalid email or password. Please try again.");
     }
   };
@@ -62,9 +125,15 @@ function Login() {
           </form>
           <div className="divider"><p>Or sign in with</p></div>
           <div className="social-login">
-            <button><img src="https://img.icons8.com/ios-filled/50/google-logo.png" alt="Google" /></button>
-            <button><img src="https://img.icons8.com/ios-filled/50/facebook-new.png" alt="Facebook" /></button>
-            <button><img src="https://img.icons8.com/ios-filled/50/mac-os.png" alt="Apple" /></button>
+            <button onClick={handleGoogleSignIn}>
+              <img src="https://img.icons8.com/ios-filled/50/google-logo.png" alt="Google" />
+            </button>
+            <button onClick={handleFacebookSignIn}>
+              <img src="https://img.icons8.com/ios-filled/50/facebook-new.png" alt="Facebook" />
+            </button>
+            <button onClick={handleAppleSignIn}>
+              <img src="https://img.icons8.com/ios-filled/50/mac-os.png" alt="Apple" />
+            </button>
           </div>
           <p className="signup-prompt">Don’t have an account? <Link to="/signup">Create One</Link></p>
         </div>
