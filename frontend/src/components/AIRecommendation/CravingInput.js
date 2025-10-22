@@ -1,10 +1,11 @@
 // components/AIRecommendation/CravingInput.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAuth } from "firebase/auth"; // added
 
 // normalize helper (lowercase, trim, dedupe)
 const norm = (arr = []) =>
-  Array.from(new Set((arr || []).map(s => String(s).toLowerCase().trim())));
+  Array.from(new Set((arr || []).map((s) => String(s).toLowerCase().trim())));
 
 /**
  * Component: CravingInput
@@ -23,13 +24,12 @@ export default function CravingInput({ likes = [], restrictions = [] }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-/**
+  /**
    * Handle form submission:
    * - Build payload with prompt, likes, and restrictions
-   * - POST to /api/ai/recommend
+   * - POST to /api/ai/recommend (with Firebase token)
    * - If valid, save to localStorage and navigate to results page
    */
-
   async function handleSubmit() {
     const prompt = input.trim();
     if (!prompt || loading) return;
@@ -42,10 +42,22 @@ export default function CravingInput({ likes = [], restrictions = [] }) {
 
     setLoading(true);
     try {
+      // Get Firebase auth token
+      const user = getAuth().currentUser;
+      const token = user ? await user.getIdToken(false) : null;
+      if (!token) {
+        alert("Please sign in to use AI recommendations.");
+        setLoading(false);
+        return;
+      }
+
       // Call backend AI recommendation route
       const res = await fetch(`/api/ai/recommend`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // added header
+        },
         body: JSON.stringify(payload),
       });
 
@@ -55,12 +67,8 @@ export default function CravingInput({ likes = [], restrictions = [] }) {
       }
 
       const data = await res.json();
-      // Ensure response came from AI system (not fallback)
-      if (data.source !== "ai") {
-        throw new Error("Blocked non-AI recommendation");
-      }
+      if (data.source !== "ai") throw new Error("Blocked non-AI recommendation");
 
-      // Save to localStorage for retrieval in results page
       localStorage.setItem(
         "ai_last_rec",
         JSON.stringify({
@@ -71,7 +79,7 @@ export default function CravingInput({ likes = [], restrictions = [] }) {
           ts: Date.now(),
         })
       );
-      // Reset input and navigate to result page
+
       setInput("");
       navigate("/ai-result");
     } catch (err) {
@@ -81,9 +89,7 @@ export default function CravingInput({ likes = [], restrictions = [] }) {
     }
   }
 
-   /**
-   * Handle Enter key press to trigger submit.
-   */
+  /** Handle Enter key press to trigger submit. */
   function handleKeyDown(e) {
     if (e.key === "Enter") handleSubmit();
   }
@@ -102,7 +108,11 @@ export default function CravingInput({ likes = [], restrictions = [] }) {
           disabled={loading}
         />
         <button onClick={handleSubmit} disabled={loading}>
-          <img src="/ai_icon.png" alt="sparkle icon" className="an-craving-icon" />
+          <img
+            src="/ai_icon.png"
+            alt="sparkle icon"
+            className="an-craving-icon"
+          />
         </button>
       </div>
     </div>
