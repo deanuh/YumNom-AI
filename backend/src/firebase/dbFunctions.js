@@ -22,6 +22,8 @@ export async function addUser(userData, userId) {
       address: null,
       profile_picture: null,
       ...userData,
+      username_lower: (userData.username || "").toLowerCase(),
+      friends: [],
       restriction: {},
       date_created: FieldValue.serverTimestamp(),
       current_group: null
@@ -450,6 +452,8 @@ export async function getUserBasic(userId) {
     first_name: d.first_name || "",
     last_name: d.last_name || "",
     profile_picture: d.profile_picture || "",
+    diet: d.diet || { types: [], allergens: [] },
+    exclusions: d.exclusions || { ingredients: [], items: [] },
   };
 }
 // Creates the User/{uid} doc if missing, or merges provided fields.
@@ -461,10 +465,13 @@ export async function ensureUserBasic(userId, defaults = {}) {
   // sensible defaults if caller didn't pass any
   const base = {
     username: "",
+    username_lower: "",
     first_name: "",
     last_name: "",
     profile_picture: "",
     date_created: new Date().toISOString(),
+    diet: { types: [], allergens: [] },
+    exclusions: { ingredients: [], items: [] },
   };
 
   // if it exists, just merge; if not, set base + defaults
@@ -482,15 +489,38 @@ export async function ensureUserBasic(userId, defaults = {}) {
 }
 
 
-export async function updateUserBasic(userId, { username, first_name, last_name, profile_picture }) {
+export async function updateUserBasic(
+  userId,
+  { username, first_name, last_name, profile_picture, diet, exclusions }
+) {
   const ref = db.collection("User").doc(userId);
   const snap = await ref.get();
   if (!snap.exists) throw new Error("User does not exist.");
+
   const payload = {};
-  if (typeof username === "string") payload.username = username;
+  if (typeof username === "string") payload.username_lower = username.toLowerCase();
   if (typeof first_name === "string") payload.first_name = first_name;
   if (typeof last_name === "string") payload.last_name = last_name;
   if (typeof profile_picture === "string") payload.profile_picture = profile_picture;
+
+  // merge structured preferences safely
+  if (diet && typeof diet === "object") {
+    const curr = snap.data().diet || {};
+    payload.diet = {
+      types: Array.isArray(diet.types) ? diet.types : (curr.types || []),
+      allergens: Array.isArray(diet.allergens) ? diet.allergens : (curr.allergens || []),
+    };
+  }
+
+  if (exclusions && typeof exclusions === "object") {
+    const curr = snap.data().exclusions || {};
+    payload.exclusions = {
+      ingredients: Array.isArray(exclusions.ingredients) ? exclusions.ingredients : (curr.ingredients || []),
+      items: Array.isArray(exclusions.items) ? exclusions.items : (curr.items || []),
+    };
+  }
+
   await ref.set(payload, { merge: true });
   return true;
 }
+

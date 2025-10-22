@@ -24,6 +24,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
 import deleteUserRouter from "./api/deleteUser.js";
 import { getUserBasic, updateUserBasic } from './firebase/dbFunctions.js';
+import friendsRouter from './api/friends.js';
 
 
 let app = express();
@@ -52,7 +53,7 @@ app.use((req, _res, next) => {
   
 app.use(cors());
 
-app.use('/api/ai', aiRoutes);
+app.use('/api/ai', authMiddleware, aiRoutes);
 
 // #################### WEBSOCKET SERVER ###############################
 // This is a seperate server used with Socket.IO in order to start the real-time voting
@@ -253,7 +254,7 @@ app.post("/preferences", authMiddleware, savePreferences);
 
 app.use("/api", reportIssueRouter);
 
-
+app.use("/api", authMiddleware, friendsRouter);  // ← exposes /api/users/lookup and /api/me/friends*
 // delete account NEW
 app.use("/api", deleteUserRouter);
 

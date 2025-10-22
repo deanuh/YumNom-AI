@@ -4,6 +4,7 @@ import "../styles/AIRecommendation.css";
 import UserPreferences from "../components/AIRecommendation/UserPreferences";
 import CravingInput from "../components/AIRecommendation/CravingInput";
 import ChatBot from "./ChatBot";
+import { getAuth } from "firebase/auth";
 
 
 const LS_KEY = "yn_prefs_v0";
@@ -33,10 +34,43 @@ export default function AIRecommendationPage() {
     }
   }, []);
 
+  async function fetchMeAuthed() {
+    const token = await getAuth().currentUser?.getIdToken();
+    if (!token) throw new Error("Not signed in (no Firebase ID token)");
+    const r = await fetch("/api/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!r.ok) throw new Error(`fetchMe failed: ${r.status}`);
+    return r.json();
+  }
+  
   // persist whenever prefs change
   useEffect(() => {
     localStorage.setItem(LS_KEY, JSON.stringify(prefs));
   }, [prefs]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const me = await fetchMeAuthed();
+        const types = (me?.diet?.types || []).map(String);
+        const allergens = (me?.diet?.allergens || []).map(String);
+        const excluded = (me?.exclusions?.ingredients || []).map(String);
+        const mergedRestrictions = normalize([...types, ...allergens, ...excluded]);
+        if (!cancelled) {
+          setPrefs(p => ({
+            likes: normalize(p.likes || []),
+            restrictions: normalize([...(p.restrictions || []), ...mergedRestrictions]),
+          }));
+        }
+      } catch (e) {
+        console.warn("hydrate /api/me failed:", e?.message || e);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+  
 
   // handlers passed to the UI component
   const addLike = (s) =>

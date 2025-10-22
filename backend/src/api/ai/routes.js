@@ -3,6 +3,8 @@ import { Router } from "express";
 import { explainDish, generateDish, violatesRestrictions } from "./llm.js";
 import { fetchFoodImageByDish } from "../unsplash.js";
 import { saveAIRating, getDishStats } from "../../firebase/feedback.js";
+import { getUserBasic } from "../../firebase/dbFunctions.js"; // NEW import
+
 
 const router = Router();
 const ratings = [];
@@ -65,6 +67,42 @@ const slug = (s = "") =>
     .replace(/&/g, "and")
     .replace(/[^a-z0-9]+/g, "_")
     .replace(/^_+|_+$/g, "");
+
+function normList(list = []) {
+  return Array.from(new Set(list.map(s => String(s).toLowerCase().trim()))).filter(Boolean);
+}
+
+const DIET_RULES = {
+  vegan: ["meat","beef","pork","chicken","fish","shellfish","egg","cheese","milk","dairy","butter","honey","gelatin","yogurt"],
+  vegetarian: ["meat","beef","pork","chicken","gelatin"],
+  pescatarian: ["beef","pork","chicken"],
+  dairy_free: ["milk","cheese","butter","yogurt","cream","whey"],
+  gluten_free: ["wheat","barley","rye","farro","semolina","spelt","bulgur","malt","gluten"],
+  nut_free: ["peanut","almond","cashew","walnut","pecan","hazelnut","pistachio","macadamia"],
+  egg_free: ["egg"],
+  shellfish_free: ["shrimp","crab","lobster","clam","mussel","oyster","scallop","shellfish"],
+};
+
+function buildBlockedTokens({ diet = {}, exclusions = {} }) {
+  const types = normList(diet.types);
+  const allergens = normList(diet.allergens);
+  const userIng = normList(exclusions.ingredients);
+  const byType = types.flatMap(t => DIET_RULES[t] || []);
+  const all = normList([...byType, ...allergens, ...userIng]);
+  return new Set(all);
+}
+
+function violatesProfileRestrictions(dish, blockedSet) {
+  const hay = [
+    String(dish?.name || "").toLowerCase(),
+    String(dish?.cuisine || "").toLowerCase(),
+    ...(dish?.ingredients || []).map(s => String(s).toLowerCase())
+  ].join(" ");
+  for (const token of blockedSet) {
+    if (token && hay.includes(token)) return true;
+  }
+  return false;
+}
 
 // ---------- Routes ----------
 
@@ -141,10 +179,53 @@ router.post("/recommend", async (req, res) => {
       console.warn("[/api/ai/recommend]  no dish name");
       return res.status(502).json({ error: "AI recommendation failed (no name)" });
     }
-    if (violatesRestrictions(dish, restrictions)) {
-      console.warn("[/api/ai/recommend]  violates restrictions:", restrictions);
-      return res.status(422).json({ error: "Dish violates restrictions", dish, source: "ai" });
+    let userProfile = null;
+    try {
+      if (req.user?.uid) userProfile = await getUserBasic(req.uid);
+    } catch (err) {
+      console.warn("[/api/ai/recommend] could not fetch user profile:", err?.message);
     }
+
+    // Build blocked tokens from diet + exclusions
+    const blockedSet = buildBlockedTokens({
+      diet: userProfile?.diet || { types: [], allergens: [] },
+      exclusions: userProfile?.exclusions || { ingredients: [] },
+    });
+
+    // Merge front-end restrictions too
+    for (const r of restrictions || []) blockedSet.add(String(r).toLowerCase());
+
+    // Reject or retry if dish conflicts
+    if (violatesRestrictions(dish, restrictions) || violatesProfileRestrictions(dish, blockedSet)) {
+      console.warn("[/api/ai/recommend] dish violates restrictions:", [...blockedSet]);
+
+      // Retry once with an augmented prompt
+      try {
+        const retryPrompt = `${prompt}\nAvoid ingredients: ${[...blockedSet].join(", ")}. Suggest a different dish.`;
+        const retry = await generateDish({ prompt: retryPrompt, likes, restrictions, mustInclude });
+        if (retry?.dish?.name) {
+          const retryDish = retry.dish;
+          if (!violatesProfileRestrictions(retryDish, blockedSet)) {
+            dish = {
+              id: retryDish?.id || slug(retryDish.name),
+              name: retryDish.name,
+              cuisine: retryDish.cuisine || "",
+              ingredients: Array.isArray(retryDish.ingredients) ? retryDish.ingredients : [],
+              dietTags: Array.isArray(retryDish.dietTags) ? retryDish.dietTags : [],
+              img: retryDish.img || retryDish.imageUrl || dish.img
+            };
+          }
+        }
+      } catch (e) {
+        console.warn("[/api/ai/recommend] retry after restriction failed:", e?.message || e);
+      }
+
+      // still invalid after retry
+      if (violatesProfileRestrictions(dish, blockedSet)) {
+        return res.status(422).json({ error: "Dish violates user restrictions", dish, source: "ai" });
+      }
+    }
+
     if (mustInclude.length && !matchesMustInclude(dish, mustInclude)) {
       console.warn("[/api/ai/recommend]  mustInclude not satisfied:", mustInclude, " dish:", dish.name);
       return res.status(422).json({ error: "Dish did not match required keywords", dish, source: "ai" });

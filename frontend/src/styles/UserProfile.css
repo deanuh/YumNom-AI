@@ -1,3 +1,5 @@
+html { scroll-behavior: smooth; }
+
 .profile-container {
   background-color: #D0C9EB;
   padding: 2rem;
@@ -19,7 +21,8 @@
 .profile-container h4{
   color: #190352;
   }
-.tab-buttons {
+/* Tabs / slider bar */
+.profile-tabs {
   display: flex;
   gap: 2rem;
   border-bottom: 2px solid #5a3798;
@@ -27,23 +30,26 @@
   padding-bottom: 0.5rem;
 }
 
-.tab {
+.profile-tabs .tab {
   background: none;
   border: none;
+  appearance: none;
+  padding: 0.5rem 0;
   font-size: 1rem;
   font-weight: 500;
   color: #7a5ea3;
-  padding: 0.5rem 0;
   cursor: pointer;
   position: relative;
+  display: inline-block; /* ensures underline positions correctly */
+  line-height: 1.2;
 }
 
-.tab.active {
+.profile-tabs .tab.active {
   font-weight: 600;
   color: #342156;
-  }
+}
 
-.tab.active::after {
+.profile-tabs .tab.active::after {
   content: "";
   position: absolute;
   bottom: -8px;
@@ -53,6 +59,9 @@
   background-color: #9683b9;
   border-radius: 5px;
 }
+
+/* smooth anchor scroll (nice-to-have) */
+html { scroll-behavior: smooth; }
 
 .profile-header {
   display: flex;
@@ -331,4 +340,13 @@
 .edit-panel input:disabled {
   background: #f4f1fb;
   color: #6f62a1;
+}
+.flash-success {
+  background: #e8f5e9;
+  border: 1px solid #4caf50;
+  color: #2e7d32;
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin: 6px 8px 10px;
+  font-size: 0.95rem;
 }

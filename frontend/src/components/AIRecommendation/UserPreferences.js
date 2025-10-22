@@ -1,62 +1,62 @@
 // components/AIRecommendation/UserPreferences.js
 import React, { useState, useMemo } from "react";
+import { getIconFile, overlayText } from "../shared/icons";
+// const ICONS = {
+//   //common allergies
+//   avocado: "avacado_allergy.png",
+//   mushroom: "mushroom_allergy.png",
+//   egg: "egg_allergy.png",
+//   //rice
+//   //potato
+//   //corn
+//   //mango
 
-const ICONS = {
-  //common allergies
-  avocado: "avacado_allergy.png",
-  mushroom: "mushroom_allergy.png",
-  egg: "egg_allergy.png",
-  //rice
-  //potato
-  //corn
-  //mango
+//   peanut: "nut_allergy.png",
+//   soy: "nut_allergy.png",
+//   nut: "nut_allergy.png",
+//   treenut:"nut_allergy.png",
+//   sesame:"nut_allergy.png",
+//   walnut: "nut_allergy",
+//   pecan: "nut_allergy.png",
 
-  peanut: "nut_allergy.png",
-  soy: "nut_allergy.png",
-  nut: "nut_allergy.png",
-  treenut:"nut_allergy.png",
-  sesame:"nut_allergy.png",
-  walnut: "nut_allergy",
-  pecan: "nut_allergy.png",
+//   fish: "fish_allergy.png",
+//   shellfish: "shell_fish.png",
 
-  fish: "fish_allergy.png",
-  shellfish: "shell_fish.png",
+//   dairy: "dairy.png",
+//   milk: "dairy.png",
+//   cheese: "cheese.png",
+//   gluten: "glutten_free.png",
+//   wheat:"glutten_free.png",
 
-  dairy: "dairy.png",
-  milk: "dairy.png",
-  cheese: "cheese.png",
-  gluten: "glutten_free.png",
-  wheat:"glutten_free.png",
+//   pork: "meat.png",
+//   beef: "meat.png",
+//   meat: "meat.png",
+//   chicken: "chicken_leg.png",
 
-  pork: "meat.png",
-  beef: "meat.png",
-  meat: "meat.png",
-  chicken: "chicken_leg.png",
+//   vegan: "vegatarian.png",
+//   vegetarian: "vegatarian.png",
+//   kosher: "kosher.png",
+//   halal: "halal.png",
+// };
 
-  vegan: "vegatarian.png",
-  vegetarian: "vegatarian.png",
-  kosher: "kosher.png",
-  halal: "halal.png",
-};
+// // helper: normalize & resolve icon
+// const normalize = (s) => String(s || "").toLowerCase().trim();
 
-// helper: normalize & resolve icon
-const normalize = (s) => String(s || "").toLowerCase().trim();
-
-/**
- * Resolve an icon file for a given label.
- * Returns null if no matching icon is found.
- */
-const getIconFile = (label) => ICONS[normalize(label)] || null;
-/**
- * Overlay text (shortened/uppercase version of label).
- * Used inside pill bubble if no icon exists.
- */
-const overlayText = (label) => {
-  const t = normalize(label).replace(/[^a-z0-9]/g, "");
-  return (t.length <= 15 ? t : t.slice(0, 15)).toUpperCase(); // short tag inside bubble
-};
-// Component: Pill
-// Represents a single restriction/like as an icon bubble.
+// /**
+//  * Resolve an icon file for a given label.
+//  * Returns null if no matching icon is found.
+//  */
+// const getIconFile = (label) => ICONS[normalize(label)] || null;
+// /**
+//  * Overlay text (shortened/uppercase version of label).
+//  * Used inside pill bubble if no icon exists.
+//  */
+// const overlayText = (label) => {
+//   const t = normalize(label).replace(/[^a-z0-9]/g, "");
+//   return (t.length <= 15 ? t : t.slice(0, 15)).toUpperCase(); // short tag inside bubble
+// };
+// // Component: Pill
+// // Represents a single restriction/like as an icon bubble.
 
 function Pill({ label, onRemove }) {
   const iconFile = getIconFile(label);

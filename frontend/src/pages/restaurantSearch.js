@@ -5,6 +5,7 @@ import DishCard from "../components/Dashboard/DishCard";
 import Category from "../components/restaurantCategories";
 import { getUserCity } from "../components/GetUserLoc";
 import { getRestaurant } from "../components/GetRestaurant";
+import { fetchMe } from "../userapi/meApi";
 
 const DEFAULT_RADIUS_MI = 10;
 const DEFAULT_UNITS = "mi";
@@ -86,6 +87,8 @@ function RestaurantSearch() {
 
   // Local "recently viewed" restaurants
   const [recents, setRecents] = useState([]);
+  // Profile exclusions (restaurant names)
+  const [excludedRestaurants, setExcludedRestaurants] = useState([]);
 
   // 1) On mount: detect user's city and lat/lng.
   //    This populates 'location' (for display) and 'longLat' (for API calls).
@@ -135,6 +138,20 @@ function RestaurantSearch() {
     const saved = JSON.parse(localStorage.getItem(RECENTS_KEY) || "[]");
     setRecents(Array.isArray(saved) ? saved : []);
   }, []);
+
+  // Load excluded restaurant names from user profile
+  useEffect(() => {
+      (async () => {
+        try {
+          const me = await fetchMe();
+          const items = Array.isArray(me?.exclusions?.items) ? me.exclusions.items : [];
+          setExcludedRestaurants(items);
+        } catch (e) {
+          // Non-fatal if profile isn't available yet
+          console.warn("Unable to load profile exclusions:", e?.message || e);
+        }
+      })();
+    }, []);
 
   /**
    * Add a restaurant to "recents":
@@ -262,6 +279,11 @@ function RestaurantSearch() {
         const db = parseFloat(b?.distance);
         return (Number.isFinite(da) ? da : Infinity) - (Number.isFinite(db) ? db : Infinity);
       });
+       // Exclude restaurants from profile preferences (case-insensitive exact name match)
+      if (excludedRestaurants?.length) {
+          const ex = new Set(excludedRestaurants.map((n) => norm(n)));
+          rows = rows.filter((r) => !ex.has(norm(r?.name)));
+        }
 
       setSearchResults({ data: rows });
     } catch (e) {
