@@ -20,7 +20,7 @@ export async function addUser(userData, userId) {
 
 		await db.collection("User").doc(userId).create({
       address: null,
-      profile_picture: null,
+      profile_picture: "ban_gato.png",
       ...userData,
       username_lower: (userData.username || "").toLowerCase(),
       friends: [],
@@ -131,7 +131,7 @@ export async function addGroup(userId) {
         },
         owner_id: userId,
         date_created: FieldValue.serverTimestamp(),
-        session_expires_at: FieldValue.serverTimestamp() // adjust for real session expiration
+        secondsUntilExpiration: 300// offset in seconds, saved as int
       });
 
       transaction.update(userRef, {
@@ -183,7 +183,8 @@ export async function deleteGroup(userId) {
     throw new Error(`deleteGroup failed: ${err.message}`);
   }
 }
-export async function getGroup(userId) {
+
+export async function getGroupFromUserId(userId) {
 	try {
 		const userRef = db.collection("User").doc(userId);
 		const userDoc = await userRef.get();
@@ -205,6 +206,22 @@ export async function getGroup(userId) {
 		throw new Error(`getGroup failed: ${err.message}`);
 	}
 }
+
+export async function getGroupFromGroupId(groupId) {
+	try {
+		const groupRef = db.collection("Group").doc(groupId);
+		const groupDoc = await groupRef.get();
+		if (!groupDoc.exists) throw new Error("Group does not exist.");
+		const groupData = groupDoc.data();
+		groupData.id = groupDoc.id; //append id to data
+		return groupData;
+
+	} catch(err) {
+		console.error(`getGroup failed: ${err.message}`);
+		throw new Error(`getGroup failed: ${err.message}`);
+	}
+}
+
 // -------------------- FAVORITES -------------------- //
 
 // Add a new favorite for the authenticated User

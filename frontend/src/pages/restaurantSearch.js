@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
+// NEW: Import Firebase auth functions
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import "../styles/restaurantSearch.css";
 import DashboardSection from "../components/Dashboard/DashboardSection";
 import DishCard from "../components/Dashboard/DishCard";
@@ -6,6 +8,16 @@ import Category from "../components/restaurantCategories";
 import { getUserCity } from "../components/GetUserLoc";
 import { getRestaurant } from "../components/GetRestaurant";
 import { fetchMe } from "../userapi/meApi";
+
+// NEW: Helper function for making secure API calls
+async function fetchWithAuth(url, options = {}) {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not authenticated");
+  const token = await user.getIdToken();
+  const headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+  return fetch(url, { ...options, headers });
+}
 
 const DEFAULT_RADIUS_MI = 10;
 const DEFAULT_UNITS = "mi";
@@ -49,8 +61,7 @@ const formatAddress = (r) =>
 const norm = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
 function RestaurantSearch() {
-// UI + request state
-
+  // UI + request state
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -59,29 +70,17 @@ function RestaurantSearch() {
   const [longLat, setlongLat] = useState(null);
   const [location, setLocation] = useState("Detecting...");
   const [searchResults, setSearchResults] = useState(null);
+  
   //------------ NEW: location sharing toggle (default ON, persisted) ----------
   const [isSharing, setIsSharing] = useState(() => {
-      try {
-        const stored = localStorage.getItem("yumNomLocationSharing");
-        if (stored !== null) return JSON.parse(stored);
-        const legacy = localStorage.getItem("yumNomLocationOptOut");
-        return legacy !== null ? !JSON.parse(legacy) : true;
-      } 
-      catch { return true; }
-    });
-    useEffect(() => {
-      const onStorage = (e) => {
-        if (e.key === "yumNomLocationSharing" && e.newValue != null) {  // is location on and there is a location - display info
-          setIsSharing(JSON.parse(e.newValue));
-        }
-        if (e.key === "yumNomLocationOptOut" && e.newValue != null) {  // sharing is off, do not share location info
-          setIsSharing(!JSON.parse(e.newValue));
-        }
-      };
-      window.addEventListener("storage", onStorage);
-      return () => window.removeEventListener("storage", onStorage);
-    }, []);
-
+    try {
+      const stored = localStorage.getItem("yumNomLocationSharing");
+      if (stored !== null) return JSON.parse(stored);
+      const legacy = localStorage.getItem("yumNomLocationOptOut");
+      return legacy !== null ? !JSON.parse(legacy) : true;
+    } catch { return true; }
+  });
+  
   // Currently active quick category (null when user types a query)
   const [selectedCategory, setSelectedCategory] = useState(null);
 
@@ -89,6 +88,22 @@ function RestaurantSearch() {
   const [recents, setRecents] = useState([]);
   // Profile exclusions (restaurant names)
   const [excludedRestaurants, setExcludedRestaurants] = useState([]);
+  
+  // NEW: State to hold the user's favorites
+  const [favorites, setFavorites] = useState([]);
+  
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === "yumNomLocationSharing" && e.newValue != null) {
+        setIsSharing(JSON.parse(e.newValue));
+      }
+      if (e.key === "yumNomLocationOptOut" && e.newValue != null) {
+        setIsSharing(!JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   // 1) On mount: detect user's city and lat/lng.
   //    This populates 'location' (for display) and 'longLat' (for API calls).
@@ -120,6 +135,28 @@ function RestaurantSearch() {
     })();
     return () => { cancelled = true; };
   }, [isSharing]);
+
+  // NEW: On mount, fetch the user's favorites list
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const fetchFavorites = async () => {
+          try {
+            const favRes = await fetchWithAuth('http://localhost:5001/favorites?type=restaurants');
+            if (favRes.ok) {
+              const favData = await favRes.json();
+              setFavorites(favData.items || []);
+            }
+          } catch (error) {
+            console.error("Failed to fetch favorites:", error);
+          }
+        };
+        fetchFavorites();
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // 2) Once we have lat/lng, auto-run a nearby search with default distance.
   //    We also reveal the results panel by default in this case.
@@ -180,6 +217,7 @@ function RestaurantSearch() {
       return next;
     });
   };
+  
   //Filter popover visibility + selected values
   const [showDistanceDropdown, setShowDistanceDropdown] = useState(false);
   const [showPriceDropdown, setShowPriceDropdown] = useState(false);
@@ -198,6 +236,7 @@ function RestaurantSearch() {
    */
   const currentQuery = () =>
     selectedCategory ? CATEGORY_TO_QUERY[selectedCategory] : (searchText || "").trim();
+  
   /**
    * Manual search submit:
    * - Requires lat/lng (location detection)
@@ -293,6 +332,50 @@ function RestaurantSearch() {
       setLoading(false);
     }
   };
+  
+  // NEW: This is the function that will add or remove a favorite
+  const handleToggleFavorite = async (restaurant) => {
+    const uniqueId = restaurant.location_id;
+    const isFavorited = favorites.some(fav => fav.api_id === uniqueId);
+    
+    if (isFavorited) {
+      const favoriteToRemove = favorites.find(fav => fav.api_id === uniqueId);
+      if (!favoriteToRemove) return;
+      
+      try {
+        await fetchWithAuth(`http://localhost:5001/favorites/${favoriteToRemove.id}`, { method: 'DELETE' });
+        setFavorites(prev => prev.filter(fav => fav.api_id !== uniqueId));
+      } catch (error) {
+        console.error("Failed to unfavorite:", error);
+      }
+    } else {
+      try {
+        const response = await fetchWithAuth(`http://localhost:5001/favorites`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            api_id: uniqueId,
+            name: restaurant.name,
+            photo_url: restaurant.photoUrl || restaurant.image_url || restaurant.photo?.images?.large?.url || null,
+            type: 'restaurants'
+          }),
+        });
+        if (response.ok) {
+          const newFavorite = await response.json();
+          const newFavItem = { 
+            id: newFavorite.favoriteId, 
+            api_id: uniqueId, 
+            name: restaurant.name, 
+            photo_url: restaurant.photoUrl || restaurant.image_url || restaurant.photo?.images?.large?.url || null 
+          };
+          setFavorites(prev => [...prev, newFavItem]);
+        }
+      } catch (error) {
+        console.error("Failed to favorite:", error);
+      }
+    }
+  };
+
   /**
    * Clear all filters and search inputs:
    * - Resets distance, price, category, and text
@@ -304,9 +387,8 @@ function RestaurantSearch() {
     setSelectedPrice(null);
     setSelectedCategory(null);
     setSearchText("");
-    setShowDistanceDropdown(false); // close distance dropdown
-    setShowPriceDropdown(false);    // close price dropdown
-    // Refresh results with defaults
+    setShowDistanceDropdown(false); 
+    setShowPriceDropdown(false);    
     fetchRestaurants({ q: "", miles: DEFAULT_RADIUS_MI });
   };
 
@@ -341,11 +423,10 @@ function RestaurantSearch() {
   const displayed = useMemo(() => {
     const base = Array.isArray(searchResults?.data) ? searchResults.data : [];
     if (!selectedPrice) return base;
-
     const priceKey = (r) => r.price_level || r.price || r.price_range || null;
     return base.filter((r) => {
       const p = priceKey(r);
-      if (!p) return true;  // keep items with unknown price
+      if (!p) return true;  
       const normalized =
         typeof p === "number" ? "$".repeat(Math.max(1, Math.min(4, p))) : String(p).trim();
       return normalized === selectedPrice;
@@ -381,7 +462,6 @@ function RestaurantSearch() {
         {/* FILTERS */}
         <div className="filters-bar">
           <div className="filter-pill1">Filters: </div>
-
           <div className="filter-dropdown">
             <button className="filter-pill" onClick={toggleDistance}>
               Distance {selectedDistance ? `: ${selectedDistance} ` : ""}
@@ -389,31 +469,12 @@ function RestaurantSearch() {
             </button>
             {showDistanceDropdown && (
               <div className="dropdown-menu">
-                <label><input
-                  type="radio"
-                  name="distance"
-                  value="5 mi"
-                  checked={selectedDistance === "5 mi"}
-                  onChange={(e) => handleDistanceRadio(e.target.value)}
-                /> 5 mi</label>
-                <label><input
-                  type="radio"
-                  name="distance"
-                  value="10 mi"
-                  checked={selectedDistance === "10 mi"}
-                  onChange={(e) => handleDistanceRadio(e.target.value)}
-                /> 10 mi</label>
-                <label><input
-                  type="radio"
-                  name="distance"
-                  value="15 mi"
-                  checked={selectedDistance === "15 mi"}
-                  onChange={(e) => handleDistanceRadio(e.target.value)}
-                /> 15 mi</label>
+                <label><input type="radio" name="distance" value="5 mi" checked={selectedDistance === "5 mi"} onChange={(e) => handleDistanceRadio(e.target.value)} /> 5 mi</label>
+                <label><input type="radio" name="distance" value="10 mi" checked={selectedDistance === "10 mi"} onChange={(e) => handleDistanceRadio(e.target.value)} /> 10 mi</label>
+                <label><input type="radio" name="distance" value="15 mi" checked={selectedDistance === "15 mi"} onChange={(e) => handleDistanceRadio(e.target.value)} /> 15 mi</label>
               </div>
             )}
           </div>
-
           <div className="filter-dropdown">
             <button className="filter-pill" onClick={togglePrice}>
               Price {selectedPrice ? `: ${selectedPrice}` : ""}
@@ -421,34 +482,15 @@ function RestaurantSearch() {
             </button>
             {showPriceDropdown && (
               <div className="dropdown-menu">
-                <label><input
-                  type="radio"
-                  name="price"
-                  value="$"
-                  checked={selectedPrice === "$"}
-                  onChange={(e) => handlePriceRadio(e.target.value)}
-                /> $ </label>
-                <label><input
-                  type="radio"
-                  name="price"
-                  value="$$"
-                  checked={selectedPrice === "$$"}
-                  onChange={(e) => handlePriceRadio(e.target.value)}
-                /> $$ </label>
-                <label><input
-                  type="radio"
-                  name="price"
-                  value="$$$"
-                  checked={selectedPrice === "$$$"}
-                  onChange={(e) => handlePriceRadio(e.target.value)}
-                /> $$$ </label>
+                <label><input type="radio" name="price" value="$" checked={selectedPrice === "$"} onChange={(e) => handlePriceRadio(e.target.value)} /> $ </label>
+                <label><input type="radio" name="price" value="$$" checked={selectedPrice === "$$"} onChange={(e) => handlePriceRadio(e.target.value)} /> $$ </label>
+                <label><input type="radio" name="price" value="$$$" checked={selectedPrice === "$$$"} onChange={(e) => handlePriceRadio(e.target.value)} /> $$$ </label>
               </div>
             )}
           </div>
           <span className="clear-filters-link" onClick={handleClearFilters}>
             Clear filters
           </span>
-
         </div>
       </div>
 
@@ -461,10 +503,8 @@ function RestaurantSearch() {
           <div className="section-header">
             <h4>Nearby Restaurants</h4>
           </div>
-
           {loading && <p>Loading nearby restaurants…</p>}
           {error && <p className="error">{error}</p>}
-
           {!loading && !error && (
             <>
               {Array.isArray(displayed) && displayed.length > 0 ? (
@@ -476,9 +516,11 @@ function RestaurantSearch() {
                       address={formatAddress(r)}
                       distance={formatDistance(r.distance)}
                       imageUrl={r.photoUrl || r.image_url || r.photo?.images?.large?.url || null}
+                      // NEW: Pass the favorite status and toggle function to the card
+                      isFavorited={favorites.some(fav => fav.api_id === r.location_id)}
+                      onToggleFavorite={() => handleToggleFavorite(r)}
                       onViewMenu={() => {
                         addRecent(r);
-                        // Then open Google Maps
                         const q = encodeURIComponent(`${r.name} ${formatAddress(r)}`);
                         window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank");
                       }}
@@ -493,18 +535,11 @@ function RestaurantSearch() {
         </>
       )}
 
+      {/* Recently Viewed Section */}
       {recents.length > 0 && (
         <>
           <div className="section-header" style={{ marginTop: 24 }}>
             <h4>Your Recent Searches</h4>
-            {/* Optional "Clear all" link:
-            <button
-              className="link"
-              onClick={() => { localStorage.removeItem(RECENTS_KEY); setRecents([]); }}
-            >
-              Clear all
-            </button>
-            */}
           </div>
           <div className="restaurant-grid">
             {recents.map((r) => (

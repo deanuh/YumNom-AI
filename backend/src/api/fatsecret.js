@@ -6,7 +6,9 @@ const oauth2url = 'https://oauth.fatsecret.com/connect/token';
 const base_url = 'https://platform.fatsecret.com/rest';
 const fatsecret_client_id = process.env.FATSECRET_CLIENT_ID
 const fatsecret_client_secret = process.env.FATSECRET_CLIENT_SECRET
-
+const emptyToUndef = (v) => (v && String(v).trim() !== "" ? v : undefined);
+let accessToken = null;
+let expirationDate = Date.now();
 
 //Helper function for retrieving OAuth2 token for API calls.
 
@@ -39,24 +41,29 @@ async function getAuthTokenFatSecret() {
 
 async function getRestaurantFatSecret(req, res, next) {
 
-	const token = await getAuthTokenFatSecret();
-
-	var options = {
-		method: "GET",
-		url: base_url + '/brands/v2',
-		headers: {
-			'Authorization': `Bearer ${token}`
-		},
-		params: {
-			starts_with: "McDonald", // replace after router is finished, pass user query
-			brand_type: "restaurant", // through here.
-			format: "json"
-		},
-	};
-
-	const response = await axios(options);
-	return res.json(response.data);
-
+	try {
+		const token = await getAuthTokenFatSecret();
+		const q = emptyToUndef(req.query.q);
+		if (!q) return res.status(400).json({error: "Missing required fields." });
+	
+		var options = {
+			method: "GET",
+			url: base_url + '/brands/v2',
+			headers: {
+				'Authorization': `Bearer ${token}`
+			},
+			params: {
+				starts_with: q, // replace after router is finished, pass user query
+				brand_type: "restaurant", // through here.
+				format: "json"
+			},
+		};
+	
+		const response = await axios(options);
+		return res.json(response.data);
+	} catch (err) {
+		next(err);
+	}
 }
 
 // Use this to retrieve the id of the food item from FatSecret.

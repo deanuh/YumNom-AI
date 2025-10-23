@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useRef, useEffect, useState } from "react"; // Import necessary modules from React
 import "../styles/RealTimeVoting.css";
 import { useLocation } from "react-router-dom";
-import SendAndReceive from "../components/RealTimeVoting/socketConnection.js";
+import io from 'socket.io-client'; // Import the socket.io client library
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig.js";
+import Join from "../components/RealTimeVoting/Join.js"
+import Vote from "../components/RealTimeVoting/Vote.js"
+import Wait from "../components/RealTimeVoting/Wait.js"
+import End from "../components/RealTimeVoting/End.js"
 
-const restaurants = [
-  { id: 1, name: "Chipotle", image: "chipotle.png" },
-  { id: 2, name: "Pizza Hut", image: "pizzahut.png" },
-  { id: 3, name: "Wingstop", image: "wingstop.png" },
-];
 
 // const partyMembers = [
 //   { name: "Banana", role: "Host", image: "/ban_gato.png" },
@@ -21,91 +22,174 @@ const restaurants = [
 export default function VotingPage() {
 
 
-    const location = useLocation();
-    const { chosenRestaurant, selectedFriendObjects } = location.state || {}; 
-    // pull it safely (in case state is missing)
-    const [selectedId, setSelectedId] = useState(null);
-    const [votes, setVotes] = useState({ 1: 0, 2: 0, 3: 0, 4: 0 });
+	const location = useLocation();
+	const { selectedRestaurant } = location.state || {}; // either holds the restaurant name from GroupMealParty.js or not.
+	// pull it safely (in case state is missing)
+	const [vote, setVote] = useState(null); // Own user's vote
+  const [receivedVotes, setReceivedVotes] = useState({}); //Each user's vote including own {userIdOne: 1, userIdTwo: 2, ...}
+	const [tally, setTally] = useState({}); // vote count for each vote { "1": 10, "2": 2, ... }
+  const [phaseState, setPhaseState] = useState(""); //current phase (round_one OR waiting_phase OR end_phase, etc.)
+	const [timer, setTimer] = useState(null);  // in seconds
+	const [partyMembers, setPartyMembers] =  useState({}); // State to store users in session, not invited users.
+	const socketRef = useRef(null); // Reference to the current socket connection
+	const [choices, setChoices] = useState(null); // Possible choices to vote between.
+	const [results, setResults] = useState({}); // Last round's results from server. Techically should match tally with 0's if a restaurant didnt get any votes.
+	const [winner, setWinner] = useState(null);
 
-    const partyMembers = selectedFriendObjects || [];
+	// create a "finalRestaurants" array to display
+	const [finalRestaurants, setFinalRestaurants] =  useState([]);
+	
+	
+	// If the selectedRestaurant is NOT already in the list, add it
+	//
+	const sendNomination = (nomination) => {
+		console.log(`nomination: ${nomination}`);
+		if (socketRef.current) {
+			socketRef.current.emit("send_nomination", nomination)
+		}
+	};
 
-    const MAX_VOTES = partyMembers.length; // e.g., 4
-    const [totalVotes, setTotalVotes] = useState(0);
+	const sendVote = () => { // ------------------------------------- Submitted by martin
+		if (socketRef.current) {
+			socketRef.current.emit("send_vote",  vote);
+		}
+	}
 
-    
+	useEffect(() => { // if the selectedRestaurant is updated, check if its not null (came from GroupMealParty), then nominate it for the user.
+		setTimeout(() => {  // add check or something to stop re-renders from nominating more than once.
+			if (selectedRestaurant && socketRef.current) {
+				console.log(`selectedRestaurant: ${selectedRestaurant}`);
+				sendNomination(selectedRestaurant);
+			}
+		}, 500); // 1 second for socket to connect
+	}, [selectedRestaurant]);
 
-    const handleVote = () => {
-        if (!selectedId || totalVotes >= MAX_VOTES) return;
-        setVotes(prev => ({ ...prev, [selectedId]: prev[selectedId] + 1 }));
-        setTotalVotes(prev => prev+1);
-    };
-
-    // create a "finalRestaurants" array to display
-    const finalRestaurants = [...restaurants];
-    
-
-    // If the chosenRestaurant is NOT already in the list, add it
-    if (chosenRestaurant && !restaurants.some(r => r.name.toLowerCase() === chosenRestaurant.toLowerCase())) {
-    finalRestaurants.push({
-        // id: restaurants.length + 1,  // unique id
-        id: 4,
-        name: chosenRestaurant,
-        image: `${chosenRestaurant.toLowerCase()}.png`
-    });
-    }
+  useEffect(() => {
+		const interval = setInterval(() => { 
+			setTimer(timer => {
+				if (timer > 0) return timer - 1;
+				clearInterval(interval);
+				return 0;
+			});
+		}, 1000);
 
 
+
+	
+
+
+		const unsubscribe = onAuthStateChanged(auth, async (user) => {
+			try {
+				if (user && !socketRef.current) {
+					const user = auth.currentUser;
+
+					const JWT = await user.getIdToken();	
+			
+					socketRef.current = io(process.env.REACT_APP_SOCKETIO_BACKEND_URL, {
+						auth: { token: JWT },
+					});
+		
+  	  		// Listen for incoming votes from the server
+  	  		socketRef.current.on("change_phase", (data) => {
+						console.log(JSON.stringify(data));
+  	  		  setPhaseState(data.phaseName); // Set the received vote data to state
+						if (data.choices) setChoices(data.choices);
+						if (data.results) setResults(data.results);
+						if (data.winner) setWinner(data.winner);
+						
+						setTimer(Math.ceil((data.endsAt  - Date.now()) / 1000));
+  	  		});
+	
+
+					socketRef.current.on("receive_vote", (data) => {
+					  setReceivedVotes((prev) => {
+					    const updated = {
+					      ...prev,
+					      [data.user]: data.vote,
+					    };
+					
+					    const newTally = Object.values(updated).reduce((acc, vote) => {
+					      acc[Number(vote)] = (acc[Number(vote)] || 0) + 1;
+					      return acc;
+					    }, {});
+					
+					    setTally(newTally);
+					    return updated;
+					  });
+					});
+
+					socketRef.current.on("receive_nominations", (nominations) => {
+						setFinalRestaurants(nominations);
+					});
+					
+					socketRef.current.on("get_members", (party) => {
+						setPartyMembers(party);
+					});
+
+					socketRef.current.on("joined_room", (partyMember) => {
+						setPartyMembers(prev => {
+                const newParty = {
+                ...prev,
+                [partyMember.userId]: {
+                    profile_picture: partyMember.profile_picture,
+                    username: partyMember.username
+                }
+            }
+            return newParty;
+            });
+					});
+
+					socketRef.current.on("left_room", (userId) => {
+						setPartyMembers(prev => { 
+							const updated = prev;
+							updated.delete(userId);
+							return updated;
+						});
+					});
+
+					socketRef.current.on("join_error", (data) => {
+						console.error("Error joining room: ", data.message);
+					});
+
+
+					socketRef.current.emit("join_room");
+
+  	  		// Cleanup the effect by removing the event listener when the component unmounts
+				}
+  	  } catch(err) {
+				console.error("Error retrieving current user: ", err.vote);
+			}
+		});
+
+
+	return () => {
+					clearInterval(interval);
+  	  	  socketRef.current?.disconnect()
+					unsubscribe();
+  };
+}, []); // Empty dependency array ensures this runs only once when the component mounts
+
+	function renderPhase(phaseState) {
+		switch (phaseState) { 
+  	      case "join":
+  	          return(<Join timer={timer} partyMembers={partyMembers} sendNomination={sendNomination} finalRestaurants={finalRestaurants} />);
+  	      case "waiting_phase":
+  	          return(<Wait timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} tally={tally} results={results} />);
+  	      case "round_one": 
+  	      case "round_two":
+  	      case "tiebreaker":
+  	          return (<Vote phaseState={phaseState} timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} vote={vote} setVote={setVote} sendVote={sendVote} tally={tally} choices={choices}/>);
+  	      case "end_phase":
+  	          return (<End timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} winner={winner} />);
+  	      default:
+  	          return;
+		}
+	}
+
+// ---------------------------------------------------------------------------------------------------------------------------------------
   return (
-    <div className="voting-page">
-    <div class="voting-title-container">
-      <h1 className="voting-title">VOTING BEGINS</h1>
-			<SendAndReceive // debug component for socket server 
-			/>
-      </div>
-      <h3 className="round-title">Round 1</h3>
-
-      <div className="voting-section">
-        <div className="party-column">
-        <h4>Party Members</h4>
-            {partyMembers.map((member, i) => (
-            <div key={i} className="party-avatar">
-              <img src={`/${member.image}`} alt={member.username} />
-              <div>{member.username}</div>
-            </div>
-          ))}
-        </div>
-
-        <div className="Voting-restaurant-grid">
-          {finalRestaurants.map(r => (
-            <div
-              key={r.id}
-              className={`Voting-restaurant-option ${selectedId === r.id ? "selected" : ""}`}
-              onClick={() => setSelectedId(r.id)}
-            >
-              <img src={r.image} alt={r.name} />
-            </div>
-          ))}
-          <button className="Voting-submit-button" onClick={handleVote} disabled={totalVotes >= MAX_VOTES}>
-            Submit
-          </button>
-        </div>
-      </div>
-
-      <h2 className="Voting-results-title">Results</h2>
-      <div className="Voting-results-section">
-        {finalRestaurants.map((r, i) => (
-          <div key={i} className="result-row">
-            <img src={r.image} alt={r.name} className="result-icon" />
-            <div className="result-bar-container">
-              <div
-                className="result-bar"
-                style={{ width: `${votes[r.id] * 130}px` }}  // the 110 is for how long the vote will appear on the bar
-              />
-            </div>
-            <div className="vote-count">({votes[r.id]})</div>
-          </div>
-        ))}
-      </div>
-    </div>
+<div>
+	{renderPhase(phaseState)}
+</div>
   );
 }
