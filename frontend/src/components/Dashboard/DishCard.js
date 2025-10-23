@@ -1,25 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
-/**
- * DishCard Component
- *
- * Displays a restaurant "card" with:
- *  - Image (with fallback if missing)
- *  - Restaurant name + distance
- *  - Favorite (heart) button (local toggle only)
- *  - "View Restaurant" button that triggers callback
- *
- * Props:
- *  - name: string (restaurant name)
- *  - address: string (not currently displayed, but passed in)
- *  - distance: string (e.g., "2.3 mi")
- *  - imageUrl: string (URL of restaurant photo)
- *  - onViewMenu: function callback when user clicks "View Restaurant"
- */
-const DishCard = ({ name, address, distance, imageUrl, onViewMenu }) => {
-// Track local "favorite" state for this card (not persisted anywhere yet)
-  const [isFavorite, setIsFavorite] = useState(false);
-  // Fallback image if no restaurant photo available
+const DishCard = ({ name, address, distance, imageUrl, onViewMenu, isFavorited, onToggleFavorite }) => {
   const fallback = "/chicken.png";
 
   return (
@@ -38,19 +19,24 @@ const DishCard = ({ name, address, distance, imageUrl, onViewMenu }) => {
             {distance && <span className="distance-inline">{distance}</span>}
           </div>
 
-          <button
-            type="button"
-            className="favorite-btn"
-            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-            aria-pressed={isFavorite}
-            onClick={() => setIsFavorite(prev => !prev)}
-          >
-            <img
-              src={isFavorite ? "/heart_dark.png" : "/heart.png"}
-              alt=""
-              className="heart-icon"
-            />
-          </button>
+          {/* This button is only shown if the onToggleFavorite function is provided */}
+          {onToggleFavorite && (
+            <button
+              type="button"
+              className="favorite-btn"
+              aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+              aria-pressed={isFavorited}
+              // It now calls the function passed down from the parent (e.g., Favorite.js)
+              onClick={onToggleFavorite} 
+            >
+              <img
+                // The heart icon's appearance is now controlled by the isFavorited prop
+                src={isFavorited ? "/heart_dark.png" : "/heart.png"}
+                alt=""
+                className="heart-icon"
+              />
+            </button>
+          )}
         </div>
 
         <button type="button" className="menu-cta" onClick={onViewMenu}>

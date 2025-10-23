@@ -4,6 +4,7 @@ import "../styles/SignUp.css";
 import { auth } from "../firebase/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { createUser } from "../components/CreateUser.js";
+import { ensureMe } from "../userapi/meApi";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -34,6 +35,13 @@ function SignUp() {
       // Create user in Firestore with additional info
 			await createUser(firstName, lastName, username, JWT);
 
+      // Ensure /api/me/ensure exists and has full info
+      await ensureMe({
+        username: username,
+        first_name: firstName,
+        last_name: lastName,
+        profile_picture: ""
+      });
       navigate("/login");
 
     } catch (firebaseError) {
