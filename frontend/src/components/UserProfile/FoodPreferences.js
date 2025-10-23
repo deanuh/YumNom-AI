@@ -5,7 +5,7 @@ const ingredients = [
   { name: 'Fish', file: 'fish_allergy.png' },
   { name: 'Carrot', file: 'carrot_allergy.png' },
   { name: 'Egg', file: 'egg_allergy.png' },
-  { name: 'Cheese', file: 'cheese_allergy.png' },
+  { name: 'Cheese', file: 'cheese.png' },
 ];
 
 const addIng = [

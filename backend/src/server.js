@@ -25,6 +25,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { Server } from 'socket.io';
 import deleteUserRouter from "./api/deleteUser.js";
 import chatBotRouter from "./api/chatBot.js";  // had to change from { chatBotRouter} to w/o {} bc it would not actually connect
+import invitesRouter from './api/invites.js';
 
 let app = express();
 app.use(express.json());
@@ -394,6 +395,10 @@ app.use("/api", deleteUserRouter);
 
 // this is for the chatBot api calling
 app.use("/api/chatBot", chatBotRouter)
+
+
+// Invite routes
+app.use("/api/invites", invitesRouter);
 
 // THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING  -- update it works
 // // quick request logger

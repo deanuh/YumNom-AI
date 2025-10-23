@@ -17,3 +17,6 @@ formers into node.js.
     An open-source package that will support embeddings, text classification, text generation, translaton... 
 ```
 
+### Run this is the backend to be able to send user invite
+npm i jsonwebtoken dayjs
+

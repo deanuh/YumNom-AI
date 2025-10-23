@@ -178,6 +178,7 @@ export default function ChatBot({ toggleChat }) {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+
   // --- backend call ----------------------------------------------------------
 
   async function askBackend(query) {
@@ -235,7 +236,7 @@ export default function ChatBot({ toggleChat }) {
     });
   }, [appendBot]);
 
-  // --- render ----------------------------------------------------------------
+  // --- render the chatbot -----------------------------------------------------
 
   return (
     <div className="chatbot-wrapper">
