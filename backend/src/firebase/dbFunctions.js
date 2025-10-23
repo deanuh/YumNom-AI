@@ -12,6 +12,8 @@ import admin from "firebase-admin";
 const { FieldValue } = admin.firestore;
 
 // -------------------- USERS -------------------- //
+
+// By Wissam for addUser: creates User and sets default fields
 export async function addUser(userData, userId) {
   try {
 		console.log("reached addUser");
@@ -20,7 +22,7 @@ export async function addUser(userData, userId) {
 
 		await db.collection("User").doc(userId).create({
       address: null,
-      profile_picture: "ban_gato.png",
+      profile_picture: null,
       ...userData,
       restriction: {},
       date_created: FieldValue.serverTimestamp(),
@@ -129,7 +131,7 @@ export async function addGroup(userId) {
         },
         owner_id: userId,
         date_created: FieldValue.serverTimestamp(),
-        secondsUntilExpiration: 300// offset in seconds, saved as int
+        session_expires_at: FieldValue.serverTimestamp() // adjust for real session expiration
       });
 
       transaction.update(userRef, {
@@ -181,8 +183,7 @@ export async function deleteGroup(userId) {
     throw new Error(`deleteGroup failed: ${err.message}`);
   }
 }
-
-export async function getGroupFromUserId(userId) {
+export async function getGroup(userId) {
 	try {
 		const userRef = db.collection("User").doc(userId);
 		const userDoc = await userRef.get();
@@ -204,22 +205,6 @@ export async function getGroupFromUserId(userId) {
 		throw new Error(`getGroup failed: ${err.message}`);
 	}
 }
-
-export async function getGroupFromGroupId(groupId) {
-	try {
-		const groupRef = db.collection("Group").doc(groupId);
-		const groupDoc = await groupRef.get();
-		if (!groupDoc.exists) throw new Error("Group does not exist.");
-		const groupData = groupDoc.data();
-		groupData.id = groupDoc.id; //append id to data
-		return groupData;
-
-	} catch(err) {
-		console.error(`getGroup failed: ${err.message}`);
-		throw new Error(`getGroup failed: ${err.message}`);
-	}
-}
-
 // -------------------- FAVORITES -------------------- //
 
 // Add a new favorite for the authenticated User
@@ -403,55 +388,3 @@ export async function deleteVote(userId, voteId) {
   }
 }
 
-// ---------- PREFERENCES ----------
-
-/**
- * Upsert (insert or update) user preferences.
- * - Normalizes input (lowercase, dedupe, sort)
- */
-
-export async function upsertPreferences(userId, { likes = [], restrictions = [] }) {
-  try {
-    const userRef = db.collection("User").doc(userId);
-    const snap = await userRef.get();
-    if (!snap.exists) throw new Error("User does not exist.");
-
-    // normalize/dedupe/sort
-    const norm = (arr) =>
-      Array.from(new Set((arr || []).map(s => String(s).toLowerCase().trim()))).sort();
-
-    await userRef.set(
-      {
-        likes: norm(likes),
-        restrictions: norm(restrictions),
-        prefs_updated_at: FieldValue.serverTimestamp(),
-      },
-      { merge: true }
-    );
-    return true;
-  } catch (err) {
-    console.error(`upsertPreferences failed: ${err.message}`);
-    throw new Error(`upsertPreferences failed: ${err.message}`);
-  }
-}
-
-/**
- * Fetch user preferences (likes, restrictions).
- */
-
-export async function getPreferences(userId) {
-  try {
-    const userRef = db.collection("User").doc(userId);
-    const doc = await userRef.get();
-    if (!doc.exists) throw new Error("User does not exist.");
-    const data = doc.data() || {};
-    return {
-      likes: Array.isArray(data.likes) ? data.likes : [],
-      restrictions: Array.isArray(data.restrictions) ? data.restrictions : [],
-      prefs_updated_at: data.prefs_updated_at || null,
-    };
-  } catch (err) {
-    console.error(`getPreferences failed: ${err.message}`);
-    throw new Error(`getPreferences failed: ${err.message}`);
-  }
-}
