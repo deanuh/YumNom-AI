@@ -37,8 +37,8 @@ export const storage = getStorage(app); //
 //     connectFirestoreEmulator(db, '127.0.0.1', 8080);
 // }
 // Optional: connect to local emulators when developing
-if (process.env.REACT_APP_USE_EMULATOR === "true") {
-  connectAuthEmulator(auth, "http://127.0.0.1:9099");
-  connectFirestoreEmulator(db, "127.0.0.1", 8080);
-  connectStorageEmulator(storage, "127.0.0.1", 9199); // 
-}
+// if (process.env.REACT_APP_USE_EMULATOR === "true") {
+//   connectAuthEmulator(auth, "http://127.0.0.1:9099");
+//   connectFirestoreEmulator(db, "127.0.0.1", 8080);
+//   connectStorageEmulator(storage, "127.0.0.1", 9199); // 
+// }
