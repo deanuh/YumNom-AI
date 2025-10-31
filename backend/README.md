@@ -20,3 +20,5 @@ formers into node.js.
 ### Run this is the backend to be able to send user invite
 npm i jsonwebtoken dayjs
 
+### for report issue to allow file upload to send to email
+npm i multer
