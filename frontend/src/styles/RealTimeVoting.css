@@ -4,6 +4,118 @@
 
 
 /* --------------------------- Usable with any -----------------------------------*/
+.voting-page {
+		height: 100vh;
+    padding: 2rem;
+    background: rgb(238, 235, 247);
+    font-family: "Poppins";
+    border-radius: 10px;
+    border: 1px solid #DDD8EF;
+		display: flex;
+		overflow-y: scroll;
+		flex-direction: column;
+		align-items: center;
+	}
+    
+  .voting-title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Optional if you want vertical centering too */
+  }
+  
+  
+  .voting-title {
+    background-color: #DDD8EF;
+    text-align: center;
+    padding: 0.6rem 5rem ;
+    border-radius: 12px;
+    font-size: 2rem;
+    box-shadow: 0 5px 2px rgba(35, 5, 85, 0.4);
+    font-family: "Cherry Bomb One";
+    letter-spacing: 2px;
+    color:#3d2b6d;
+    display: inline-block;
+
+  }
+  
+	.voting-timer {
+		display: flex;
+		border-style: solid;	
+		border-radius: 10px;
+		border-width: 2px;
+		border-color: #3d2b6d; 
+		background-color: #3d2b6d; 
+    color: white;
+		font-family: "Cherry Bomb One";
+		font-size: 2.5rem;
+		font-weight: 500;
+		box-shadow: inset 0px 0px 0px 2px #DDD8EF;
+		min-height: 100px;
+		min-width: 100px;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	.voting-timer.animate {
+		animation: blink 1s ease-out;
+	} 
+
+	@keyframes blink {
+		0% { background-color: #FF5555; border-color: #FF5555 }
+		100% { background-color: #3d2b6d; border-color: #3d2b6d }
+	}
+  
+  .round-title {
+    margin-top: 2rem;
+    color: #3d2b6d;
+    margin-left: 170px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .voting-section {
+    display: flex;
+		flex-direction: row;
+		height: 100%;
+		max-height: 600px;
+		max-width: 1200px;
+		width: 100%;
+		overflow-y: scroll;
+    /* margin-top: 0rem; */
+  }
+  
+  .party-column {
+    background: #DDD8EF;
+    padding: 1rem;
+    border-radius: 10px;
+    color: #3d2b6d;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+		text-align: center;
+		width: 120px;
+		min-width: 120px; /* need both for whatever reason */
+
+		/* remove scrollbar from party column*/
+		scrollbar-width: none;
+  }
+  .party-column::-webkit-scrollbar {
+ 			width: 0;
+		 height: 0;	
+	}
+
+  .party-avatar {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .party-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #ffffff;
+  	}
 
   
 	/* -------------------------- JOIN LAYOUT ---------------------------------- */
@@ -120,118 +232,6 @@
 
 
   	/* -------------------------- VOTE LAYOUT ---------------------------------- */
-.voting-page {
-		height: 100vh;
-    padding: 2rem;
-    background: rgb(238, 235, 247);
-    font-family: "Poppins";
-    border-radius: 10px;
-    border: 1px solid #DDD8EF;
-		display: flex;
-		overflow: hidden;
-		flex-direction: column;
-		align-items: center;
-	}
-    
-  .voting-title-container {
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Optional if you want vertical centering too */
-  }
-  
-  
-  .voting-title {
-    background-color: #DDD8EF;
-    text-align: center;
-    padding: 0.6rem 5rem ;
-    border-radius: 12px;
-    font-size: 2rem;
-    box-shadow: 0 5px 2px rgba(35, 5, 85, 0.4);
-    font-family: "Cherry Bomb One";
-    letter-spacing: 2px;
-    color:#3d2b6d;
-    display: inline-block;
-
-  }
-  
-	.voting-timer {
-		display: flex;
-		border-style: solid;	
-		border-radius: 10px;
-		border-width: 2px;
-		border-color: #3d2b6d; 
-		background-color: #3d2b6d; 
-    color: white;
-		font-family: "Cherry Bomb One";
-		font-size: 2.5rem;
-		font-weight: 500;
-		box-shadow: inset 0px 0px 0px 2px #DDD8EF;
-		min-height: 100px;
-		min-width: 100px;
-		justify-content: center;
-		align-items: center;
-		margin-bottom: 1rem;
-	}
-
-	.voting-timer.animate {
-		animation: blink 1s ease-out;
-	} 
-
-	@keyframes blink {
-		0% { background-color: #FF5555; border-color: #FF5555 }
-		100% { background-color: #3d2b6d; border-color: #3d2b6d }
-	}
-  
-  .round-title {
-    margin-top: 2rem;
-    color: #3d2b6d;
-    margin-left: 170px;
-    margin-bottom: 0.5rem;
-  }
-  
-  .voting-section {
-    display: flex;
-		flex-direction: row;
-		height: 100%;
-		max-height: 600px;
-		max-width: 1200px;
-		width: 100%;
-		overflow-y: scroll;
-    /* margin-top: 0rem; */
-  }
-  
-  .party-column {
-    background: #DDD8EF;
-    padding: 1rem;
-    border-radius: 10px;
-    color: #3d2b6d;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-		text-align: center;
-		width: 120px;
-		min-width: 120px; /* need both for whatever reason */
-
-		/* remove scrollbar from party column*/
-		scrollbar-width: none;
-  }
-  .party-column::-webkit-scrollbar {
- 			width: 0;
-		 height: 0;	
-	}
-
-  .party-avatar {
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-  
-  .party-avatar img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: #ffffff;
-  	}
  	.Voting-restaurant-grid-container {
 		display: flex;
 		flex-direction: column;	
