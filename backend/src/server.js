@@ -10,7 +10,7 @@ import { fetchFoodImageByDish, fetchUnsplashImageFor } from "./api/unsplash.js";
 import { getUserCityOpenCage } from './api/opencage.js';
 import { authMiddleware } from './auth/auth.js';
 import { ensureUserBasic } from "./firebase/dbFunctions.js";
-import { getLogo, getLogoData, fetchLogoData } from './api/logo.js';
+import { getLogo, fetchLogoData } from './api/logo.js';
 import {
   createUser, removeUser,
   createGroup, removeGroup,

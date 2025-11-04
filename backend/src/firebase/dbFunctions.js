@@ -716,6 +716,7 @@ export async function getRatingsForRestaurant(restaurantId, restaurantData) {
     console.error(`getRatingsForRestaurant failed: ${err.message}`);
     throw new Error(`getRatingsForRestaurant failed: ${err.message}`);
   }
+}
 
 // --- PROFILE (basic) ---
 export async function getUserBasic(userId) {
