@@ -215,4 +215,122 @@ html body{
 .heart-icon:active {
     transform: scale(1.2);
   }
-  
+/* two-column layout for banner + carousel */
+.dash-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  align-items: stretch;
+}
+
+/* how-it-works carousel card */
+.howit-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #ae8bd4;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: left;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.howit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.howit-header h3 {
+  margin: 0;
+  color: #2a1d52;
+  font-size: clamp(1rem, 1.8vw, 1.1rem);
+  font-weight: 700;
+}
+
+.howit-nav {
+  display: flex;
+  gap: 6px;
+}
+.howit-arrow {
+  border: 1px solid #c9c3e6;
+  background: #f7f6fb;
+  color: #5e36d9;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.howit-body {
+  margin: 4px 2px 10px;
+  color: #3a2b6a;
+  line-height: 1.35;
+  font-size: 0.95rem;
+}
+
+.howit-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.howit-cta {
+  background: #5e36d9;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.howit-dots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.howit-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: none;
+  background: #d9d2f2;
+  cursor: pointer;
+}
+.howit-dots .dot.active {
+  background: #5e36d9;
+}
+
+/* responsive stacking */
+@media (max-width: 900px) {
+  .dash-row { grid-template-columns: 1fr; }
+}
+/* only affects the first slide */
+.howit-card.first-slide {
+  /* keep the card from growing into the next row */
+  height: clamp(220px, 28vw, 340px);
+  overflow: hidden;
+
+  /* center content nicely */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* big title but bounded to the card height */
+.howit-card.first-slide .howit-header h3 {
+  font-size: clamp(2rem, 3.6vw + 0.5rem, 3.6rem);
+  line-height: 1.05;
+  width: 100%;
+  margin: 0 auto;
+  white-space: normal;
+}
+
+/* keep dots visible and spaced from the title */
+.howit-card.first-slide .howit-dots {
+  margin-top: 8px;
+}
