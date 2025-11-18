@@ -44,8 +44,6 @@
     font-weight:700;
 }
 
-
-
 .contactUsSubjectPill {
     position:relative;
     background-color: white;
@@ -54,16 +52,33 @@
     font-family: "Poppins";
     font-weight: 400;
     font-size: 14px;
-    color: #190352;
+    color: black;
     padding: 5px 16rem 5px 1rem;
     border-color: black;
     border-radius: 20px;
     border-width: 2px;
     border-style: solid;
     box-sizing: border-box;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     text-align: left;
 
+}
+
+.contactUsDropdownMenu {
+		display: flex;
+		flex-direction: column;
+		background: white;
+		border-radius: 8px;
+		padding: 0.6rem;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+		/* margin-top: 0.3rem; */
+		color: black;
+		border: 0.5px solid black;
+		position:fixed;
+		/*font-size: 1rem;
+		position:absolute;
+		*/
+		z-index: 999;
 }
 .contactUsSubjectDropdownArrow {
     position:absolute;
@@ -111,4 +126,8 @@
 
 .contactUsSubjectPill{
     background-color: #ffffff;
+}
+
+.contactUsErrorText {
+	color: red;
 }

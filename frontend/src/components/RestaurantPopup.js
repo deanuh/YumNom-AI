@@ -15,51 +15,53 @@ export default function RestaurantPopup(props) {
 	const [review, setReview] = useState("");
 
 // Helper function to make authenticated requests
-async function fetchWithAuth(url, options = {}) {
-  const auth = getAuth();
-  const user = auth.currentUser;
-  if (!user) {
-    throw new Error("You must be logged in to perform this action.");
-  }
-  
-  const token = await user.getIdToken();
-  const headers = {
-    ...options.headers,
-    'Authorization': `Bearer ${token}`
-  };
-  
-  return fetch(url, { ...options, headers });
-}
-//post request to backend
-const submitReview = async () => {
-  const user_ratings = [overallRating, secondRating, thirdRating, fourthRating, fifthRating];
+	async function fetchWithAuth(url, options = {}) {
+	  const auth = getAuth();
+	  const user = auth.currentUser;
+	  if (!user) {
+	    throw new Error("You must be logged in to perform this action.");
+	  }
+	  
+	  const token = await user.getIdToken();
+	  const headers = {
+	    ...options.headers,
+	    'Authorization': `Bearer ${token}`
+	  };
+	  
+	  return fetch(url, { ...options, headers });
+	}
+	//post request to backend
+	const submitReview = async () => {
+	  const user_ratings = [overallRating, secondRating, thirdRating, fourthRating, fifthRating];
+	
+	  try {
+	    const options = {
+	      method: "POST",
+	      headers: { "Content-Type": "application/json" },
+	      body: JSON.stringify({ user_ratings, review })
+	    };
+	
+	    await fetchWithAuth(`${process.env.REACT_APP_BACKEND_URL}/ratings?q=${props?.ratingResponse?.name || ""}`, options);
+	
+	    // Refresh ratings using previous restaurant name
+			if (props?.ratingResponse?.name) {
+	    	await props.requestRatings(props.ratingResponse.name);
+			}
+	
+	    // Reset input fields
+	    setOverallRating(0);
+	    setSecondRating(0);
+	    setThirdRating(0);
+	    setFourthRating(0);
+	    setFifthRating(0);
+	    setReview("");
+	
+	  } catch (err) {
+	    console.error(`submitReview failed: ${err.message}`);
+	  }
+	};	
 
-  try {
-    const options = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_ratings, review })
-    };
-
-    await fetchWithAuth(`${process.env.REACT_APP_BACKEND_URL}/ratings?q=${props?.ratingResponse?.name || ""}`, options);
-
-    // Refresh ratings using previous restaurant name
-		if (props?.ratingResponse?.name) {
-    	await props.requestRatings(props.ratingResponse.name);
-		}
-
-    // Reset input fields
-    setOverallRating(0);
-    setSecondRating(0);
-    setThirdRating(0);
-    setFourthRating(0);
-    setFifthRating(0);
-    setReview("");
-
-  } catch (err) {
-    console.error(`submitReview failed: ${err.message}`);
-  }
-};	const handleChange = (e) => {
+	const handleChange = (e) => {
 		setReview(e.target.value);
 	};
 

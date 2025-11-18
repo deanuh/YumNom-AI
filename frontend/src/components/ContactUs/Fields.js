@@ -1,13 +1,61 @@
 import React, { useState } from "react";
+import { isEmail }from "validator";
+
 const Fields = () => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [showSubjectDropdown, setShowSubjectDropdown] = useState(null);
-    const [selectedSubject, setSelectedSubject] = useState(null);
-    const [message, setMessage] = useState("");
-    const toggleSubject = () => {
+
+	const validSubjectTypes = ["Question", "Issue", "Feature Request"];
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [showSubjectDropdown, setShowSubjectDropdown] = useState(null);
+  const [subject, setSubject] = useState(null);
+  const [message, setMessage] = useState("");
+	const [errorMessage, setErrorMessage] = useState("");
+
+  const toggleSubject = () => {
     setShowSubjectDropdown(!showSubjectDropdown);
   };
+	const submitIssue = async () => {
+		if (!isEmail(email)) {
+			setErrorMessage("Email must be valid.");
+			console.error(`email not correct format`);
+			return;
+		}
+		if (!name) {
+			setErrorMessage("Name must be non-empty.");
+			console.error(`name not correct format`);
+			return;
+		}
+		if (!validSubjectTypes.includes(subject)) {
+			setErrorMessage("Choose a subject type");
+			console.error(`subject not correct format`);
+			return;
+		}
+		if (!message) {
+			setErrorMessage("Message must be non-empty.");
+			console.error(`message not correct format`);
+			return;
+		}
+
+
+	  const issueInfo = { email, name, subject, message };
+
+	
+	  try {
+	    const options = {
+	      method: "POST",
+	      headers: { "Content-Type": "application/json" },
+	      body: JSON.stringify(issueInfo)
+	    };
+	
+	    await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/contact`, options);
+			setErrorMessage("");
+
+	  } catch (err) {
+			setErrorMessage("Error sending contact form. Try again later.");
+	    console.error(`submitIssue failed: ${err.message}`);
+	  }
+	};	
+
 
     return(
 
@@ -28,13 +76,12 @@ const Fields = () => {
                 onChange={(e) => setEmail(e.target.value)}
             />
             <h5>Subject</h5>
-            <div className="subject-dropdown">
-                <button className="contactUsSubjectPill" onClick={toggleSubject}>Select query type{selectedSubject ? `: ${selectedSubject} `: ""}</button>
+            <div className="contactUsSubjectDropdown">
+                <button className="contactUsSubjectPill" onClick={toggleSubject}>{subject ? `${subject} `: "Select query type"}</button>
                 {showSubjectDropdown && (
-                    <div className="dropdown-menu">
-                        <label><input type="radio" name="distance" value="query placeholder 1" checked={selectedSubject === "query placeholder 1"} onChange={(e) => setSelectedSubject(e.target.value)}/>query placeholder 1</label>
-                        <label><input type="radio" name="distance" value="query placeholder 2" checked={selectedSubject === "query placeholder 2"} onChange={(e) => setSelectedSubject(e.target.value)}/>query placeholder 2</label>
-                        <label><input type="radio" name="distance" value="query placeholder 3" checked={selectedSubject === "query placeholder 3"} onChange={(e) => setSelectedSubject(e.target.value)}/>query placeholder 3</label>
+                    <div className="contactUsDropdownMenu">
+									{validSubjectTypes.map((s, i) => (
+                        <label key={i}><input type="radio" name="distance" value={s} checked={subject === s} onChange={(e) => setSubject(e.target.value)}/>{s}</label>))}
                     </div>
                 )}
             </div>
@@ -46,8 +93,9 @@ const Fields = () => {
                 onChange={(e) => setMessage(e.target.value)}
             />
             <div>
-                <button className="contactUsSubmitButton">Submit</button>
+                <button onClick={submitIssue} className="contactUsSubmitButton">Submit</button>
             </div>
+            {errorMessage && <p className="contactUsErrorText">{errorMessage}</p>}
         </div>
     );
 }

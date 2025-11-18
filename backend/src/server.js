@@ -21,6 +21,7 @@ import {
 	matchRestaurant, createRating, removeRating, readRatings, readRestaurantRatings
 } from './api/firestore.js';
 import reportIssueRouter from './api/reportIssue.js'; // added for the report issue stuffs
+import contactUsRouter from './api/contactUs.js';
 import usersRouter from "./api/deleteUser.js";
 import { addGroup, deleteGroup, getGroupFromUserId, getGroupFromGroupId } from './firebase/dbFunctions.js'
 import { getAuth } from 'firebase-admin/auth';
@@ -428,6 +429,7 @@ app.get("/restaurantRatings", matchRestaurant, readRestaurantRatings); // read r
 app.post("/ratings", authMiddleware, matchRestaurant, createRating); // post user rating
 app.delete("/ratings/:ratingId", authMiddleware, removeRating); // delete user rating
 
+app.use("/api", contactUsRouter);
 app.use("/api", reportIssueRouter);
 
 app.use("/api", authMiddleware, friendsRouter);  // ← exposes /api/users/lookup and /api/me/friends*
