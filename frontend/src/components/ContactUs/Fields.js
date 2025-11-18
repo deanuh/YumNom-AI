@@ -59,7 +59,7 @@ const Fields = () => {
 
     return(
 
-        <div className="contactUsFieldsColumn">
+        <div onClick={() => setShowSubjectDropdown(false)} className="contactUsFieldsColumn">
             <h5>Name</h5>
             <input
                 className="contactUsField"
@@ -76,7 +76,7 @@ const Fields = () => {
                 onChange={(e) => setEmail(e.target.value)}
             />
             <h5>Subject</h5>
-            <div className="contactUsSubjectDropdown">
+            <div className="contactUsSubjectDropdown" onClick={(e) => e.stopPropagation()}>
                 <button className="contactUsSubjectPill" onClick={toggleSubject}>{subject ? `${subject} `: "Select query type"}</button>
                 {showSubjectDropdown && (
                     <div className="contactUsDropdownMenu">
