@@ -5,7 +5,7 @@
     padding: 2rem;
     font-family: "Chivo";
     min-height: 100vh;
-    background-color: rgb(251, 250, 255);
+    background-color: var(--background-color);
     border-radius: 20px;
   }
 
@@ -26,7 +26,7 @@
 .empty-text {
     text-align: center;
     font-size: 1rem;
-    color: #7a7a7a;
+    color: var(--text-hint);
     margin-top: 2rem;
   }
 
@@ -41,7 +41,7 @@
   
   .favorite-title {
     font-size: 1.8rem;
-    color: #3c2b7f;
+    color: var(--text-color);
     margin: 0;
     font-family: Chivo;
   }
@@ -59,8 +59,8 @@
     padding: 0.5rem 1rem;
     border-radius: 999px;
     background-color: white;
-    color: #3c2b7f;
-    border: 1.5px solid #65558F;
+    color: var(--purple-700);
+    border: 1.5px solid var(--pill-border);
     font-weight: 600;
     cursor: pointer;
     font-size: 1rem;
@@ -69,7 +69,7 @@
   .dropdown-arrow {
     width: 9px;
     height: 5px;
-    background: #190352;
+    background: var(--text-color);
   }
   
   
@@ -77,7 +77,7 @@
     position: absolute;
     top: 120%;
     right: 0;
-    background: white;
+    background: var(--pill-color);
     padding: 0.8rem;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -92,14 +92,14 @@
     display: flex;
     justify-content: space-between;
     font-weight: 500;
-    color: #190352;
+    color: var(--text-color);
   }
   
   
   .favorite-title {
     font-size: 2rem;
     font-weight:bolder;
-    color: #3c2b7f;
+    color: var(--text-color);
     margin: 0;
     font-family: "Chivo";
 
@@ -112,18 +112,18 @@
   
   .tab-button {
     padding: 0.3rem 1.5rem;
-    border: 2px solid #7361a6;
+    border: 2px solid var(--pill-border);
     border-radius: 20px;
-    background-color: white;
-    color: #7a66b0;
+    background-color: var(--pill-color);
+    color: var(--purple-700);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
   }
   
   .tab-button.active {
-    background-color: #6955a1;
-    color: white;
+    background-color: var(--button-color);
+    color: var(--button-text);
   }
   
   .favorites-grid {
@@ -135,7 +135,7 @@
   }
   
   .favorite-page input[type="checkbox"] {
-    accent-color: #6d4dc3;
+    accent-color: var(--accent-color);
   }
   
   

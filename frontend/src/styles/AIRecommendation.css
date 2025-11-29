@@ -4,7 +4,7 @@
     font-family: 'Cherry Bomb One', cursive;
     font-size: 40px;
     text-align: center;
-    color: #3c2a66;
+    color: var(--text-color);
     background: none;
     box-shadow: none;
     border: none;
@@ -15,10 +15,10 @@
 .ai-recommendation-container {
   background: radial-gradient(
     ellipse 60% 80% at center 60%,
-    #ffe9fb 10%,
-    #e1eefc 30%, 
-    rgb(251, 250, 255)  50%,
-    rgb(251, 250, 255)  70% 
+   	var(--radial-gradient-0) 10%,
+   	var(--radial-gradient-1) 30%, 
+   	var(--radial-gradient-2) 50%,
+   	var(--radial-gradient-2) 70% 
   );
     min-height: 100vh;
     padding: 2rem;
@@ -159,11 +159,11 @@
 .subtitle{
     text-align: center;
     font-size: 24px;
-    color: #190352
+    color: var(--text-color);
 }
 .craving-section h2{
     margin-top: 3rem;
-    color: #190352
+    color: var(--text-color); 
 }
 .craving-icon {
     width: 40px;
@@ -190,10 +190,10 @@
     }
   }
 .craving-input-box input {
-    color: #65558F;
+    color: var(--text-hint-colored);
   }
 .craving-input-box input::placeholder {
-    color: #65558F;
+    color: var(--text-hint-colored);
     opacity: 1; }
 
 
@@ -202,8 +202,8 @@
   position: fixed; /* <<< Make it float on the screen */
   bottom: 20px; /* <<< Distance from bottom */
   right: 20px;  /* <<< Distance from right */
-  background-color: #65558F;
-  color: white;
+  background-color: var(--button-color);
+  color: var(--button-text);
   border: none;
   border-radius: 30px;
   padding: 12px 20px;

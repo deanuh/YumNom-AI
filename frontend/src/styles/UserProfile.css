@@ -1,13 +1,13 @@
 html { scroll-behavior: smooth; }
 
 .profile-container {
-  background-color: #D0C9EB;
+  background-color: var(--foreground-color);
   padding: 2rem;
   border-radius: 20px;
   max-width: 750px;
   width: 100%;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-  border: 1.5px solid #3d2074;
+  border: 1.5px solid var(--foreground-border);
   font-family: "Poppins";
   }
 .profile-tabs {
@@ -15,17 +15,17 @@ html { scroll-behavior: smooth; }
 }
 
 .profile-container h2{
-  color: #190352;
+  color: var(--text-color);
 }
 
 .profile-container h4{
-  color: #190352;
+  color: var(--text-color);
   }
 /* Tabs / slider bar */
 .profile-tabs {
   display: flex;
   gap: 2rem;
-  border-bottom: 2px solid #5a3798;
+  border-bottom: 2px solid var(--profile-nav-border);
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
 }
@@ -37,7 +37,7 @@ html { scroll-behavior: smooth; }
   padding: 0.5rem 0;
   font-size: 1rem;
   font-weight: 500;
-  color: #7a5ea3;
+  color: var(--profile-nav-text);
   cursor: pointer;
   position: relative;
   display: inline-block; /* ensures underline positions correctly */
@@ -46,7 +46,7 @@ html { scroll-behavior: smooth; }
 
 .profile-tabs .tab.active {
   font-weight: 600;
-  color: #342156;
+  color: var(--profile-nav-text-active);
 }
 
 .profile-tabs .tab.active::after {
@@ -56,7 +56,7 @@ html { scroll-behavior: smooth; }
   left: 0;
   width: 100%;
   height: 3px;
-  background-color: #9683b9;
+  background-color: var(--profile-nav-border-active);
   border-radius: 5px;
 }
 
@@ -164,7 +164,7 @@ html { scroll-behavior: smooth; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #D0C9EB;;
+  background-color: #D0C9EB;
   padding: 1rem 2rem;
   border-radius: 12px;
   margin-bottom: 2rem;
