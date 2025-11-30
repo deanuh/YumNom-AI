@@ -1,5 +1,5 @@
 .Set-settings-body {
-    background-color: rgb(251, 250, 255);
+    background-color: var(--background-color);
     display: block;
     justify-content: center;
     flex-direction: column;
