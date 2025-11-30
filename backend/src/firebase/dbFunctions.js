@@ -241,8 +241,8 @@ export async function getGroupFromUserId(userId) {
 		return groupData;
 
 	} catch(err) {
-		console.error(`getGroup failed: ${err.message}`);
-		throw new Error(`getGroup failed: ${err.message}`);
+		console.error(`getGroupFromUserId failed: ${err.message}`);
+		throw new Error(`getGroupFromUserId failed: ${err.message}`);
 	}
 }
 
@@ -256,8 +256,8 @@ export async function getGroupFromGroupId(groupId) {
 		return groupData;
 
 	} catch(err) {
-		console.error(`getGroup failed: ${err.message}`);
-		throw new Error(`getGroup failed: ${err.message}`);
+		console.error(`getGroupFromGroupId failed: ${err.message}`);
+		throw new Error(`getGroupFromGrupId failed: ${err.message}`);
 	}
 }
 

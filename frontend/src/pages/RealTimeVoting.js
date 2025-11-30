@@ -149,13 +149,13 @@ export default function VotingPage() {
             return newParty;
             });
 					});
-
+				
 					socketRef.current.on("left_room", (userId) => {
-						setPartyMembers(prev => { 
-							const updated = prev;
-							updated.delete(userId);
-							return updated;
-						});
+					  setPartyMembers(prev => {
+					    const updated = { ...prev };
+					    delete updated[userId];
+					    return updated;
+					  });
 					});
 
 					socketRef.current.on("join_error", (data) => {

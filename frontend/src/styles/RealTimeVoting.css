@@ -344,6 +344,8 @@
     background: #5b41a8;
     height: 100%;
     border-radius: 8px;
+		transition-property: width;
+		transition-duration: .5s;
   }
   
   .vote-count {
