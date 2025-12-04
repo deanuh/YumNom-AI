@@ -1,22 +1,17 @@
 import React from "react";
-import DishCard from "./DishCard";
 
-const DashboardSection = ({ title }) => {
+export default function DashboardSection({ title, viewAllHref, children }) {
   return (
     <div className="dashboard-section">
       <div className="section-header">
         <h3>{title}</h3>
-        <button className="view-all-btn">View all ❯ </button>
+        {viewAllHref && (
+          <a className="view-all-btn" href={viewAllHref}>
+            View all ❯
+          </a>
+        )}
       </div>
-      <div className="dish-list">
-        <DishCard />
-        <DishCard />
-        <DishCard />
-        <DishCard />
-        <DishCard />
-      </div>
+      {children}
     </div>
   );
-};
-
-export default DashboardSection;
+}

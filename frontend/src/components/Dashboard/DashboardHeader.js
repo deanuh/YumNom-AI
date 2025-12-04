@@ -136,7 +136,7 @@ function HowItWorksCarousel({ onGoProfile, onGoAI }) {
   );
 }
 
-const DashboardHeader = () => {
+const DashboardHeader = ({ editing = false, onToggleEdit }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [personalGreeting, setPersonalGreeting] = useState("Loading…");
@@ -198,10 +198,17 @@ const DashboardHeader = () => {
         />
       </div>
 
-      <div className="edit-note" aria-live="polite">
-        <span className="edit-text">Edit your Dashboard to your liking!</span>
-        <img src="/edit_icon.png" alt="Edit" className="edit-img" />
-      </div>
+      <button
+        type="button"
+        className={`edit-note ${editing ? "is-active" : ""}`}
+        aria-pressed={editing}
+        onClick={onToggleEdit}
+      >
+        <span className="edit-text">
+          {editing ? "Editing: drag sections to reorder" : "Edit your Dashboard to your liking!"}
+        </span>
+        <img src="/edit_icon.png" alt="" className="edit-img" />
+      </button>
 
       <div className="your-dash">
         <h1>Your Personalized Dashboard!</h1>
