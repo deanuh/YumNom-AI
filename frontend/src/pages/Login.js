@@ -76,7 +76,7 @@ function Login() {
         })
       });
     }
-    navigate('/dashboard');
+    navigate('/dashboard', { state: { showSplash: true } });
   };
 
   // Handles traditional email and password login
@@ -86,7 +86,7 @@ function Login() {
     const auth = getAuth(); 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard');
+      navigate('/dashboard', { state: { showSplash: true } });
     } catch (firebaseError) {
       console.error("Firebase login error:", firebaseError.message);
       setError("Invalid email or password. Please try again.");
@@ -143,3 +143,184 @@ function Login() {
 }
 
 export default Login;
+
+
+
+
+
+
+
+
+// import React, { useState } from "react";
+// import { useNavigate, Link } from "react-router-dom";
+// import "../styles/Login.css";
+// import { 
+//   getAuth,
+//   GoogleAuthProvider,
+//   FacebookAuthProvider,
+//   OAuthProvider,
+//   signInWithPopup,
+//   signInWithEmailAndPassword
+// } from "firebase/auth";
+// import YumNomSplash from "../components/YumNomSplash";  // yumnom loading animation
+
+// function Login() {
+//   const navigate = useNavigate();
+
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [error, setError] = useState('');
+//   const [showSplash, setShowSplash] = useState(false);   // for the loading screen
+
+//   // what happens after splash finishes
+//   const handleSplashFinish = () => {
+//     navigate("/dashboard");
+//   };
+
+//   // Handles the entire Google Sign-In flow
+//   const handleGoogleSignIn = async () => {
+//     const auth = getAuth();
+//     const provider = new GoogleAuthProvider();
+//     try {
+//       const result = await signInWithPopup(auth, provider);
+//       await handleSocialSignIn(result.user);
+//     } catch (error) {
+//       console.error("Google Sign-In error:", error);
+//       setError("Failed to sign in with Google. Please try again.");
+//     }
+//   };
+
+//   // Handles the entire Facebook Sign-In flow
+//   const handleFacebookSignIn = async () => {
+//     const auth = getAuth();
+//     const provider = new FacebookAuthProvider();
+//     try {
+//       const result = await signInWithPopup(auth, provider);
+//       await handleSocialSignIn(result.user);
+//     } catch (error) {
+//       console.error("Facebook Sign-In error:", error);
+//       setError("Failed to sign in with Facebook. Please try again.");
+//     }
+//   };
+
+//   // Handles the entire Apple Sign-In flow
+//   const handleAppleSignIn = async () => {
+//     const auth = getAuth();
+//     const provider = new OAuthProvider('apple.com');
+//     try {
+//       const result = await signInWithPopup(auth, provider);
+//       await handleSocialSignIn(result.user);
+//     } catch (error) {
+//       console.error("Apple Sign-In error:", error);
+//       setError("Failed to sign in with Apple. Please try again.");
+//     }
+//   };
+
+//   // A shared function to handle user creation for all social logins
+//   const handleSocialSignIn = async (user) => {
+//     const token = await user.getIdToken();
+//     const response = await fetch(`http://localhost:5001/users/${user.uid}`, {
+//       headers: { 'Authorization': `Bearer ${token}` }
+//     });
+
+//     if (response.status === 404) {
+//       console.log("User does not exist, creating new user...");
+//       const nameParts = user.displayName ? user.displayName.split(' ') : ['New', 'User'];
+//       const firstName = nameParts[0];
+//       const lastName = nameParts.slice(1).join(' ');
+
+//       await fetch('http://localhost:5001/users', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${token}`
+//         },
+//         body: JSON.stringify({
+//           first_name: firstName,
+//           last_name: lastName,
+//           username: user.email,
+//           email: user.email
+//         })
+//       });
+//     }
+
+//     // show the loading screen; navigation handled by splash onFinish
+//     setShowSplash(true);                    // CHANGED
+//   };
+
+//   // Handles traditional email and password login
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+//     setError('');
+//     const auth = getAuth(); 
+//     try {
+//       await signInWithEmailAndPassword(auth, email, password);
+//       // show the loading screen; navigation handled by splash onFinish
+//       setShowSplash(true);                  // CHANGED
+//     } catch (firebaseError) {
+//       console.error("Firebase login error:", firebaseError.message);
+//       setError("Invalid email or password. Please try again.");
+//     }
+//   };
+
+//   return (
+//     <>
+//       {/* Splash overlay on top of everything when true */}
+//       {showSplash && (
+//         <YumNomSplash
+//           duration={2500}              // 2 seconds
+//           fadeDuration={450}
+//           onFinish={handleSplashFinish}
+//         />
+//       )}
+
+//       <div className="login-container">
+//         <div className="login-left">
+//           <h1>YUMNOM AI:</h1>
+//           <p>AI-powered dish<br />recommendation<br />made just for you</p>
+//         </div>
+//         <div className="login-right">
+//           <div className="login-card">
+//             <h2>Sign In</h2>
+//             {error && <p style={{ color: 'red' }}>{error}</p>}
+//             <form onSubmit={handleLogin}>
+//               <input 
+//                 type="email" 
+//                 placeholder="Email" 
+//                 value={email} 
+//                 onChange={(e) => setEmail(e.target.value)} 
+//                 required 
+//               />
+//               <input 
+//                 type="password" 
+//                 placeholder="Password" 
+//                 value={password} 
+//                 onChange={(e) => setPassword(e.target.value)} 
+//                 required 
+//               />
+//               <div className="forgot-password">
+//                 <Link to="/forgot-password" style={{ color: "#190352" }}>Forgot Password?</Link>
+//               </div>
+//               <button type="submit" className="signin-button">Sign In</button>
+//             </form>
+//             <div className="divider"><p>Or sign in with</p></div>
+//             <div className="social-login">
+//               <button type="button" onClick={handleGoogleSignIn}>
+//                 <img src="https://img.icons8.com/ios-filled/50/google-logo.png" alt="Google" />
+//               </button>
+//               <button type="button" onClick={handleFacebookSignIn}>
+//                 <img src="https://img.icons8.com/ios-filled/50/facebook-new.png" alt="Facebook" />
+//               </button>
+//               <button type="button" onClick={handleAppleSignIn}>
+//                 <img src="https://img.icons8.com/ios-filled/50/mac-os.png" alt="Apple" />
+//               </button>
+//             </div>
+//             <p className="signup-prompt">Don’t have an account? <Link to="/signup">Create One</Link></p>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+
+// export default Login;

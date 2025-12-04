@@ -204,17 +204,23 @@ export default function ChatBot({ toggleChat }) {
       const data = await askBackend(text);
 
       if (data.type === "faq") {
-        // main answer bubble + show related pills
+        
         appendBot({
           text: data.match.answer,
           cta: { label: data.match.title || data.match.question, route: data.match.route },
-          alternatives: data.alternatives // these will render as pills
+          alternatives: data.alternatives
         });
-      } else if (data.type === "fallback") {
+      } 
+      else if (data.type === "personalized") {
+        appendBot({ text: data.message }); // OpenAI-generated response
+      } 
+      else if (data.type === "fallback") {
         appendBot({ text: data.message, options: data.options });
-      } else {
-        appendBot({ text: "I couldn’t classify that. Try: Password, Preferences, Dietary, Location, Privacy." });
+      } 
+      else {
+        appendBot({ text: "I couldn’t classify that. Try asking about Password, Preferences, Dietary, or Privacy." });
       }
+      
     } catch (e) {
       appendBot({ text: "Sorry—something went wrong. Please try again." });
     } finally {

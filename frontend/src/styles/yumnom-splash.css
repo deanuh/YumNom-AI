@@ -1,0 +1,76 @@
+/* full-screen overlay */
+@import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Poppins:wght@400;700&display=swap');
+
+.yn-splash {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(to top, #f4ddff, white);  /* adjust if you use a different theme */
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.45s ease;  /* smooth fade */
+}
+
+/* centered word */
+.yn-word {
+    display: inline-flex;
+    gap: 0.08em;
+    font-family: 'Cherry Bomb One', cursive;
+    font-size: 5rem;
+    /* font-size: clamp(42px, 8vw, 100px); */
+    color: #190352;       /* YumNom purple */
+    letter-spacing: 0.02em;
+}
+
+/* each letter fades + slides in, then does a small bounce */
+.yn-letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+
+    /* 0.5s for the entrance, 0.9s for bounce
+        We stagger them with var(--i) so last letter still finishes quickly. */
+    animation:
+        yn-in 0.5s cubic-bezier(.2,.8,.2,1) forwards,
+        yn-bounce 0.9s ease-in-out infinite;
+
+    /* stagger both animations together */
+    animation-delay:
+        calc(var(--i) * 0.1s),          /* entrance delay per letter */
+        calc(0.5s + var(--i) * 0.1s);   /* bounce starts after its entrance */
+}
+
+.yn-splash--fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+/* entrance: fade + slide */
+@keyframes yn-in {
+    0%   { opacity: 0; transform: translateY(-20px) scale(0.9); }
+    60%  { opacity: 1; transform: translateY(0) scale(1.05); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* soft bounce */
+@keyframes yn-bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-8px) scale(1.02); }
+}
+
+/* subtle highlight on capitals */
+.yn-letter:nth-child(1),
+.yn-letter:nth-child(4) { /* Y and N */
+    text-shadow: 0 4px 16px rgba(106, 65, 193, 0.2);
+}
+
+/* accessibility */
+@media (prefers-reduced-motion: reduce) {
+.yn-letter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    }   
+}
+  

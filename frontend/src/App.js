@@ -6,6 +6,8 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+// for the chatbot to be used throughout the website
+import { useEffect, useState } from "react";
 
 import Sidebar from "./components/Sidebar";
 
@@ -20,6 +22,7 @@ import UserProfilePage from "./pages/UserProfilePage";
 import Favorite from "./pages/Favorite";
 import ContactUs from "./pages/ContactUs";
 import ChatBot from "./pages/ChatBot";
+import "./styles/ChatBot.css";
 import VotingPage from "./pages/RealTimeVoting";
 import GroupMealParty from "./pages/GroupMealParty";
 import AIRecommendationPage from "./pages/AIRecommendationPage";
@@ -45,6 +48,30 @@ function App() {
     location.pathname === "/forgot-password" ||
     location.pathname === "/signup";
 
+  const hideChatbot =
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/forgot-password" ||
+    location.pathname === "/signup" ||
+    location.pathname === "/group-meal-party" ||
+    location.pathname === "/realtimevoting";
+
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatKey, setChatKey] = useState(0); // force remount each open
+
+
+  // close chatbot automatically when changing routes (no saved context)
+  useEffect(() => {
+    if (isChatOpen) setIsChatOpen(false);
+  }, [location.pathname]);
+  // toggle + remount chatbot 
+  function toggleChat() {
+    setIsChatOpen(prev => {
+      const next = !prev;
+      if (next) setChatKey(k => k + 1);
+      return next;
+    });
+  }
   return (
     <div className="app-layout">
       {!hideSidebar && <Sidebar />}
@@ -78,6 +105,19 @@ function App() {
           <Route path="/DisplaySettings" element={<DisplaySettings/>} />
         </Routes>
       </div>
+      {!hideChatbot && (
+        <>
+        <button button className="chat-toggle-button" onClick={toggleChat}> Chat with NOMBOT 
+        <img src="/nombot_white.png" alt="NOMBOT Icon" className="nombot-icon" />
+      </button>
+      {isChatOpen && (
+          <div className="nombot-container">
+            <ChatBot key={chatKey} toggleChat={toggleChat} />
+          </div>
+        )}
+        </>
+      )}
+      
     </div>
 
     // <div>
