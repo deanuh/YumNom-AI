@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
+import { ThemeContext } from "../ThemeProvider";
 // NEW: Import Firebase auth functions
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import "../styles/restaurantSearch.css";
-import DashboardSection from "../components/Dashboard/DashboardSection";
 import DishCard from "../components/Dashboard/DishCard";
 import Category from "../components/restaurantCategories";
 import { getUserCity } from "../components/GetUserLoc";
@@ -19,8 +19,9 @@ async function fetchWithAuth(url, options = {}) {
   return fetch(url, { ...options, headers });
 }
 
-const DEFAULT_RADIUS_MI = 10;
+//const DEFAULT_RADIUS_MI = 10;
 const DEFAULT_UNITS = "mi";
+const SERVER_RADIUS_MI = 20;   
 
 // Quick category → query mapping for one-tap searches
 const CATEGORY_TO_QUERY = {
@@ -59,8 +60,32 @@ const formatAddress = (r) =>
  * - strips non-alphanumeric characters
  */    
 const norm = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+/**
+ * Normalize various price formats from the API into "$", "$$", "$$$", etc.
+ */
+const normalizePrice = (p) => {
+  if (!p) return null;
+
+  const asString = String(p).trim();
+
+  // If there are dollar signs, keep the first contiguous run ("$", "$$", "$$$")
+  const dollarRun = asString.match(/\$+/);
+  if (dollarRun) {
+    return dollarRun[0];
+  }
+
+  // Handle ranges like "$$ - $$$" or "££ - £££" by taking the first segment
+  if (asString.includes("-")) {
+    return asString.split("-")[0].trim();
+  }
+
+  return asString;
+};
 
 function RestaurantSearch() {
+	//theme context
+	const { theme } = useContext(ThemeContext)
+
   // UI + request state
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -163,9 +188,8 @@ function RestaurantSearch() {
   useEffect(() => {
     if (longLat?.latitude && longLat?.longitude) {
       setShowSearchResults(true); // show list by default
-      const miles = selectedDistance ? Number(selectedDistance.split(" ")[0]) : DEFAULT_RADIUS_MI;
       // Empty query → "browse nearby"
-      fetchRestaurants({ q: "", miles }); // no query → browse nearby
+      fetchRestaurants({ q: "" }); // no query → browse nearby
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [longLat]);
@@ -234,8 +258,8 @@ function RestaurantSearch() {
    * - If a category is selected, use its mapped term
    * - Otherwise use the text input
    */
-  const currentQuery = () =>
-    selectedCategory ? CATEGORY_TO_QUERY[selectedCategory] : (searchText || "").trim();
+  // const currentQuery = () =>
+  //   selectedCategory ? CATEGORY_TO_QUERY[selectedCategory] : (searchText || "").trim();
   
   /**
    * Manual search submit:
@@ -257,8 +281,7 @@ function RestaurantSearch() {
     if (selectedCategory) setSelectedCategory(null);
 
     setError("");
-    const miles = selectedDistance ? Number(selectedDistance.split(" ")[0]) : DEFAULT_RADIUS_MI;
-    fetchRestaurants({ q: (searchText || "").trim(), miles });
+    fetchRestaurants({ q: (searchText || "").trim() });
   };
 
    /**
@@ -270,9 +293,8 @@ function RestaurantSearch() {
   const handleCategoryPick = (cat) => {
     setSelectedCategory(cat);
     setShowSearchResults(true);
-    const miles = selectedDistance ? Number(selectedDistance.split(" ")[0]) : DEFAULT_RADIUS_MI;
     const q = CATEGORY_TO_QUERY[cat] || cat;
-    fetchRestaurants({ q, miles });
+    fetchRestaurants({ q });
   };
 
   /**
@@ -285,12 +307,12 @@ function RestaurantSearch() {
    * Error handling:
    * - Sets user-friendly error message; console.error retains raw error for devs
    */
-  const fetchRestaurants = async ({ q, miles }) => {
+  const fetchRestaurants = async ({ q }) => {
     if (!longLat?.latitude || !longLat?.longitude) return;
     setLoading(true);
     setError("");
 
-    const distanceMiles = miles ?? DEFAULT_RADIUS_MI;
+    const distanceMiles = SERVER_RADIUS_MI; 
     const units = DEFAULT_UNITS;
 
     try {
@@ -304,14 +326,37 @@ function RestaurantSearch() {
       
       // Defensive: TripAdvisor wrapper should return { data: [...] }
       let rows = Array.isArray(data?.data) ? data.data : [];
+      // after rows are sorted & exclusions applied
+      rows = rows.slice().sort((a, b) => {
+        const da = parseFloat(a?.distance);
+        const db = parseFloat(b?.distance);
+        return (Number.isFinite(da) ? da : Infinity) - (Number.isFinite(db) ? db : Infinity);
+      });
+
+      // see how many and how far the API is giving us
+      const distances = rows
+        .map((r) => parseFloat(r.distance))
+        .filter((d) => Number.isFinite(d));
+      if (distances.length) {
+        console.log(
+          "TripAdvisor returned",
+          rows.length,
+          "items. Min distance:",
+          Math.min(...distances),
+          "Max distance:",
+          Math.max(...distances)
+        );
+      }
 
       // If a query exists, do a lenient, client-side fuzzy match on a few fields
-      if (q) {
+      // Only fuzzy-filter manual queries, not quick categories
+      if (q && !selectedCategory) {
         const qNorm = norm(q);
         rows = rows.filter((r) =>
           [r.name, r.address_string, r.city, r.state].some((f) => norm(f).includes(qNorm))
         );
       }
+
       // Sort by numeric distance (missing values sink to bottom)
       rows = rows.slice().sort((a, b) => {
         const da = parseFloat(a?.distance);
@@ -389,7 +434,7 @@ function RestaurantSearch() {
     setSearchText("");
     setShowDistanceDropdown(false); 
     setShowPriceDropdown(false);    
-    fetchRestaurants({ q: "", miles: DEFAULT_RADIUS_MI });
+    fetchRestaurants({ q: ""});
   };
 
   /**
@@ -398,13 +443,9 @@ function RestaurantSearch() {
    * - Immediately re-fetches from server using the new distance
    */
   const handleDistanceRadio = (value) => {
-    setSelectedDistance((prev) => {
-      const next = prev === value ? null : value;
-      const miles = next ? Number(next.split(" ")[0]) : DEFAULT_RADIUS_MI;
-      fetchRestaurants({ q: currentQuery(), miles });
-      return next;
-    });
+    setSelectedDistance((prev) => (prev === value ? null : value));
   };
+  
 
   /**
    * Price radio handler:
@@ -421,18 +462,32 @@ function RestaurantSearch() {
    * - Coerces different price fields into a normalized "$"..."$$$"
    */
   const displayed = useMemo(() => {
-    const base = Array.isArray(searchResults?.data) ? searchResults.data : [];
+    let base = Array.isArray(searchResults?.data) ? searchResults.data : [];
+  
+    // 1) Distance filter (client-side)
+    if (selectedDistance) {
+      const limitMiles = Number(selectedDistance.split(" ")[0]); // 5, 10, or 15
+      base = base.filter((r) => {
+        const d = parseFloat(r?.distance);
+        // if distance missing, keep it; otherwise enforce <= selected miles
+        return !Number.isFinite(d) || d <= limitMiles;
+      });
+    }
+  
+    // 2) Price filter (existing logic)
     if (!selectedPrice) return base;
     const priceKey = (r) => r.price_level || r.price || r.price_range || null;
+  
     return base.filter((r) => {
-      const p = priceKey(r);
-      if (!p) return true;  
-      const normalized =
-        typeof p === "number" ? "$".repeat(Math.max(1, Math.min(4, p))) : String(p).trim();
+      const raw = priceKey(r);
+      if (!raw) return true; // keep items with no price info
+  
+      const normalized = normalizePrice(raw);
       return normalized === selectedPrice;
     });
-  }, [searchResults, selectedPrice]);
-
+  }, [searchResults, selectedDistance, selectedPrice]);
+  
+  
   return (
     <div className="Restaurant-container">
       <h3 className="Restaurant-container-title">Restaurant Search</h3>
@@ -465,20 +520,20 @@ function RestaurantSearch() {
           <div className="filter-dropdown">
             <button className="filter-pill" onClick={toggleDistance}>
               Distance {selectedDistance ? `: ${selectedDistance} ` : ""}
-              <img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" />
+              <img src={ theme === 'light' ? "/Vector.png" : "/VectorDark.png" } alt="arrow" className="dropdown-arrow" />
             </button>
             {showDistanceDropdown && (
               <div className="dropdown-menu">
+                <label><input type="radio" name="distance" value="1 mi" checked={selectedDistance === "1 mi"} onChange={(e) => handleDistanceRadio(e.target.value)} /> 1 mi</label>
                 <label><input type="radio" name="distance" value="5 mi" checked={selectedDistance === "5 mi"} onChange={(e) => handleDistanceRadio(e.target.value)} /> 5 mi</label>
                 <label><input type="radio" name="distance" value="10 mi" checked={selectedDistance === "10 mi"} onChange={(e) => handleDistanceRadio(e.target.value)} /> 10 mi</label>
-                <label><input type="radio" name="distance" value="15 mi" checked={selectedDistance === "15 mi"} onChange={(e) => handleDistanceRadio(e.target.value)} /> 15 mi</label>
               </div>
             )}
           </div>
           <div className="filter-dropdown">
             <button className="filter-pill" onClick={togglePrice}>
               Price {selectedPrice ? `: ${selectedPrice}` : ""}
-              <img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" />
+              <img src={ theme === 'light' ? "/Vector.png" : "/VectorDark.png" } alt="arrow" className="dropdown-arrow" />
             </button>
             {showPriceDropdown && (
               <div className="dropdown-menu">

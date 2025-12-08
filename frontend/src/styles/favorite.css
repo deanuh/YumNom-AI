@@ -70,7 +70,7 @@
   .favorite-dropdown-arrow {
     width: 9px;
     height: 5px;
-    background: var(--text-color);
+		background:transparent;
   }
   
   

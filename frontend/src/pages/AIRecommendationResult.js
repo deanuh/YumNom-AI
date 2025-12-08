@@ -10,9 +10,10 @@ export default function AIRecommendationResult() {
   const [hoverRating, setHoverRating] = useState(null); // live preview while hovering
   const [regenLoading, setRegenLoading] = useState(false);
   const [resolvedImg, setResolvedImg] = useState(null);
+  const AI_HISTORY_KEY = "yn_ai_rec_history_v1";
 
 
-   // NEW: review inputs
+   // review inputs
   const [comment, setComment] = useState("");
   const tagChoices = ["great match", "missing ingredient", "not my craving", "too spicy", "diet conflict", "bland"];
   const [selectedTags, setSelectedTags] = useState([]);
@@ -27,6 +28,7 @@ export default function AIRecommendationResult() {
         // Enforce AI-only
         if (parsed?.data?.source === "ai") {
           setCtx(parsed);
+          addAiRecToHistory(parsed);
         } else {
           console.warn("Blocked non-AI source in saved rec");
           localStorage.removeItem("ai_last_rec");
@@ -119,7 +121,7 @@ export default function AIRecommendationResult() {
   const recUrl = `/api/ai/recommend`;
   const rateUrl = `/api/ai/rate`;
 
-  // NEW: helper to decide which star image to show at an index (0..4) for a value (0..5)
+  // helper to decide which star image to show at an index (0..4) for a value (0..5)
   function starKindAt(index, value) {
     const fullThreshold = index + 1;
     const halfThreshold = index + 0.5;
@@ -128,7 +130,7 @@ export default function AIRecommendationResult() {
     return "empty";
   }
 
-  // NEW: map pointer/touch position inside a star to 0.5 or 1.0 for that star
+  // map pointer/touch position inside a star to 0.5 or 1.0 for that star
   function valueFromPointer(e, index) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? rect.left;
@@ -137,7 +139,24 @@ export default function AIRecommendationResult() {
     return index + half; // 0.5, 1.0, 1.5, ..., 5.0
   }
 
-  // NEW: star interactions
+  function addAiRecToHistory(ctx) {
+    try {
+      const d = ctx?.data?.dish;
+      if (!d) return;
+      const item = {
+        id: d.id || `${d.name}-${Date.now()}`,
+        name: d.name,
+        cuisine: d.cuisine || "",
+        imageUrl:
+          d.img || d.imageUrl || d.image_url || d.photoUrl || d.photo_url || null,
+        ts: Date.now(),
+      };
+      const list = JSON.parse(localStorage.getItem(AI_HISTORY_KEY) || "[]");
+      const next = [item, ...list.filter((x) => x.name !== item.name)].slice(0, 25);
+      localStorage.setItem(AI_HISTORY_KEY, JSON.stringify(next));
+    } catch {}
+  }
+
   function onStarMove(e, index) {
     setHoverRating(valueFromPointer(e, index));
   }
@@ -222,6 +241,7 @@ export default function AIRecommendationResult() {
       const next = { ...ctx, data, excludeIds, ts: Date.now() };
       localStorage.setItem("ai_last_rec", JSON.stringify(next));
       setCtx(next);
+      addAiRecToHistory(next); // add to history
     } catch (err) {
       console.error(err);
       alert("Something went wrong talking to backend. Keeping current dish.");

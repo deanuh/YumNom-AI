@@ -52,6 +52,7 @@
 	--link-hover: #473281;
 	--shadow: #eee;
 
+	--button-inactive: #d9d2f2;
 	--button-color:#6d4dc3;
 	--button-text: white;
 
@@ -110,6 +111,7 @@
 	--link-hover: #C8B8FF;
 	--shadow: #000;
 
+	--button-inactive: #d9d2f2;
 	--button-color: #8D73F7;
 	--button-text: white;
 

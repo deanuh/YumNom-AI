@@ -14,7 +14,7 @@ import SearchIconDark from "../pages/images/searchDark.png";
 
 function LandingPage() {
   const navigate = useNavigate();
-	const { theme } = useContext(ThemeContext)
+	const { theme } = useContext(ThemeContext);
 
   return (
     <div className="landing-wrapper">
