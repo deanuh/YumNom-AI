@@ -47,7 +47,7 @@
 .contactUsSubjectPill {
 	position:relative;
 	background-color: var(--pill-color);
-	background: transparent url("/public/Vector.jpeg") no-repeat right;
+	background: transparent var(--vector) no-repeat right;
 	background-position: 97% 50%;
 	font-family: "Poppins";
 	font-weight: 400;
