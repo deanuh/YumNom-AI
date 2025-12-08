@@ -74,6 +74,10 @@ form input {
     outline: none;
 }
 
+form input::placeholder {
+	color: var(--text-hint);
+}
+
 form input,
 form button {
     box-sizing: border-box;
