@@ -25,10 +25,12 @@ export default function DisplaySettings() {
           <ul className="Set-settings-list"> 
             <li>
               <span>Dark Mode</span>
-							<button onClick={toggleTheme}>change to {theme} mode</button>
               {/* Just a visual toggle, have not coded for it yet!!*/}
               <label className="lp-switch">
-                <input type="checkbox" disabled />
+                <input 
+									type="checkbox"
+									checked={theme === 'dark'}
+									onChange={(e) => toggleTheme()}/>
                 <span className="lp-slider" />
               </label>
             </li>

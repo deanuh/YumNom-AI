@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ThemeContext } from "../ThemeProvider";
 import "./Sidebar.css";
 
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate(); 
+	const { theme } = useContext(ThemeContext)
 
 
   return (
     <div className="sidebar">
-      <img src="/main_icon.png" alt="YumNom AI logo" className="logo-icon" />
+      <img src={theme === 'light' ? "/main_icon.png" : "/main_icon_dark.png"} alt="YumNom AI logo" className="logo-icon" />
 
       <nav className="nav-links">
         <Link to="/dashboard" className={`nav-item ${location.pathname === "/dashboard" ? "active" : ""}`}>

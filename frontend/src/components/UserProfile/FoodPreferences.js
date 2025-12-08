@@ -124,7 +124,7 @@ const FoodPreferences = ({ me, onSave = async () => {} }) => {
             />
           )}
         </div>
-        <p style={{ marginTop: 12, color: "#6e558e" }}>
+        <p style={{ marginTop: 12, color: "var(--text-hint-colored)" }}>
           Saved to your profile. AI recommendations will exclude dishes containing these.
         </p>
       </div>

@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/LandingPage.css";
+import { ThemeContext } from "../ThemeProvider";
 
 import IconStack  from "../pages/images/LandingIcons.png";
 import StarIcon   from "../pages/images/star.png";
 import GroupIcon  from "../pages/images/group.png";
 import SearchIcon from "../pages/images/search.png";
+import StarIconDark   from "../pages/images/starDark.png";
+import GroupIconDark  from "../pages/images/groupDark.png";
+import SearchIconDark from "../pages/images/searchDark.png";
+
 
 function LandingPage() {
   const navigate = useNavigate();
+	const { theme } = useContext(ThemeContext)
 
   return (
     <div className="landing-wrapper">
@@ -46,7 +52,7 @@ function LandingPage() {
       <section className="landing-features">
         <div className="landing-feature-card">
           <img
-            src={StarIcon}
+            src={ theme === 'light' ? StarIcon : StarIconDark}
             alt="Star symbol"
             className="landing-feature-icon"
           />
@@ -59,7 +65,7 @@ function LandingPage() {
 
         <div className="landing-feature-card">
           <img
-            src={GroupIcon}
+            src={ theme === 'light' ? GroupIcon : GroupIconDark}
             alt="Group of people"
             className="landing-feature-icon"
           />
@@ -68,7 +74,7 @@ function LandingPage() {
 
         <div className="landing-feature-card">
           <img
-            src={SearchIcon}
+            src={ theme === 'light' ? SearchIcon : SearchIconDark}
             alt="Magnifying glass"
             className="landing-feature-icon"
           />

@@ -80,15 +80,15 @@ function Favorite() {
     <div className="favorite-page">
       <div className="favorite-header">
         <h3 className="favorite-title">Your Favorites</h3>
-        <div className="dropdown-wrapper">
-          <button className="dropdown-toggle" onClick={toggleDropdown}>
+        <div className="favorite-dropdown-wrapper">
+          <button className="favorite-dropdown-toggle" onClick={toggleDropdown}>
           {activeType.charAt(0).toUpperCase() + activeType.slice(1)}
-            <img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" />
+            <img src="/Vector.jpeg" alt="arrow" className="favorite-dropdown-arrow" />
           </button>
           {showDropdown && (
-            <div className="dropdown-menu">
+            <div className="favorite-dropdown-menu">
               <button
-                className="dropdown-item"
+                className="favorite-dropdown-item"
                 onClick={() => {
                   setActiveType("restaurants");
                   setShowDropdown(false);
@@ -97,7 +97,7 @@ function Favorite() {
                 Restaurants
               </button>
               <button
-                className="dropdown-item"
+                className="favorite-dropdown-item"
                 onClick={() => {
                   setActiveType("dishes");
                   setShowDropdown(false);

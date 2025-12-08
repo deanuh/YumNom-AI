@@ -9,6 +9,7 @@
 	--purple-700:#3c2b7f;
   --purple-600:#6a41c1;
   --purple-500:#6d4dc3;
+	--purple-dull: #65558F;
   --border:#65558F;
 
 	--sidebar-background: white;
@@ -16,6 +17,7 @@
 	--sidebar-text: #3a2b77;
 	--sidebar-text-active: white;
 	--sidebar-text-hover: rgb(153, 128, 235);
+	--sidebar-border: #e5e3f3;
 
 	--profile-nav-text: #7a5ea3;
 	--profile-nav-text-active: #342156;
@@ -30,7 +32,7 @@
 
 	--background-color: rgb(251, 250, 255);
 	--foreground-color: #D0C9EB;
-	--foreground-border: #3d2074;
+	--foreground-border: #65558F;
 	--alt-foreground: #ABA0D6;
 
 	--text-color: #190352; 
@@ -48,18 +50,24 @@
 	--accent-color: #6d4dc3;
 	--link-color: #6d4dc3;
 	--link-hover: #473281;
+	--shadow: #eee;
 
 	--button-color:#6d4dc3;
 	--button-text: white;
 
 	--input-background: white; 
-	--search-border: #65558F;
+	--input-border: #65558F;
+
+	--landing-background-image: url("data:image/svg+xml;utf8,\
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'>\
+    <path fill='%23d0c9eb' d='M0,192L80,165.3C160,139,320,85,480,90.7C640,96,800,160,960,160C1120,160,1280,96,1360,64L1440,32V320H0Z'/>\
+  </svg>");
 
 }
 
 [data-theme="dark"] {
 	--purple-700:#EFEAFF;
-  --purple-600:#6a41c1;
+  --purple-600:#8D73F7;
   --purple-500:#6d4dc3;
   --border:#65558F;
 
@@ -68,6 +76,7 @@
 	--sidebar-text: #DCCEFF;
 	--sidebar-text-active: #ffffff;
 	--sidebar-text-hover: #BBA5FF;
+	--sidebar-border: #252333;
 
 	--profile-nav-text: #C9B8EC;
 	--profile-nav-text-active: #E9E2FF;
@@ -82,7 +91,7 @@
 
 	--background-color: #14111F;
 	--foreground-color: #2B2440;
-	--foreground-border: #8F7AD9;
+	--foreground-border: #9A8ED0;
 	--alt-foreground: #3B2F5A;
 
 	--text-color: #EFEAFF; 
@@ -99,12 +108,18 @@
 	--accent-color: #A58EFF;
 	--link-color: #A58EFF;
 	--link-hover: #C8B8FF;
+	--shadow: #000;
 
 	--button-color: #8D73F7;
 	--button-text: white;
 
 	--input-background: #1F1A2F; 
-	--search-border: #9A8ED0;
+	--input-border: #9A8ED0;
+
+	--landing-background-image: url("data:image/svg+xml;utf8,\
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'>\
+    <path fill='%232B2440' d='M0,192L80,165.3C160,139,320,85,480,90.7C640,96,800,160,960,160C1120,160,1280,96,1360,64L1440,32V320H0Z'/>\
+  </svg>");
 }
 
 body {
@@ -114,6 +129,17 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+	color: var(--text-monochrome);
+}
+
+input {
+	caret-color: var(--text-monochrome);
+	background-color: var(--pill-background);
+	color: var(--text-monochrome);
+}
+
+input::placeholder {
+	color: var(--text-monochrome);
 }
 
 code {

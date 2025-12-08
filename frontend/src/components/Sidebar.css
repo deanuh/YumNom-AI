@@ -7,7 +7,7 @@
     flex-direction: column;
     justify-content: space-between;
     font-family: 'Poppins', sans-serif;
-    border-right: 1px solid #e5e3f3;
+    border-right: 1px solid var(--sidebar-border);
   }
   
 /*  .logo {

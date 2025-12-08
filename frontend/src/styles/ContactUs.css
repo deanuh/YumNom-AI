@@ -85,6 +85,7 @@
  	left:0%;
 }
 .contactUsField {
+	background-color: var(--pill-color);
  	height: 40px;
  	width: 25rem;
  	padding: 15px;
@@ -102,7 +103,10 @@
  	height: 200px;
  	width: 25rem;
  	padding: 15px;
+	background-color: var(--pill-color);
  	border-color: var(--pill-border);
+	caret-color: var(--text-monochrome);
+	color: var(--text-monochrome);
  	border-radius: 20px;
  	border-style: solid;
  	box-sizing: border-box;

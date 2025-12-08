@@ -12,6 +12,13 @@ html body{
     color: var(--text-color);
   }
   
+  .dashboard-header h2 {
+    color: var(--text-monochrome);
+	}
+  .dashboard-header p {
+    color: var(--text-monochrome);
+	}
+
   .dashboard-banner {
     background: var(--foreground-color);
     border-radius: 12px;
@@ -23,8 +30,8 @@ html body{
   }
   
   .banner-button {
-    background: var(--purple-600);
-    color: var(--sidebar-background);
+    background: var(--button-color);
+    color: var(--button-text);
     border: none;
     border-radius: 8px;
     padding: 0.6rem 1.2rem;
@@ -111,10 +118,12 @@ html body{
     border-radius: 16px;
     padding: 1rem;
     margin-top: 1rem;
-    box-shadow: 0 0 0 1px #eee;
+		border-style: solid;
+    border-width: 1px;
+		border-color: var(--border);
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 2px 5px #65558F;
+    box-shadow: 0 5px 15px -5px var(--shadow);
   }
   .add-friends {
     margin-top: 0.5rem;
@@ -149,11 +158,11 @@ html body{
   
   .dish-card {
     width: 160px;
-    border: 1px solid #eee;
+    border: 1px solid var(--border);
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
-    box-shadow: 0 2px 5px #65558F;
+    box-shadow: 0 2px 5px var(--shadow);
     position: relative;
   }
   

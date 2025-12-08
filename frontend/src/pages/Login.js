@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/Login.css";
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
+import { ThemeContext } from "../ThemeProvider";
 
 function Login() {
   const navigate = useNavigate();
+	const { theme } = useContext(ThemeContext)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -119,7 +121,7 @@ function Login() {
               required 
             />
             <div className="forgot-password">
-              <Link to="/forgot-password" style={{ color: "#190352" }}>Forgot Password?</Link>
+              <Link to="/forgot-password" style={theme === 'light' ? { color: "#190352" } : { color: "#A58EFF" } }>Forgot Password?</Link>
             </div>
             <button type="submit" className="signin-button">Sign In</button>
           </form>
