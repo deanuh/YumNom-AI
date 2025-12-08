@@ -501,7 +501,7 @@ function RestaurantSearch() {
         <div className="Restaurant-search-bar-wrapper">
           <div className="Restaurant-search-bar">
             <span className="search-icon">
-              <img src="/search.png" alt="arrow" className="search-glass" />
+              <img src={theme === 'light' ? "/search.png" : "searchDark.png"} alt="arrow" className="search-glass" />
             </span>
             <input
               type="text"
