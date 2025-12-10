@@ -599,15 +599,29 @@ function RestaurantSearch() {
                 name={r.name}
                 address={r.address}
                 imageUrl={r.imageUrl}
+                // NEW: heart state + toggler
+                isFavorited={favorites.some((fav) => fav.api_id === r.id)}
+                onToggleFavorite={() =>
+                  handleToggleFavorite({
+                    // fake a TripAdvisor-like object for the helper
+                    location_id: r.id,
+                    name: r.name,
+                    photoUrl: r.imageUrl,
+                  })
+                }
                 onViewMenu={() => {
                   const q = encodeURIComponent(`${r.name} ${r.address}`);
-                  window.open(`https://www.google.com/maps/search/?api=1&query=${q}`, "_blank");
+                  window.open(
+                    `https://www.google.com/maps/search/?api=1&query=${q}`,
+                    "_blank"
+                  );
                 }}
               />
             ))}
           </div>
         </>
       )}
+
     </div>
   );
 }

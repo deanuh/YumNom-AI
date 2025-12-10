@@ -386,3 +386,73 @@ html body{
 }
 .edit-note.is-active { color: #5a4fb4; font-weight: 600; }
 
+
+/* --- Minimal DoorDash / Uber Eats Style Card --- */
+.dish-card.minimal {
+  width: 240px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  padding: 0; /* removes old padding */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.10);
+  transition: transform 0.15s ease;
+}
+
+.dish-card.minimal:hover {
+  transform: scale(1.02);
+}
+
+/* Image wrapper */
+.dish-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+}
+
+.dish-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Floating heart icon (top-right corner) */
+.heart-float {
+  background: transparent !important;
+  border: none !important;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+ }
+
+.heart-icon {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+
+/* Text below image */
+.dish-info {
+  padding: 10px 12px 14px;
+  text-align: left;
+}
+
+.dish-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+
+.dish-distance {
+  font-size: 13px;
+  color: #555;
+}
