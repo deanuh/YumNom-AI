@@ -3,15 +3,6 @@
 */
 @import url('https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Poppins:wght@400;600;700&family=Chivo:wght@400;600&display=swap');
 
-:root{
-  --purple-700:#3c2b7f;
-  --purple-600:#6a41c1;
-  --purple-500:#6d4dc3;
-  --ink:#1f2937;
-  --surface: rgb(251, 250, 255);
-  --border:#65558F;
-}
-
 .restaurants-page{
   max-width:1040px;
   margin:0 auto;

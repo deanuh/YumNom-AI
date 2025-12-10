@@ -1,114 +1,137 @@
 .contactUs {
-                color: #190352;
-                margin-top: 2.5rem;
-                display: flex;
-                padding: 1rem 1rem;
-                display: flex;
-                justify-content: center;
+	color: var(--text-color);
+	margin-top: 2.5rem;
+	display: flex;
+	padding: 1rem 1rem;
+	display: flex;
+	justify-content: center;
 }
 
 .contactUsDetailsColumn {
-    width: 22rem;
+	width: 22rem;
 }
 
 .contactUsDetailsColumn h1 {
-    font-family: "Chivo";
-    font-size:48px;    
-    font-weight:700;
+	font-family: "Chivo";
+	font-size:48px;    
+	font-weight:700;
 }
 
 .contactUsDetailsColumn h2 {
-    font-family: "Chivo";
-    font-size:32px;
-    font-weight:700;
+	font-family: "Chivo";
+	font-size:32px;
+	font-weight:700;
 }
 .contactUsDetailsColumn h3 {
-    font-family: "Poppins";
-    font-size:24px;
-    font-weight:700;
+	font-family: "Poppins";
+	font-size:24px;
+	font-weight:700;
 }
 .contactUsDetailsColumn p {
-    font-family: "Poppins";
-    font-size:18px;
-    font-weight:400;
+	font-family: "Poppins";
+	font-size:18px;
+	font-weight:400;
 }
 
 .contactUsFieldsColumn {
-    margin-left: 5rem;
-    width:25rem;
+	margin-left: 5rem;
+	width:25rem;
 
 }
 .contactUsFieldsColumn h5 {
-    font-family: "Poppins";
-    font-size:13px;
-    font-weight:700;
+	font-family: "Poppins";
+	font-size:13px;
+	font-weight:700;
 }
-
-
 
 .contactUsSubjectPill {
-    position:relative;
-    background-color: white;
-    background: transparent url("/public/Vector.jpeg") no-repeat right;
-    background-position: 97% 50%;
-    font-family: "Poppins";
-    font-weight: 400;
-    font-size: 14px;
-    color: #190352;
-    padding: 5px 16rem 5px 1rem;
-    border-color: black;
-    border-radius: 20px;
-    border-width: 2px;
-    border-style: solid;
-    box-sizing: border-box;
-    margin-bottom: 1.5rem;
-    text-align: left;
+	position:relative;
+	background-color: var(--pill-color);
+	background: transparent var(--vector) no-repeat right;
+	background-position: 97% 50%;
+	font-family: "Poppins";
+	font-weight: 400;
+	font-size: 14px;
+	color: var(--text-hint-colored);
+	padding: 5px 16rem 5px 1rem;
+	border-color: var(--pill-border);
+	border-radius: 20px;
+	border-width: 1px;
+	border-style: solid;
+	box-sizing: border-box;
+	margin-bottom: 1rem;
+	text-align: left;
+	
+}
 
+.contactUsDropdownMenu {
+	display: flex;
+	flex-direction: column;
+	background: var(--pill-color);
+	border-radius: 8px;
+	padding: 0.6rem;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	/* margin-top: 0.3rem; */
+	color: var(--text-monochrome-light);
+	border: 0.5px solid var(--pill-border);
+	position:absolute;
+	/*font-size: 1rem;
+	*/
+	z-index: 999;
 }
 .contactUsSubjectDropdownArrow {
-    position:absolute;
-    top:50%;
-    left:0%;
+ 	position:absolute;
+ 	top:50%;
+ 	left:0%;
 }
 .contactUsField {
-    height: 40px;
-    width: 25rem;
-    padding: 15px;
-    border-color: black;
-    border-radius: 20px;
-    border-style: solid;
-    box-sizing: border-box;
-    margin-bottom: 1.5rem;
-    outline: none;
-    font-family: "Poppins";
-    font-size:14px;
+	background-color: var(--pill-color);
+ 	height: 40px;
+ 	width: 25rem;
+ 	padding: 15px;
+ 	border-color: var(--pill-border);
+ 	border-radius: 20px;
+ 	border-style: solid;
+	border-width: 1px;
+ 	box-sizing: border-box;
+ 	margin-bottom: 1.5rem;
+ 	outline: none;
+ 	font-family: "Poppins";
+ 	font-size:14px;
 }
 .contactUsMessageBox {
-    height: 200px;
-    width: 25rem;
-    padding: 15px;
-    border-color: black;
-    border-radius: 20px;
-    border-style: solid;
-    box-sizing: border-box;
-    margin-bottom: 1.5rem;
-    text-align: left;
-    outline: none;
-    font-family: "Poppins";
-    font-size:14px;
+ 	height: 200px;
+ 	width: 25rem;
+ 	padding: 15px;
+	background-color: var(--pill-color);
+ 	border-color: var(--pill-border);
+	caret-color: var(--text-monochrome);
+	color: var(--text-monochrome);
+ 	border-radius: 20px;
+ 	border-style: solid;
+ 	box-sizing: border-box;
+ 	margin-bottom: 1.5rem;
+ 	text-align: left;
+ 	outline: none;
+ 	font-family: "Poppins";
+ 	font-size:14px;
 }
 
 .contactUsSubmitButton {
-    font-family: "Poppins";
-    font-weight:500;
-    font-size:14px;
-    background-color: #190352;
-    color: white;
-    padding: 10px 11rem;
-    border-radius: 10px;
-    border: none;
+	font-family: "Poppins";
+	font-weight:500;
+	font-size:14px;
+	background-color: var(--button-color);
+	color: var(--button-text);
+	padding: 10px 11rem;
+	border-radius: 10px;
+	border: none;
 }
 
 .contactUsSubjectPill{
-    background-color: #ffffff;
+	background-color: var(--input-background);
+}
+
+.contactUsErrorText {
+	color: red;
 }

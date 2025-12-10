@@ -5,9 +5,11 @@ import {
   validateUserData,
   validateVoteData,
   validateFavoriteData,
-  validateRecommendationData
+  validateRecommendationData,
+	validateRatingData
 } from "./validateData.js";
 
+import { fetchLogoData } from '../api/logo.js';
 import admin from "firebase-admin";
 const { FieldValue } = admin.firestore;
 
@@ -20,7 +22,7 @@ export async function addUser(userData, userId) {
 
 		await db.collection("User").doc(userId).create({
       address: null,
-      profile_picture: "ban_gato.png",
+      profile_picture: "ban_gato.png", //placeholder image, change if we have a new one.
       ...userData,
       username_lower: (userData.username || "").toLowerCase(),
       friends: [],
@@ -90,10 +92,47 @@ export async function deleteUser(userId) {
 
 
     // Delete subcollections after transaction (cannot be in transaction)
-    const subcollections = ["favorites", "ai_recommended_dishes"];
+    const subcollections = ["favorites", "ai_recommended_dishes", "ratings"];
     for (const sub of subcollections) {
       const snapshot = await userRef.collection(sub).get();
+
       for (const doc of snapshot.docs) {
+        if (sub === "ratings") {
+          const ratingData = doc.data();
+          const restaurantRef = db.collection("Rating").doc(doc.id);
+
+          const restaurantDoc = await restaurantRef.get();
+          if (restaurantDoc.exists) {
+            const restaurantData = restaurantDoc.data();
+
+            // Remove this user's rating from aggregates
+            const oldRatings = ratingData.user_ratings ?? [-99, -99, -99, -99, -99];
+            const sum_delta = oldRatings.map(r => (r !== -99 ? -r : 0));
+            const count_delta = oldRatings.map(r => (r !== -99 ? -1 : 0));
+
+            let new_rating_sum = restaurantData.rating_sum.map((sum, i) => sum + sum_delta[i]);
+            let new_user_count = restaurantData.user_count.map((count, i) => count + count_delta[i]);
+
+            // Remove from recent_ratings
+            const recents = (restaurantData.recent_ratings || []).filter(
+              r => r.user_id !== userId
+            );
+
+            const allCountsZero = new_user_count.every(c => c <= 0);
+
+            if (allCountsZero) {
+              await restaurantRef.delete();
+            } else {
+              await restaurantRef.update({
+                rating_sum: new_rating_sum,
+                user_count: new_user_count,
+                recent_ratings: recents
+              });
+            }
+          }
+        }
+
+        // Delete the document itself
         await doc.ref.delete();
       }
     }
@@ -202,8 +241,8 @@ export async function getGroupFromUserId(userId) {
 		return groupData;
 
 	} catch(err) {
-		console.error(`getGroup failed: ${err.message}`);
-		throw new Error(`getGroup failed: ${err.message}`);
+		console.error(`getGroupFromUserId failed: ${err.message}`);
+		throw new Error(`getGroupFromUserId failed: ${err.message}`);
 	}
 }
 
@@ -217,8 +256,8 @@ export async function getGroupFromGroupId(groupId) {
 		return groupData;
 
 	} catch(err) {
-		console.error(`getGroup failed: ${err.message}`);
-		throw new Error(`getGroup failed: ${err.message}`);
+		console.error(`getGroupFromGroupId failed: ${err.message}`);
+		throw new Error(`getGroupFromGrupId failed: ${err.message}`);
 	}
 }
 
@@ -323,8 +362,8 @@ export async function addRecommendation(recommendationData, userId) {
     const userDoc = await userRef.get();
     if (!userDoc.exists) throw new Error("User does not exist.");
 
-    const recRef = await userRef.collection("ai_recommended_dishes").add(recommendationData);
-    return recRef.id;
+    const ratingRef = await userRef.collection("ai_recommended_dishes").add(recommendationData);
+    return ratingRef.id;
   } catch (err) {
     console.error(`addRecommendation failed: ${err.message}`);
     throw new Error(`addRecommendation failed: ${err.message}`);
@@ -337,11 +376,11 @@ export async function deleteRecommendation(userId, recommendationId) {
     const userDoc = await userRef.get();
     if (!userDoc.exists) throw new Error("User does not exist.");
 
-    const recRef = userRef.collection("ai_recommended_dishes").doc(recommendationId);
-    const recDoc = await recRef.get();
+    const ratingRef = userRef.collection("ai_recommended_dishes").doc(recommendationId);
+    const recDoc = await ratingRef.get();
     if (!recDoc.exists) throw new Error("Recommendation does not exist.");
 
-    await recRef.delete();
+    await ratingRef.delete();
   } catch (err) {
     console.error(`deleteRecommendation failed: ${err.message}`);
     throw new Error(`deleteRecommendation failed: ${err.message}`);
@@ -455,6 +494,227 @@ export async function getPreferences(userId) {
   } catch (err) {
     console.error(`getPreferences failed: ${err.message}`);
     throw new Error(`getPreferences failed: ${err.message}`);
+  }
+}
+// ---------------- REVIEW -----------------------
+
+
+export async function addRating(ratingData, userId) {
+  try {
+    validateRatingData(ratingData);
+
+    const userRef = db.collection("User").doc(userId);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) throw new Error("User does not exist.");
+
+    const ratingRef = userRef.collection("ratings").doc(ratingData.api_id);
+    const ratingDoc = await ratingRef.get();
+
+    let oldUserRatings = [-99, -99, -99, -99, -99];
+
+    if (ratingDoc.exists) {
+      const oldRatingData = ratingDoc.data();
+      oldUserRatings = oldRatingData.user_ratings ?? oldUserRatings;
+    }
+
+    const newRatings = ratingData.user_ratings;
+    const oldRatings = oldUserRatings;
+
+    // Compute deltas
+    const sum_delta = newRatings.map((val, i) => {
+      if (oldRatings[i] === -99 && val !== -99) return val;
+      if (oldRatings[i] !== -99 && val === -99) return -oldRatings[i];
+      if (oldRatings[i] !== -99 && val !== -99) return val - oldRatings[i];
+      return 0;
+    });
+
+    const count_delta = newRatings.map((val, i) => {
+      if (oldRatings[i] === -99 && val !== -99) return 1;
+      if (oldRatings[i] !== -99 && val === -99) return -1;
+      return 0;
+    });
+
+    // Write the user’s rating immediately (this is independent of aggregates)
+    await ratingRef.set({
+      user_ratings: newRatings,
+      review: ratingData.review
+    });
+
+    // Transaction protects restaurant aggregate fields
+    const restaurantRef = db.collection("Rating").doc(ratingData.api_id);
+
+    await db.runTransaction(async (transaction) => {
+      const restaurantDoc = await transaction.get(restaurantRef);
+			const userData = userDoc.data();
+			const newEntry = {
+						user_id: userId,
+						username: userData.username,
+						profile_picture: userData.profile_picture,
+						user_ratings: ratingData.user_ratings,
+						review: ratingData.review
+			}
+
+      if (!restaurantDoc.exists) {
+        const logoData = await fetchLogoData(ratingData.name);
+        const logo_url = logoData?.logo_url || "";
+
+        transaction.set(restaurantRef, {
+          name: ratingData.name,
+          logo_url,
+          rating_sum: sum_delta,
+          user_count: count_delta,
+					recent_ratings: [newEntry]
+        });
+        return;
+      }
+
+			const restaurantData = restaurantDoc.data();
+			
+			// Update rating sums and counts
+			const new_rating_sum = restaurantData.rating_sum.map((sum, i) => sum + sum_delta[i]);
+			const new_user_count = restaurantData.user_count.map((count, i) => count + count_delta[i]);
+			
+			// Update recent_ratings: replace existing entry for this user if present
+			let recents = restaurantData.recent_ratings;
+			
+			// Remove any existing entry for this user
+			recents = recents.filter(r => r.user_id !== userId);
+			
+			// Add new entry at the front
+			recents.unshift(newEntry);
+			
+			// Keep only latest 5
+			if (recents.length > 5) recents.pop();
+			
+			transaction.update(restaurantRef, {
+			  rating_sum: new_rating_sum,
+			  user_count: new_user_count,
+			  recent_ratings: recents
+			});
+		});
+
+    return ratingRef.id;
+
+  } catch (err) {
+    console.error(`addRating failed: ${err.message}`);
+    throw new Error(`addRating failed: ${err.message}`);
+  }
+}
+
+export async function deleteRating(userId, restaurantId) {
+  try {
+    const userRef = db.collection("User").doc(userId);
+    const ratingRef = userRef.collection("ratings").doc(restaurantId);
+    const ratingDoc = await ratingRef.get();
+
+    if (!ratingDoc.exists) throw new Error("Rating does not exist.");
+
+    const ratingData = ratingDoc.data();
+    const oldRatings = ratingData.user_ratings ?? [-99, -99, -99, -99, -99];
+
+    // Compute deltas for aggregate removal
+    const sum_delta = oldRatings.map(r => (r !== -99 ? -r : 0));
+    const count_delta = oldRatings.map(r => (r !== -99 ? -1 : 0));
+
+    // Delete user's rating first
+    await ratingRef.delete();
+
+    const restaurantRef = db.collection("Rating").doc(restaurantId);
+
+    await db.runTransaction(async (transaction) => {
+      const restaurantDoc = await transaction.get(restaurantRef);
+      if (!restaurantDoc.exists) return;
+
+      const restaurantData = restaurantDoc.data();
+
+      // Update rating_sum and user_count
+      const new_rating_sum = restaurantData.rating_sum.map((sum, i) => sum + sum_delta[i]);
+      const new_user_count = restaurantData.user_count.map((count, i) => count + count_delta[i]);
+
+      // Remove this user's entry from recent_ratings
+      const recents = (restaurantData.recent_ratings || []).filter(
+        r => r.user_id !== userId
+      );
+
+      // Delete restaurant if all counts are zero
+      const allCountsZero = new_user_count.every(c => c <= 0);
+
+      if (allCountsZero) {
+        transaction.delete(restaurantRef);
+      } else {
+        transaction.update(restaurantRef, {
+          rating_sum: new_rating_sum,
+          user_count: new_user_count,
+          recent_ratings: recents
+        });
+      }
+    });
+
+    return true;
+  } catch (err) {
+    console.error(`deleteRating failed: ${err.message}`);
+    throw new Error(`deleteRating failed: ${err.message}`);
+  }
+}
+
+
+
+export async function getRatings(userId) {
+  try {
+    const userRef = db.collection("User").doc(userId);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) throw new Error("User does not exist.");
+
+		const ratingRef = userRef.collection("ratings");
+		const ratingSnapshot = await ratingRef.get();
+		return ratingSnapshot.docs.map(doc => ({
+			id: doc.id,
+			...doc.data(),
+		}));
+	} catch (err) {
+    console.error(`getRatings failed: ${err.message}`);
+    throw new Error(`getRatings failed: ${err.message}`);
+  }
+}
+
+
+export async function getRatingsForRestaurant(restaurantId, restaurantData) {
+  try {
+    const restaurantRef = db.collection("Rating").doc(restaurantId);
+    const restaurantDoc = await restaurantRef.get();
+
+    if (!restaurantDoc.exists) {
+      const logoData = await fetchLogoData(restaurantData.name);
+      const logo_url = logoData?.logo_url || "";
+
+      const emptyData = {
+        name: restaurantData.name,
+        logo_url,
+        rating_sum: [0, 0, 0, 0, 0],
+        user_count: [0, 0, 0, 0, 0],
+				recent_ratings: []
+      };
+
+      await restaurantRef.set(emptyData);
+      return emptyData;
+    }
+
+    const data = restaurantDoc.data();
+
+    const average = data.rating_sum.map((sum, i) => {
+      const count = data.user_count[i];
+      return count > 0 ? sum / count : null; // null instead of 0 means “no rating”
+    });
+
+    return {
+      id: restaurantDoc.id,
+      ...data,
+      average: average.map(a => (a !== null ? Math.round(a) : null)),   // computed here, not stored
+    };
+
+  } catch (err) {
+    console.error(`getRatingsForRestaurant failed: ${err.message}`);
+    throw new Error(`getRatingsForRestaurant failed: ${err.message}`);
   }
 }
 

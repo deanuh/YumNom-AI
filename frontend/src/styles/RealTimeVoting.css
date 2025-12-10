@@ -4,131 +4,14 @@
 
 
 /* --------------------------- Usable with any -----------------------------------*/
-
-  
-	/* -------------------------- JOIN LAYOUT ---------------------------------- */
- 
-	.Join-section {
-    display: flex;
-		flex-direction: row;
-		max-height: 600px;
-		height: 100%;
-		max-width: 1200px;
-		width: 100%;
-		margin-bottom: 1rem;
-    /* margin-top: 0rem; */
-  }
-  .Join-party-section {
-
-		background: #DDD8EF;
-    display: flex;
-    flex-direction: column;
-    border-radius: 10px;
-    color: #3d2b6d;
-		width: 50%;
-		height: 100%;
-		overflow-y: scroll;
-		max-height: 1000px;
-		max-width: 750px;
-    /* margin-top: 0rem; */
-
-		/* remove scrollbar from party column*/
-		scrollbar-width: none;
-  }
-
-  .Join-party-section::-webkit-scrollbar {
- 			width: 0;
-		 height: 0;	
-	}
-
-	.Join-party-grid {
-    flex: 1;
-    display: grid;
-		justify-content: center;
-		justify-items:center;
-		align-items: center;
-		box-sizing: border-box;
-		height: fit-content;
-		width: 100%;
-		overflow-y:scroll;
-  }
-
-	.Join-party-title {
-		text-align: center;
-    color: #3d2b6d;
-    font-family: "Chivo";
-    font-weight: 700;
-		font-size: 1.5rem;
-	}
-  
-  .Join-party-avatar {
-		display: flex;
-		flex-direction: column;
-		box-sizing: border-box;
-		justify-content:center;
-		align-items:center;
-		height:150px;
-		width: 150px;
-    text-align: center;
-    margin-bottom: 1rem;
-		font-size: 1.5rem;
-  }
-  
-  .Join-party-avatar img {
-    height: 100px;
-    width: 100px;
-    object-fit: cover;
-    border-radius: 50%;
-    background-color: #ffffff;
-  }
-
-	.Join-search-container {	
-		border-style: solid;
-		height: 100%;
-		max-height: 1000px;
-		width:50%;
-		margin-left: 1rem;
-	}
-	
-	.Join-section > .restaurant-wrapper {
-		border-style: none;
-		margin: 0 0 0 1rem;
-    background-color: #DDD8EF;
-		box-shadow: none;
-		height: 100%;
-	}
-
-	.Join-section > .restaurant-wrapper > .restaurant-section {
-		margin: 0;
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-	}
-
-	.Join-section > .restaurant-wrapper > .restaurant-section > .group-search-results {
-		overflow-y: scroll;
-	}
-
-	.voting-page > .display-wrapper {
-		margin: 0;
-		border-style: none;
-    background-color: #DDD8EF;
-		box-shadow: none;
-		max-width: 1200px;
-	}
-
-
-
-  	/* -------------------------- VOTE LAYOUT ---------------------------------- */
 .voting-page {
 		height: 100vh;
     padding: 2rem;
-    background: rgb(238, 235, 247);
+    background: var(--background-color);
     font-family: "Poppins";
     border-radius: 10px;
-    border: 1px solid #DDD8EF;
 		display: flex;
-		overflow: hidden;
+		overflow-y: scroll;
 		flex-direction: column;
 		align-items: center;
 	}
@@ -141,15 +24,15 @@
   
   
   .voting-title {
-    background-color: #DDD8EF;
+    background-color: var(--foreground-color);
     text-align: center;
     padding: 0.6rem 5rem ;
     border-radius: 12px;
     font-size: 2rem;
-    box-shadow: 0 5px 2px rgba(35, 5, 85, 0.4);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
     font-family: "Cherry Bomb One";
     letter-spacing: 2px;
-    color:#3d2b6d;
+    color:var(--text-color);
     display: inline-block;
 
   }
@@ -184,7 +67,7 @@
   
   .round-title {
     margin-top: 2rem;
-    color: #3d2b6d;
+    color: var(--purple-700);
     margin-left: 170px;
     margin-bottom: 0.5rem;
   }
@@ -201,10 +84,10 @@
   }
   
   .party-column {
-    background: #DDD8EF;
+    background: var(--foreground-color);
     padding: 1rem;
     border-radius: 10px;
-    color: #3d2b6d;
+    color: var(--purple-700);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -230,8 +113,128 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: #ffffff;
+    background-color: white;
   	}
+
+  
+	/* -------------------------- JOIN LAYOUT ---------------------------------- */
+ 
+	.Join-section {
+    display: flex;
+		flex-direction: row;
+		max-height: 600px;
+		height: 100%;
+		max-width: 1200px;
+		width: 100%;
+		margin-bottom: 1rem;
+    /* margin-top: 0rem; */
+  }
+  .Join-party-section {
+
+		background: var(--foreground-color);
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    color: var(--purple-700);
+		width: 50%;
+		height: 100%;
+		overflow-y: scroll;
+		max-height: 1000px;
+		max-width: 750px;
+    /* margin-top: 0rem; */
+
+		/* remove scrollbar from party column*/
+		scrollbar-width: none;
+  }
+
+  .Join-party-section::-webkit-scrollbar {
+ 			width: 0;
+		 height: 0;	
+	}
+
+	.Join-party-grid {
+    flex: 1;
+    display: grid;
+		justify-content: center;
+		justify-items:center;
+		align-items: center;
+		box-sizing: border-box;
+		height: fit-content;
+		width: 100%;
+		overflow-y:scroll;
+  }
+
+	.Join-party-title {
+		text-align: center;
+    color: var(--purple-700);
+    font-family: "Chivo";
+    font-weight: 700;
+		font-size: 1.5rem;
+	}
+  
+  .Join-party-avatar {
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+		justify-content:center;
+		align-items:center;
+		height:150px;
+		width: 150px;
+    text-align: center;
+    margin-bottom: 1rem;
+		font-size: 1.5rem;
+  }
+  
+  .Join-party-avatar img {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    background-color: white;
+  }
+
+	.Join-search-container {	
+		border-style: solid;
+		height: 100%;
+		max-height: 1000px;
+		width:50%;
+		margin-left: 1rem;
+	}
+	
+	.Join-section > .restaurant-wrapper {
+		border-style: none;
+		margin: 0 0 0 1rem;
+    background-color: var(--foreground-color);
+		box-shadow: none;
+		height: 100%;
+	}
+
+	.Join-section > .restaurant-wrapper > .restaurant-section {
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		color: var(--purple-700);
+    font-family: "Chivo";
+	}
+
+	.Join-section > .restaurant-wrapper > .restaurant-section > .group-search-results {
+		overflow-y: scroll;
+	}
+
+	.voting-page > .display-wrapper {
+		margin: 0;
+		border-style: none;
+    background-color: var(--foreground-color);
+		box-shadow: none;
+		max-width: 1200px;
+		font-family: "Chivo";
+		color: var(--purple-700);
+	}
+
+
+
+  	/* -------------------------- VOTE LAYOUT ---------------------------------- */
  	.Voting-restaurant-grid-container {
 		display: flex;
 		flex-direction: column;	
@@ -239,7 +242,7 @@
 		height: 100%;
 		width: 100%;
 		margin-left: 1rem;
-    background-color: #DDD8EF;
+    background-color: var(--foreground-color);
     border-radius: 10px;
 		overflow-y: scroll;
 	} 
@@ -267,7 +270,7 @@
   }
   
   .Voting-restaurant-option.selected {
-    border-color: #3d2b6d;
+    border-color: var(--pill-border);
 		border-style: solid;
   }
   
@@ -283,8 +286,8 @@
 		height: 40px;
 		width: 90%;
 		margin-bottom: 1rem;
-    background: #6a41c1;
-    color: white;
+    background: var(--button-color);
+    color: var(--button-text);
     border: none;
     border-radius: 10px;
     font-weight: bolder;
@@ -297,7 +300,7 @@
   
   .Voting-results-title {
     text-align: center;
-    color: #3d2b6d;
+    color: var(--purple-700);
     margin-top: 2rem;
     margin-bottom: 0rem;
     font-family: "Chivo";
@@ -309,7 +312,7 @@
     margin-top: 0.5rem;
 		width: 100%;
 		max-width: 1200px;
-    background: #DDD8EF;
+    background: var(--foreground-color);
     padding: 1rem;
     border-radius: 12px;
   }
@@ -341,11 +344,13 @@
     background: #5b41a8;
     height: 100%;
     border-radius: 8px;
+		transition-property: width;
+		transition-duration: .5s;
   }
   
   .vote-count {
     font-weight: bold;
-    color: #3d2b6d;
+    color: var(--purple-700);
   }
 
   .winner-popup {
@@ -353,7 +358,7 @@
     top: 20%;
     left: 50%;
     transform: translate(-50%, -20%);
-    background-color: #fff;
+    background-color: white;
     border: 2px solid #4CAF50;
     padding: 20px;
     border-radius: 10px;
@@ -366,7 +371,7 @@
 		display: flex;
 		flex-direction: column;
 		margin-left: 1rem;
-    background: #DDD8EF;
+    background: var(--foreground-color);
     border-radius: 12px;
 		align-items: center;
 		overflow-y: scroll;
@@ -383,7 +388,7 @@
   
 	.Wait-voting-results-title {
     text-align: center;
-    color: #3d2b6d;
+    color: var(--text-color);
     font-family: "Chivo";
 		font-size: 1.5rem;
     font-weight: 700;
@@ -401,14 +406,14 @@
     width: 5%;
     height: auto;
     border-radius: 50%;
-    background: #ffffff;
+    background: white;
   }
   
   .Wait-result-bar-container {
 		display: flex;
 		height: 15px;
 		width:100%;
-    background: #ffffff;
+    background: white;
     border-radius: 8px;
     overflow: hidden;
 		margin: 0rem 1rem;
@@ -428,7 +433,7 @@
 	/* -------------------------- END LAYOUT ----------------------------------- */
   
 	.End-results-section {
-		background: #DDD8EF;
+		background: var(--foreground-color);
 		display: flex;
 		height: auto;
     /* margin-top: 0rem; */
@@ -436,7 +441,7 @@
     border-radius: 10px;
 		font-weight: 700; 
 		font-size: 1.5rem;
-    color: #3d2b6d;
+    color: var(--purple-700);
 		width: 100%;
 		margin-left: 1rem;
     /*max-height: 409.28px;*/

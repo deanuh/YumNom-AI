@@ -123,7 +123,7 @@ export default function RestaurantPreferences({ me, onSave = async () => {} }) {
           )}
         </div>
 
-        <p style={{ marginTop: 12, color: "#6e558e" }}>
+        <p style={{ marginTop: 12, color: "var(--text-hint-colored)" }}>
           Saved to your profile. Restaurant Search and AI recommendations will exclude these.
         </p>
       </div>

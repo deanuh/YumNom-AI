@@ -1,12 +1,14 @@
 // to change the display of their screen (lightmode darkmode?)
 // need to set up the UI actually but also need to wait for teammate to create the code for
 // src/pages/displaySettings.js
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../../ThemeProvider";
 import "../../styles/settings.css";
 
 export default function DisplaySettings() {
   const navigate = useNavigate();
+	const { theme, toggleTheme } = useContext(ThemeContext)
 
   return (
     <main className="Set-settings-body">
@@ -25,7 +27,10 @@ export default function DisplaySettings() {
               <span>Dark Mode</span>
               {/* Just a visual toggle, have not coded for it yet!!*/}
               <label className="lp-switch">
-                <input type="checkbox" disabled />
+                <input 
+									type="checkbox"
+									checked={theme === 'dark'}
+									onChange={(e) => toggleTheme()}/>
                 <span className="lp-slider" />
               </label>
             </li>

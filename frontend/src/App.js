@@ -1,4 +1,5 @@
 import React from "react";
+import { ThemeProvider } from "./ThemeProvider";
 import {
   BrowserRouter as Router,
   Routes,
@@ -131,9 +132,11 @@ function App() {
 
 function AppLayout() {
   return (
-    <Router>
-      <App />
-    </Router>
+		<ThemeProvider>
+    	<Router>
+    	  <App />
+    	</Router>
+		</ThemeProvider>
   );
 }
 

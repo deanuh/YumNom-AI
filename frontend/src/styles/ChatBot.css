@@ -126,110 +126,17 @@
   margin-right: 10px; /* added this for distance from the right edge of the  */
 }
   
-.exit-button {
-  position: absolute;  /* to position it inside the chatbox */
-  top: 8px;       /* distance from the top edge */
-  left: 10px;     /* distance from the left edge */
-  background: transparent;
-  color: white;
-  border: none;       /* removes the og button box from the shape */
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 0;
-  padding: 0;     /* removes the bubble padding i fear */
-  line-height: 1;
-}
-.exit-button:hover {
-  /* color: #b49ae5;   */
-  transform: scale(1.5)
-
-
-}
-
-
-
-/* spacing under the bot's text */
-.bubble.bot .chatbot-bot-actions { margin-top: 0.5rem; }
-
-/* shared pill baseline */
-.chatbot-cta,
-.chatbot-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.4rem 0.75rem;             /* smaller */
-  border-radius: 30px;               /* pill */
-  text-decoration: none;
-  border: 1px solid #b8addd;           /* light lavender border */
-  background: #ffffff;                 /* light background */
-  color: #1b1740;                      /* dark text from your palette */
-  /* font-weight: 600; */
-  font-size: clamp(0.84rem, 1.6vw, 0.92rem); /* shrink if needed */
-  line-height: 1.2;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.08);
-  white-space: normal;                 /* allow wrapping */
-  max-width: 100%;
-}
-
-/* subtle hover/active */
-.chatbot-cta:hover,
-.chatbot-pill:hover {
-  background: #f8f6ff;                 /* very light lavender */
-  border-color: #9e91cf;
-}
-.chatbot-cta:active,
-.chatbot-pill:active {
-  transform: translateY(1px);
-}
-
-/* primary CTA: just a touch more emphasis, still a pill */
-.chatbot-cta {
-  background: #f9f7ff;                 /* slightly tinted */
-  border-color: #a99bd6;
-}
-
-/* rows/labels */
-.chatbot-meta-row { 
-  margin-top: 0.45rem; 
-}
-.chatbot-meta-label { 
-  display: inline-block;
-  margin-right: 0.4rem;
-  margin-bottom: 0.25rem;
-  /* font-weight: 700;  */
-  font-size: 0.92rem; 
-  color: #2f2466; 
-}
-.chatbot-pill-row { 
-  display: flex; 
-  flex-wrap: wrap; 
-  gap: 0.35rem;   /* tighter gap */
-}
-
-/* container for the main CTA */
-.chatbot-cta-wrap { 
-  margin-bottom: 0.4rem; 
-}
-
-/* optional: compress on very small widths */
-@media (max-width: 420px) {
-  .chatbot-cta, .chatbot-pill {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.85rem;
+  .exit-button {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    background-color: #3c2a66;
+    color: white;
+    border-radius: 12px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Chivo', monospace;
+    font-weight:bold;
   }
-  .chatbot-pill-row { gap: 0.3rem; }
-}
-
-.chatbot-pill {
-  appearance: none;
-  border: 1px solid #d9d3f2;
-  background: #f2effd;
-  color: #2d2157;
-  padding: 6px 12px;
-  border-radius: 9999px;
-  font-size: 13px;
-  line-height: 1.2;
-  cursor: pointer;
-}
-.chatbot-pill:disabled { opacity: .6; cursor: default; }
+  
