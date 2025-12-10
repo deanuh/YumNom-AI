@@ -541,3 +541,39 @@ export async function updateUserBasic(
   return true;
 }
 
+// -------------------- GROUP INVITES -------------------- //
+
+export async function addUserToGroup(userId, groupId) {
+  const userRef = db.collection("User").doc(userId);
+  const groupRef = db.collection("Group").doc(groupId);
+
+  try {
+    await db.runTransaction(async (transaction) => {
+      const userDoc = await transaction.get(userRef);
+      const groupDoc = await transaction.get(groupRef);
+
+      if (!userDoc.exists) throw new Error("User does not exist.");
+      if (!groupDoc.exists) throw new Error("Group does not exist.");
+
+      const userData = userDoc.data();
+      const groupData = groupDoc.data();
+
+      // Add user to the group's members map
+      const newMembers = {
+        ...groupData.members,
+        [userId]: {
+          profile_picture: userData.profile_picture || "ban_gato.png",
+          username: userData.username || "New Member"
+        }
+      };
+
+      transaction.update(groupRef, { members: newMembers });
+      transaction.update(userRef, { current_group: groupId });
+    });
+    return true;
+  } catch (err) {
+    console.error(`addUserToGroup failed: ${err.message}`);
+    throw new Error(`addUserToGroup failed: ${err.message}`);
+  }
+}
+

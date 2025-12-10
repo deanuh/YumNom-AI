@@ -1,4 +1,5 @@
 import React from "react";
+import '../../styles/Dashboard.css';
 
 const DishCard = ({ name, address, distance, imageUrl, onViewMenu, isFavorited, onToggleFavorite }) => {
   const fallback = "/chicken.png";
@@ -19,18 +20,16 @@ const DishCard = ({ name, address, distance, imageUrl, onViewMenu, isFavorited, 
             {distance && <span className="distance-inline">{distance}</span>}
           </div>
 
-          {/* This button is only shown if the onToggleFavorite function is provided */}
+          {/* Favorite Heart Button */}
           {onToggleFavorite && (
             <button
               type="button"
               className="favorite-btn"
               aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
               aria-pressed={isFavorited}
-              // It now calls the function passed down from the parent (e.g., Favorite.js)
               onClick={onToggleFavorite} 
             >
               <img
-                // The heart icon's appearance is now controlled by the isFavorited prop
                 src={isFavorited ? "/heart_dark.png" : "/heart.png"}
                 alt=""
                 className="heart-icon"
@@ -39,9 +38,12 @@ const DishCard = ({ name, address, distance, imageUrl, onViewMenu, isFavorited, 
           )}
         </div>
 
-        <button type="button" className="menu-cta" onClick={onViewMenu}>
-          View Restaurant
-        </button>
+        {/* Standard View Button */}
+        {onViewMenu && (
+          <button type="button" className="menu-cta" onClick={onViewMenu}>
+            View Restaurant
+          </button>
+        )}
       </div>
     </div>
   );
