@@ -158,4 +158,48 @@ async function getTAPlaceDetails(req, res, next) {
     next(err);
   }
 }
-export { getRestaurantTripAdvisor, getTAPlaceDetails };
+
+async function fetchTAPlaceDetails(locationId) {
+	try {
+    const response = await axios.get(`${base_url}/v1/location/${locationId}/details`, {
+      params: { key: api_key, language: "en" },
+      headers: { accept: "application/json" },
+    });
+		return response;
+  } catch (err) {
+		if (err.response && err.response.status == 404) return null;
+		throw err;
+  }
+}
+
+async function fetchRestaurantTANoUnsplash(query) {
+  try {
+    //Parse query parameters
+    const q = emptyToUndef(query);
+		if (!q) return [];
+    
+    const endpoint = "/v1/location/search";
+
+    // Build request params
+    const params = new URLSearchParams({
+      key: api_key,
+      category: "restaurants",
+      searchQuery: q
+    });
+
+    // Call TripAdvisor API 
+    const { data } = await axios.get(`${base_url}${endpoint}`, {
+      headers: { accept: "application/json" },
+      params,
+    });
+
+    let list = Array.isArray(data?.data) ? data.data : [];
+		return list;
+  } catch (err) {
+		if (err.response && err.response.status == 404) return null;
+		throw err;
+  }
+}
+
+
+export { getRestaurantTripAdvisor, getTAPlaceDetails, fetchTAPlaceDetails, fetchRestaurantTANoUnsplash };

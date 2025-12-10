@@ -6,12 +6,7 @@
   min-height: 100vh;
   font-family: "Poppins", sans-serif;
 
-  background: url("data:image/svg+xml;utf8,\
-  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'>\
-    <path fill='%23e6dfff' d='M0,192L80,165.3C160,139,320,85,480,90.7C640,96,800,160,960,160C1120,160,1280,96,1360,64L1440,32V320H0Z'/>\
-  </svg>")
-    no-repeat center 50%;
-  background-size: cover;
+  background: var(--landing-background-image) no-repeat center 50%;
 }
 
 .landing-heading {
@@ -27,7 +22,7 @@
 .landing-logo {
   font-family: "Cherry Bomb One", cursive;
   font-size: 5rem;
-  color: #190352;
+  color: var(--text-color);
   margin-top: 1.7rem;
   margin-bottom: 0.6rem;
 }
@@ -38,19 +33,19 @@
 .landing-text h2 {
   font-size: clamp(3.2rem, 8vw, 5.6rem);
   font-weight: 700;
-  color: #190352;
+  color: var(--text-color);
   line-height: 1;
   margin-bottom: 1.3rem;
 }
 .landing-text h3 {
   font-size: clamp(2rem, 4.5vw, 3rem);
   font-weight: 600;
-  color: #6e5c9c;
+  color: var(--purple-dull);
   margin-bottom: 1.1rem;
 }
 .landing-text p {
   font-size: 1.5rem;
-  color: #6e5c9c;
+  color: var(--purple-dull);
   margin-bottom: 1.8rem;
 }
 
@@ -58,15 +53,15 @@
   padding: 1.2rem 3.4rem;
   font-size: 2.2rem;
   font-weight: 700;
-  background: #190352;
-  color: #fff;
+  background: var(--text-color);
+  color: var(--background-color);
   border: none;
   border-radius: 3.4rem;
   cursor: pointer;
   transition: transform 0.25s, background-color 0.25s;
 }
 .landing-cta:hover {
-  background: #321877;
+  background: var(--text-light);
   transform: scale(1.06);
 }
 
@@ -84,16 +79,16 @@
   flex-wrap: wrap;
   gap: 3.5rem;
   padding: 4.5rem 2rem 6rem;
-  background: #e6dfff;
+  background: var(--foreground-color);
 }
 .landing-feature-card {
-  background: #fff;
+  background: var(--background-color);
   border-radius: 1.4rem;
   padding: 2.4rem;
   text-align: center;
   font-size: 2rem;
   font-weight: 600;
-  color: #6e5c9c;
+  color: var(--purple-600);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   flex: 1 1 280px;
   max-width: 380px;

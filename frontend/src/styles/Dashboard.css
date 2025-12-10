@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');
 html body{
-  background-color: rgb(251, 250, 255)
+  background-color: var(--background-color);
 }
 .dashboard-container {
     padding: 2rem;
@@ -9,11 +9,18 @@ html body{
   
   .dashboard-header h1 {
     font-size: 28px;
-    color: #190352
+    color: var(--text-color);
   }
   
+  .dashboard-header h2 {
+    color: var(--text-monochrome);
+	}
+  .dashboard-header p {
+    color: var(--text-monochrome);
+	}
+
   .dashboard-banner {
-    background: #D0C9EB;
+    background: var(--foreground-color);
     border-radius: 12px;
     padding: 1rem 2rem;
     display: flex;
@@ -23,13 +30,14 @@ html body{
   }
   
   .banner-button {
-    background: #6a41c1;
-    color: white;
+    background: var(--button-color);
+    color: var(--button-text);
     border: none;
     border-radius: 8px;
     padding: 0.6rem 1.2rem;
   }
   
+
   .friends-container {
     display: flex;
     align-items: center;
@@ -58,7 +66,7 @@ html body{
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #6a41c1;
+    color: var(--purple-600);
     cursor: pointer;
     padding: 0 1rem;
     user-select: none;
@@ -67,7 +75,7 @@ html body{
   .friends-section h2 {
     font-size: 20px;
     margin-bottom: 0.5rem;
-    color: #190352;
+    color: var(--text-color);
     font-family: "Poppins"
   }
   
@@ -97,10 +105,12 @@ html body{
     border-radius: 16px;
     padding: 1rem;
     margin-top: 1rem;
-    box-shadow: 0 0 0 1px #eee;
+		border-style: solid;
+    border-width: 1px;
+		border-color: var(--border);
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 2px 5px #65558F;
+    box-shadow: 0 5px 15px -5px var(--shadow);
   }
   .add-friends {
     margin-top: 0.5rem;
@@ -110,7 +120,7 @@ html body{
   .add-friend-btn {
     background: none;
     border: none;
-    color: #6f4ed3;
+    color: var(--link-color);
     cursor: pointer;
   }
   
@@ -124,7 +134,7 @@ html body{
     align-items: center;
   }
   .section-header h3{
-    color: #190352;
+    color: var(--text-color);
     font-family: "Poppins"
   }
   .dish-list {
@@ -141,7 +151,7 @@ html body{
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
-    box-shadow: 0 2px 5px #65558F;
+    box-shadow: 0 2px 5px var(--shadow);
     position: relative;
   }
   
@@ -154,13 +164,13 @@ html body{
     flex: 1;
     padding: 0rem;
     overflow-y: auto;
-    background-color: rgb(251, 250, 255);
+    background-color: var(--background-color);
 
   }
   .your-dash h1{
     font-size: 30px;
     margin-bottom: 2 rem;
-    color: #6a41c1;
+    color: var(--purple-600);
     text-align: center;
     font-family: "Poppins"
 
@@ -169,7 +179,7 @@ html body{
   .view-all-btn{
     background: none;
     border: none;
-    color: #6f4ed3;
+    color: var(--link-color);
     cursor: pointer;
   }
 
@@ -183,9 +193,9 @@ html body{
 
 /* how-it-works carousel card */
 .howit-card {
-  background: #ffffff;
+  background: var(--pill-color);
   border-radius: 12px;
-  border: 1px solid #ae8bd4;
+  border: 1px solid var(--pill-border);
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -204,7 +214,7 @@ html body{
 
 .howit-header h3 {
   margin: 0;
-  color: #2a1d52;
+  color: var(--text-color);
   font-size: clamp(1rem, 1.8vw, 1.1rem);
   font-weight: 700;
 }
@@ -254,11 +264,11 @@ html body{
   height: 8px;
   border-radius: 999px;
   border: none;
-  background: #d9d2f2;
+  background: var(--button-inactive);
   cursor: pointer;
 }
 .howit-dots .dot.active {
-  background: #5e36d9;
+  background: var(--button-color);
 }
 
 /* responsive stacking */
@@ -375,7 +385,7 @@ html body{
   font-family: "Poppins", sans-serif;
   font-size: 16px; 
   font-weight: 500;
-  color: #4b3a9e;
+  color: var(--text-hint-colored);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -386,8 +396,6 @@ html body{
 }
 .edit-note.is-active { color: #5a4fb4; font-weight: 600; }
 
-
-/* --- Minimal DoorDash / Uber Eats Style Card --- */
 .dish-card.minimal {
   width: 240px;
   border-radius: 14px;

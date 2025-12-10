@@ -36,7 +36,7 @@ function GroupMealParty() {
 		const objectData = response.data;
 
     let restaurantList = Array.isArray(objectData?.food_brands.food_brand) ? objectData.food_brands.food_brand : [];
-		return restaurantList
+		return restaurantList;
 	}, [base_url, debouncedSearch]);
 
 

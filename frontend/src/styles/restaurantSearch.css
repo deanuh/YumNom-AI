@@ -3,7 +3,7 @@
 
   .Restaurant-container {
     padding: 2rem;
-    background-color: rgb(251, 250, 255);
+    background-color: var(--background-color);
     box-sizing: border-box;
     margin: 0;           
     border: none;  
@@ -13,7 +13,7 @@
     font-family: "Poppins";
     font-size: xx-large;
     /* font-weight: bolder; */
-    color: #3c2b7f;
+    color: var(--text-color);
   }
   /* LOCATION + SEARCH  */
   .search-row {
@@ -29,7 +29,7 @@
     display: inline-block;
     font-weight: 600;
     font-size: 1rem;
-    background-color: rgb(251, 250, 255);
+    background-color: var(--background-color);
     /* background: rgb(247, 243, 255); */
     
     border-radius: 12px;
@@ -39,7 +39,7 @@
 
     /* margin-right: 30rem; */
     margin-bottom: 1.5rem;
-    color:#3c2b7f;
+    color:var(--purple-700);
   }
 
   
@@ -53,26 +53,26 @@
   }
   
   .filter-pill1 {
-    background: rgb(251, 250, 255);
+    background: var(--pill-color);
     border: .5px solid #3c2b7f;
     padding: 0.5rem 1rem;
     border-radius: 12px;
     font-size: 0.9rem;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    color: #3c2b7f;
+    color: var(--purple-700);
   }
   .filter-pill {
-    background: rgb(251, 250, 255);
-    border: .5px solid #3c2b7f;
+    background: var(--pill-color);
+    border: .5px solid var(--pill-border);
     padding: 0.5rem 1rem;
     border-radius: 999px;
     font-size: 0.9rem;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    color: #3c2b7f;
+    color: var(--purple-700);
   }
   .filter-pill:hover {
-    background-color: #ebe4fd;
+    background-color: var(--pill-hover);
   }
   
   .filter-type {
@@ -95,7 +95,7 @@
     margin-top: 2rem;
     margin-bottom: 1rem;
     font-size: 1.1rem;
-    color: #3c2b7f;
+    color: var(--purple-700);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -105,7 +105,7 @@
     font-size: 0.9rem;
     font-weight: 400;
     cursor: pointer;
-    color: #6d4dc3;
+    color: var(--purple-500);
   }
   
   /* ===== CATEGORY CARDS ===== */
@@ -117,15 +117,16 @@
   }
   
   .category-card {
-    background: rgb(251, 250, 255);
+    background: var(--pill-color);
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
     font-weight: 500;
-    border: 1px solid #737078;     
+    border: 1px solid var(--pill-border);     
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);  
     cursor: pointer;
     transition: transform 0.2s ease;
+		color: var(--text-monochrome);
 }
   .category-card:hover {
     transform: translateY(-2px);
@@ -135,6 +136,9 @@
     height: 50px;
     object-fit: contain;
     margin-bottom: 0.5rem;
+		background-color: rgb(251, 250, 255);
+		border-radius: 25%;
+		padding: 5px;
   }
   
   .category-icon {
@@ -187,7 +191,7 @@
   
   .details-text {
     font-size: 0.85rem;
-    color: #777;
+    color: var(--text-hint);
   }
 
   
@@ -203,13 +207,13 @@
   }
   
   .Restaurant-search-bar {
-    background: rgb(251, 250, 255);
+    background: var(--input-background);
     padding: .3rem 1rem;
     border-radius: 15px;
     display: flex;
     align-items: center;
     flex: 1;
-    border: 1px solid #65558F;
+    border: 1px solid var(--input-border);
     margin: auto;
   }
   
@@ -219,12 +223,12 @@
     flex: 1;
     font-size: 1rem;
     padding-left: 0.5rem;
-    background-color: rgb(251, 250, 255);
+    background-color: var(--input-background);
   }
   
   .Restaurant-search-enter-button {
-    background: #6a41c1;
-    color: white;
+    background: var(--purple-600);
+    color: var(--button-text);
     padding: 0.5rem 1rem;
     /* border: 2px solid #c4b2f6; */
     border-radius: 12px;
@@ -246,13 +250,13 @@
   .dropdown-menu {
     display: flex;
     flex-direction: column;
-    background: white;
+    background: var(--pill-background);
     padding: 0.6rem;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     /* margin-top: 0.3rem; */
-    color: #190352;
-    border: 0.5px solid #65558F;
+    color: var(--text-color);
+    border: 0.5px solid var(--pill-border);
     position:fixed;
     font-size: 1rem;
     position:absolute;
@@ -291,36 +295,36 @@
 .dropdown-arrow {
   width: 9px;
   height: 5px;
-  background: #190352;
+  background: transparent;
 }
 
 .Restaurant-container input[type="checkbox"] {
-  accent-color: #6d4dc3;  
+  accent-color: var(--accent-color);  
 }
 
 .Restaurant-container input[type="radio"] {
-  accent-color: #6d4dc3;  
+  accent-color: var(--accent-color);  
 
 }
 
 
 .clear-filters-link {
   margin-left: 12px;
-  color: #6d4dc3;        
+  color: var(--link-color);        
   cursor: pointer;
   text-decoration: underline;
   font-size: 0.9rem;
 }
 
 .clear-filters-link:hover {
-  color: #473281;
+  color: var(--link-hover);
 }
 
 .restaurant-name {
   font-weight: 600;
   font-size: 1rem;
   margin: 10px 12px 4px;
-  color: #1f2937; /* near-black */
+  color: var(--text-monochrome-light); /* near-black */
   text-align: left;
 }
 
@@ -425,7 +429,7 @@
 .dish-name       { margin: 0 0 6px;   line-height: 1.25; text-align: left; }
 
 .distance-inline {
-  color: #6a41c1;         
+  color: var(--purple-600);         
   font-weight: 600;
   font-size: 0.95rem;
   line-height: 1.1;
@@ -458,7 +462,7 @@
   margin: 0;
   font-weight: 700;
   font-size: 1rem;
-  color: #1f2937;
+  color: var(--text-monochrome-light);
 }
 
 
@@ -466,8 +470,8 @@
 .menu-cta {
   width: 100%;
   display: block;
-  background: #6a41c1;
-  color: #fff;
+  background: var(--button-color);
+  color: var(--button-text);
   border: none;
   border-radius: 10px;
   font-weight: 700;

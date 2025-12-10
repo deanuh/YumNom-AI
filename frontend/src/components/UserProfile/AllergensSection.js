@@ -175,7 +175,7 @@ const AllergensSection = ({ me, onSave = async () => {} }) => {
           </div>
         </div>
 
-        <p style={{ marginTop: 12, color: "#6e558e"}}>
+        <p style={{ marginTop: 12, color:"var(--text-hint-colored)"}}>
           Saved to your account. AI Dish Rec will use these by default.
         </p>
       </div>
