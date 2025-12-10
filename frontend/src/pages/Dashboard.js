@@ -1,11 +1,16 @@
 // src/pages/Dashboard.js
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/Dashboard.css";
 import DashboardHeader from "../components/Dashboard/DashboardHeader";
 import FriendsList from "../components/Dashboard/FriendsList";
 import DashboardSection from "../components/Dashboard/DashboardSection";
 import DishCard from "../components/Dashboard/DishCard";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+                 
+import { useLocation } from "react-router-dom"; 
+
+// we are going to import the splash overlay so that when it fades it shows the dashbaord
+import YumNomSplash from "../components/YumNomSplash"; 
 
 const RECENTS_KEY = "yn_recent_restaurants";     // restaurant clicks
 const AI_HISTORY_KEY = "yn_ai_rec_history_v1";   // AI dish history
@@ -20,12 +25,6 @@ async function fetchWithAuth(url, options = {}) {
   return fetch(url, { ...options, headers });
 }
 
-// added this for the loading screen
-import React, { useState } from "react";                   
-import { useLocation } from "react-router-dom"; 
-
-// we are going to import the splash overlay so that when it fades it shows the dashbaord
-import YumNomSplash from "../components/YumNomSplash"; 
 
 
 const Dashboard = () => {

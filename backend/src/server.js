@@ -401,7 +401,9 @@ app.delete("/votes/:voteId", authMiddleware, removeVote);
 app.get("/preferences", authMiddleware, readPreferences);
 app.post("/preferences", authMiddleware, savePreferences);
 
-
+app.use("/api", authMiddleware, friendsRouter);  // ← exposes /api/users/lookup and /api/me/friends*
+// delete account NEW
+app.use("/api", deleteUserRouter);
 
 app.use("/api", reportIssueRouter);
 

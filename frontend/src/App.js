@@ -53,8 +53,8 @@ function App() {
     location.pathname === "/login" ||
     location.pathname === "/forgot-password" ||
     location.pathname === "/signup" ||
-    location.pathname === "/group-meal-party" ||
-    location.pathname === "/realtimevoting";
+    location.pathname === "/group-meal" ||
+    location.pathname === "/RealTimeVoting";
 
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatKey, setChatKey] = useState(0); // force remount each open
