@@ -13,8 +13,15 @@ import {
   deleteVote,
   upsertPreferences,
   getPreferences as getPrefsFromDb,
+	addRating,
+	deleteRating,
+	getRatings,
+	getRatingsForRestaurant,
   addUserToGroup
 } from "../firebase/dbFunctions.js";
+import { fetchTAPlaceDetails, fetchRestaurantTANoUnsplash } from '../api/tripadvisor.js'
+import { fetchRestaurantFatSecret } from '../api/fatsecret.js'
+import { fetchLogoData } from '../api/logo.js'
 
 // ------------------- USERS ------------------- //
 export async function createUser(req, res) {
@@ -247,4 +254,124 @@ export async function readPreferences(req, res) {
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
+}
+
+// ---------- REVIEWS API ----------------
+
+/**
+ * match name from restaurants on tripadvisor or fatsecret as a backup
+ * -Requires auth for createRating
+ *  Retrieves information for restaurants and users.
+ */
+
+export async function matchRestaurant(req, res, next) {
+  try {
+    const exact_match = req.query.q?.trim();
+    if (!exact_match)
+      return res.status(400).json({ error: "Missing query parameter 'q'" });
+
+    const restaurantInfo = await fetchRestaurantTANoUnsplash(exact_match);
+		let restaurantList = []
+    if (!restaurantInfo?.length) {
+			restaurantList = await fetchRestaurantFatSecret(exact_match);
+		} else {
+    	restaurantList = restaurantInfo
+    	  .filter(r => r?.name)
+    	  .map(r => r.name);
+		}
+
+    if (!restaurantList.length)
+      return res.status(404).json({ error: "Restaurant not found" });
+
+    const hasMatch = restaurantList.some(
+      name => name.toLowerCase() === exact_match.toLowerCase()
+    );
+
+    if (!hasMatch)
+      return res.status(404).json({ error: "Restaurant not found" });
+
+    // normalize name → DB-safe restaurant ID
+		
+    req.api_id = exact_match.toLowerCase().replace(/\s+/g, "_");
+		req.name = exact_match;
+
+    return next();
+
+  } catch (error) {
+    console.error("matchRestaurant error:", error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+export async function createRating(req, res) {
+  try {
+		const userId = req.uid;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+		const api_id = req.api_id;
+		if (!api_id) return res.status(400).json({error: "Missing apiId"});
+    const { user_ratings, review } = req.body;
+
+		const name = req.name;
+		if (!name) return res.status(400).json({error: "Missing name."});
+
+    if ( user_ratings == null ) {
+      return res.status(400).json({ error: "Missing user_ratings." });
+    }
+		
+
+    const ratingId = await addRating({ api_id, name, user_ratings, review }, userId);
+    return res.status(201).json({ message: "Rating added", ratingId });
+  } catch (error) {
+		console.error(`createRating error: ${error.message}`);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+
+export async function removeRating(req, res) {
+  try {
+    const userId = req.uid;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const { ratingId } = req.params;
+    if (!ratingId) return res.status(400).json({ error: "Missing ratingId." });
+
+    await deleteRating(userId, ratingId);
+    return res.status(200).json({ message: "Rating deleted" });
+
+  } catch (error) {
+    console.error("removeRating error:", error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+export async function readRatings(req, res) {
+  try {
+    const userId = req.uid;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const ratings = await getRatings(userId);
+    return res.status(200).json(ratings);
+
+  } catch (error) {
+    console.error("readRatings error:", error);
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+export async function readRestaurantRatings(req, res) {
+	try {
+		const apiId = req.api_id;
+		const restaurantData = {
+			name: req.name,
+		};
+		if (!apiId) return res.status(400).json({error: "Missing apiId"});
+
+		const ratings = await getRatingsForRestaurant(apiId, restaurantData);
+		return res.status(200).json(ratings);
+
+	} catch (error) {
+    return res.status(500).json({ error: error.message });
+	}
 }

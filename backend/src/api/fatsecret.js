@@ -39,6 +39,7 @@ async function getAuthTokenFatSecret() {
 	return accessToken; 
 };
 
+
 async function getRestaurantFatSecret(req, res, next) {
 
 	try {
@@ -63,6 +64,37 @@ async function getRestaurantFatSecret(req, res, next) {
 		return res.json(response.data);
 	} catch (err) {
 		next(err);
+	}
+}
+
+async function fetchRestaurantFatSecret(query) {
+	try {
+		const token = await getAuthTokenFatSecret();
+		console.log("no query for fetchRestaurant");
+		if (!query) return [];
+
+		var options = {
+			method: "GET",
+			url: base_url + '/brands/v2',
+			headers: {
+				'Authorization': `Bearer ${token}`
+			},
+			params: {
+				starts_with: q, // replace after router is finished, pass user query
+				brand_type: "restaurant", // through here.
+				format: "json"
+			},
+		};
+	
+		const response = await axios(options);
+		const objectData = response.data;
+
+    let restaurantList = Array.isArray(objectData?.food_brands.food_brand) ? objectData.food_brands.food_brand : [];
+		return restaurantList;
+	}
+	catch (err) {
+		console.error(err.message);
+		return [];
 	}
 }
 
@@ -91,4 +123,4 @@ async function getFoodFatSecret(req, res, next) {
 	return res.json(response.data);
 }
 
-export {getRestaurantFatSecret, getFoodFatSecret};
+export {getRestaurantFatSecret, fetchRestaurantFatSecret, getFoodFatSecret};

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
+import { ThemeContext } from "../ThemeProvider";
 // NEW: Import Firebase auth functions
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import "../styles/restaurantSearch.css";
@@ -82,6 +83,9 @@ const normalizePrice = (p) => {
 };
 
 function RestaurantSearch() {
+	//theme context
+	const { theme } = useContext(ThemeContext)
+
   // UI + request state
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -497,7 +501,7 @@ function RestaurantSearch() {
         <div className="Restaurant-search-bar-wrapper">
           <div className="Restaurant-search-bar">
             <span className="search-icon">
-              <img src="/search.png" alt="arrow" className="search-glass" />
+              <img src={theme === 'light' ? "/search.png" : "searchDark.png"} alt="arrow" className="search-glass" />
             </span>
             <input
               type="text"
@@ -516,7 +520,7 @@ function RestaurantSearch() {
           <div className="filter-dropdown">
             <button className="filter-pill" onClick={toggleDistance}>
               Distance {selectedDistance ? `: ${selectedDistance} ` : ""}
-              <img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" />
+              <img src={ theme === 'light' ? "/Vector.png" : "/VectorDark.png" } alt="arrow" className="dropdown-arrow" />
             </button>
             {showDistanceDropdown && (
               <div className="dropdown-menu">
@@ -529,7 +533,7 @@ function RestaurantSearch() {
           <div className="filter-dropdown">
             <button className="filter-pill" onClick={togglePrice}>
               Price {selectedPrice ? `: ${selectedPrice}` : ""}
-              <img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" />
+              <img src={ theme === 'light' ? "/Vector.png" : "/VectorDark.png" } alt="arrow" className="dropdown-arrow" />
             </button>
             {showPriceDropdown && (
               <div className="dropdown-menu">

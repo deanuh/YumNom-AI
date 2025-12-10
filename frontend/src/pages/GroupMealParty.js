@@ -275,7 +275,7 @@ function GroupMealParty() {
                         cursor: 'pointer'
                     }}
                 >
-                    Start Voting Session 🚀
+                    Start Voting Session
                 </button>
               </div>
           </div>

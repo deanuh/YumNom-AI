@@ -1,3 +1,131 @@
+
+:root {
+
+  --ink:#1f2937;
+  --surface: rgb(251, 250, 255);
+}
+
+[data-theme='light'] {
+	--purple-700:#3c2b7f;
+  --purple-600:#6a41c1;
+  --purple-500:#6d4dc3;
+	--purple-dull: #65558F;
+  --border:#65558F;
+
+	--sidebar-background: white;
+	--sidebar-nav: #6a41c1;
+	--sidebar-text: #3a2b77;
+	--sidebar-text-active: white;
+	--sidebar-text-hover: rgb(153, 128, 235);
+	--sidebar-border: #e5e3f3;
+
+	--profile-nav-text: #7a5ea3;
+	--profile-nav-text-active: #342156;
+	--profile-nav-border: #5a3798;
+	--profile-nav-border-active: #9683b9;
+	--profile-button: #ABA0D6;
+	--profile-button-border: #9a94a4;
+
+	--radial-gradient-0: #ffe9fb;
+	--radial-gradient-1: #e1eefc;
+	--radial-gradient-2: rgb(251, 250, 255);
+
+	--background-color: rgb(251, 250, 255);
+	--foreground-color: #D0C9EB;
+	--foreground-border: #65558F;
+	--alt-foreground: #ABA0D6;
+
+	--text-color: #190352; 
+	--text-light: #57437f;
+	--text-monochrome: black;
+	--text-monochrome-light: #242424;
+	--text-hint: #777;
+	--text-hint-colored: #65558F;
+
+	--pill-color: rgb(251, 250, 255);
+	--pill-hover: #ebe4fd;
+	--pill-border: #65558F;
+
+	
+	--accent-color: #6d4dc3;
+	--link-color: #6d4dc3;
+	--link-hover: #473281;
+	--shadow: #eee;
+
+	--button-inactive: #d9d2f2;
+	--button-color:#6d4dc3;
+	--button-text: white;
+
+	--input-background: white; 
+	--input-border: #65558F;
+
+	--landing-background-image: url("data:image/svg+xml;utf8,\
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'>\
+    <path fill='%23d0c9eb' d='M0,192L80,165.3C160,139,320,85,480,90.7C640,96,800,160,960,160C1120,160,1280,96,1360,64L1440,32V320H0Z'/>\
+  </svg>");
+	--vector: url("/public/Vector.png")
+
+}
+
+[data-theme="dark"] {
+	--purple-700:#EFEAFF;
+  --purple-600:#8D73F7;
+  --purple-500:#6d4dc3;
+  --border:#65558F;
+
+	--sidebar-background: #1A1625;
+	--sidebar-nav: #9575FF;
+	--sidebar-text: #DCCEFF;
+	--sidebar-text-active: #ffffff;
+	--sidebar-text-hover: #BBA5FF;
+	--sidebar-border: #252333;
+
+	--profile-nav-text: #C9B8EC;
+	--profile-nav-text-active: #E9E2FF;
+	--profile-nav-border: #7A5ACF;
+	--profile-nav-border-active: #BFAEF0;
+	--profile-button: #5E4A96;
+	--profile-button-border: #8B82A3;
+
+	--radial-gradient-0: #2A203C;
+	--radial-gradient-1: #1C2336;
+	--radial-gradient-2: #1E1A2E;
+
+	--background-color: #14111F;
+	--foreground-color: #2B2440;
+	--foreground-border: #9A8ED0;
+	--alt-foreground: #3B2F5A;
+
+	--text-color: #EFEAFF; 
+	--text-light: #C3B6E2;
+	--text-monochrome: #F1F1F1;
+	--text-monochrome-light: #B9B9B9;
+	--text-hint: #A19EB5;
+	--text-hint-colored: #B7A7E8;
+
+	--pill-color: #282035;
+	--pill-hover: #362B4A;
+	--pill-border: #9A8ED0;
+
+	--accent-color: #A58EFF;
+	--link-color: #A58EFF;
+	--link-hover: #C8B8FF;
+	--shadow: #000;
+
+	--button-inactive: #d9d2f2;
+	--button-color: #8D73F7;
+	--button-text: white;
+
+	--input-background: #1F1A2F; 
+	--input-border: #9A8ED0;
+
+	--landing-background-image: url("data:image/svg+xml;utf8,\
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'>\
+    <path fill='%232B2440' d='M0,192L80,165.3C160,139,320,85,480,90.7C640,96,800,160,960,160C1120,160,1280,96,1360,64L1440,32V320H0Z'/>\
+  </svg>");
+	--vector: url("/public/VectorDark.png")
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +133,17 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+	color: var(--text-monochrome);
+}
+
+input {
+	caret-color: var(--text-monochrome);
+	background-color: var(--pill-background);
+	color: var(--text-monochrome);
+}
+
+input::placeholder {
+	color: var(--text-monochrome);
 }
 
 code {

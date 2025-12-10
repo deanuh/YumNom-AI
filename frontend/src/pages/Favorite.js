@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { ThemeContext } from "../ThemeProvider";
 import "../styles/favorite.css";
 import DishCard from "../components/Dashboard/DishCard";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -18,6 +19,7 @@ async function fetchWithAuth(url, options = {}) {
 }
 
 function Favorite() {
+	const { theme } = useContext(ThemeContext);
   const [showDropdown, setShowDropdown] = useState(false);
   const [activeType, setActiveType] = useState("restaurants");
   const [items, setItems] = useState([]);
@@ -67,17 +69,29 @@ function Favorite() {
     <div className="favorite-page">
       <div className="favorite-header">
         <h3 className="favorite-title">Your Favorites</h3>
-        <div className="dropdown-wrapper">
-          <button className="dropdown-toggle" onClick={toggleDropdown}>
-            {activeType.charAt(0).toUpperCase() + activeType.slice(1)}
-            <img src="/Vector.jpeg" alt="arrow" className="dropdown-arrow" />
+        <div className="favorite-dropdown-wrapper">
+          <button className="favorite-dropdown-toggle" onClick={toggleDropdown}>
+          {activeType.charAt(0).toUpperCase() + activeType.slice(1)}
+            <img src={ theme === 'light' ? "/Vector.png" : "/VectorDark.png" } alt="arrow" className="favorite-dropdown-arrow" />
           </button>
           {showDropdown && (
-            <div className="dropdown-menu">
-              <button className="dropdown-item" onClick={() => { setActiveType("restaurants"); setShowDropdown(false); }}>
+            <div className="favorite-dropdown-menu">
+              <button
+                className="favorite-dropdown-item"
+                onClick={() => {
+                  setActiveType("restaurants");
+                  setShowDropdown(false);
+                }}
+              >
                 Restaurants
               </button>
-              <button className="dropdown-item" onClick={() => { setActiveType("dishes"); setShowDropdown(false); }}>
+              <button
+                className="favorite-dropdown-item"
+                onClick={() => {
+                  setActiveType("dishes");
+                  setShowDropdown(false);
+                }}
+              >
                 Dishes
               </button>
             </div>

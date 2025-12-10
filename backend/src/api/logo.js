@@ -27,10 +27,10 @@ export async function getLogo(req, res, next) {
 	}
 }
 
-export async function getLogoData(query) {
+export async function fetchLogoData(query) {
 	try {
 		const q = emptyToUndef(query);	
-		if (!q) throw new Error("No query for getLogoData.");
+		if (!q) throw new Error("No query for fetchLogoData.");
 
 		const response = await axios.get(`${base_url}/search`, {
 			headers: { "Authorization": `Bearer: ${secret_key}` },
@@ -42,7 +42,7 @@ export async function getLogoData(query) {
     const first = response.data?.[0];
     if (!first) throw new Error(`No logo found for query "${q}"`);
 
-		const name = response.data[0].name;
+		const name = query;
 		const logo_url = response.data[0].logo_url;
 		return {name, logo_url};
 

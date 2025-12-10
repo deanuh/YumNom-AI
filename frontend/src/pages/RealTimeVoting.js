@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react"; // Import necessary modules from React
 import "../styles/RealTimeVoting.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import io from 'socket.io-client'; // Import the socket.io client library
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig.js";
@@ -23,6 +23,7 @@ export default function VotingPage() {
 
 
 	const location = useLocation();
+	const navigate = useNavigate();
 	const { selectedRestaurant } = location.state || {}; // either holds the restaurant name from GroupMealParty.js or not.
 	// pull it safely (in case state is missing)
 	const [vote, setVote] = useState(null); // Own user's vote
@@ -60,9 +61,10 @@ export default function VotingPage() {
 			if (selectedRestaurant && socketRef.current) {
 				console.log(`selectedRestaurant: ${selectedRestaurant}`);
 				sendNomination(selectedRestaurant);
+				navigate("/RealTimeVoting", { replace: true, state: null });
 			}
 		}, 500); // 1 second for socket to connect
-	}, [selectedRestaurant]);
+	}, [selectedRestaurant, navigate, socketRef]);
 
   useEffect(() => {
 		const interval = setInterval(() => { 
@@ -96,6 +98,15 @@ export default function VotingPage() {
 						if (data.choices) setChoices(data.choices);
 						if (data.results) setResults(data.results);
 						if (data.winner) setWinner(data.winner);
+						if (data.polling) {
+							setReceivedVotes(data.polling);
+							const newTally = Object.values(data.polling).reduce((acc, vote) => {
+					      acc[Number(vote)] = (acc[Number(vote)] || 0) + 1;
+					      return acc;
+					    }, {});
+					    setTally(newTally);
+						}
+
 						
 						setTimer(Math.ceil((data.endsAt  - Date.now()) / 1000));
   	  		});
@@ -138,13 +149,13 @@ export default function VotingPage() {
             return newParty;
             });
 					});
-
+				
 					socketRef.current.on("left_room", (userId) => {
-						setPartyMembers(prev => { 
-							const updated = prev;
-							updated.delete(userId);
-							return updated;
-						});
+					  setPartyMembers(prev => {
+					    const updated = { ...prev };
+					    delete updated[userId];
+					    return updated;
+					  });
 					});
 
 					socketRef.current.on("join_error", (data) => {
@@ -174,7 +185,7 @@ export default function VotingPage() {
   	      case "join":
   	          return(<Join timer={timer} partyMembers={partyMembers} sendNomination={sendNomination} finalRestaurants={finalRestaurants} />);
   	      case "waiting_phase":
-  	          return(<Wait timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} tally={tally} results={results} />);
+  	          return(<Wait timer={timer} partyMembers={partyMembers} finalRestaurants={finalRestaurants} choices={choices} tally={tally} results={results} />);
   	      case "round_one": 
   	      case "round_two":
   	      case "tiebreaker":

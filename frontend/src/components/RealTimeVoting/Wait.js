@@ -2,7 +2,7 @@ export default function Wait(props) {
 
 return (
     <div className="voting-page">
-    <div class="voting-title-container">
+    <div className="voting-title-container">
       <h1 className="voting-title">THE VOTES ARE IN!</h1>
       </div>
 			<div className="voting-timer">{props.timer}</div>
