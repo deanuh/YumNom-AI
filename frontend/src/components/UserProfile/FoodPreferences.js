@@ -3,6 +3,12 @@ import React, { useMemo, useState } from "react";
 import "../../styles/UserProfile.css";
 import { getIconFile, overlayText, normalize } from "../shared/icons";
 
+const ingredients = [
+  { name: 'Fish', file: 'fish_allergy.png' },
+  { name: 'Carrot', file: 'carrot_allergy.png' },
+  { name: 'Egg', file: 'egg_allergy.png' },
+  { name: 'Cheese', file: 'cheese.png' },
+];
 // helpers
 const toKey = (s) => normalize(s).replace(/\s+/g, "_");
 const pretty = (s) => String(s || "").replace(/_/g, " ");

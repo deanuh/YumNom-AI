@@ -1,11 +1,16 @@
 // src/pages/Dashboard.js
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/Dashboard.css";
 import DashboardHeader from "../components/Dashboard/DashboardHeader";
 import FriendsList from "../components/Dashboard/FriendsList";
 import DashboardSection from "../components/Dashboard/DashboardSection";
 import DishCard from "../components/Dashboard/DishCard";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+                 
+import { useLocation } from "react-router-dom"; 
+
+// we are going to import the splash overlay so that when it fades it shows the dashbaord
+import YumNomSplash from "../components/YumNomSplash"; 
 
 const RECENTS_KEY = "yn_recent_restaurants";     // restaurant clicks
 const AI_HISTORY_KEY = "yn_ai_rec_history_v1";   // AI dish history
@@ -20,7 +25,18 @@ async function fetchWithAuth(url, options = {}) {
   return fetch(url, { ...options, headers });
 }
 
+
+
 const Dashboard = () => {
+  const location = useLocation();                            // <-- ADDED
+  const [showSplash, setShowSplash] = useState(
+    location.state?.showSplash === true                      // <-- ADDED
+  );
+
+  // WHEN SPLASH FINISHES FADING OUT
+  const handleSplashFinish = () => {                         // <-- ADDED
+    setShowSplash(false);
+  };
   const [editing, setEditing] = useState(false);
   const [layout, setLayout] = useState(() => {
     // migrate old layouts (that didn’t include recentRestaurants)
@@ -190,6 +206,14 @@ const Dashboard = () => {
   };
 
   return (
+    <>
+    {showSplash && (                                        // <-- ADDED
+        <YumNomSplash
+          duration={2000}         // bounce animation time
+          fadeDuration={450}      // fade-out transition
+          onFinish={handleSplashFinish}
+        />
+      )}
     <div className="dashboard-container">
       {/* unchanged */}
       <DashboardHeader editing={editing} onToggleEdit={() => setEditing((v) => !v)} />
@@ -244,6 +268,7 @@ const Dashboard = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

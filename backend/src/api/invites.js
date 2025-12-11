@@ -8,7 +8,13 @@ const router = Router();
 
 /**
  * POST /api/invites/send
- * Use this to send the email invite.
+ * Body: {
+ *   toEmail: string,         // required
+ *   toName?: string,
+ *   inviterId: string,       // required
+ *   inviterName: string,     // required
+ *   inviterEmail: string     // required (stored in token/context; not used for reply)
+ * }
  */
 router.post('/send', async (req, res) => {
   try {
@@ -20,7 +26,7 @@ router.post('/send', async (req, res) => {
       });
     }
 
-    // Create the token
+    // Signed token (safe to put in URL, expires in 48h)
     const token = jwt.sign(
       { toEmail, toName: toName || null, inviterId, inviterName, inviterEmail },
       process.env.JWT_SECRET,
@@ -49,18 +55,19 @@ router.post('/send', async (req, res) => {
 
     // Send the email
     await transporter.sendMail({
-      from: process.env.SMTP_FROM,
+      from: process.env.SMTP_FROM, // "YumNom AI <YumNomAI@gmail.com>"
       to: toEmail,
       subject,
       text,
       html,
+      // No replies
       headers: {
         'Auto-Submitted': 'auto-generated',
         'X-Auto-Response-Suppress': 'All',
         'Precedence': 'bulk',
       },
       envelope: {
-        from: process.env.SMTP_USER,
+        from: process.env.SMTP_USER, // bounce address
         to: toEmail,
       },
     });

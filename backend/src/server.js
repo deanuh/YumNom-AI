@@ -51,9 +51,10 @@ import {
 import { getAuth } from "firebase-admin/auth";
 import { Server } from "socket.io";
 import deleteUserRouter from "./api/deleteUser.js";
-import { getUserBasic, updateUserBasic } from "./firebase/dbFunctions.js";
-import friendsRouter from "./api/friends.js";
-import invitesRouter from "./api/invites.js";
+import { getUserBasic, updateUserBasic } from './firebase/dbFunctions.js';
+import friendsRouter from './api/friends.js';
+import chatBotRouter from "./api/chatBot.js";  // had to change from { chatBotRouter} to w/o {} bc it would not actually connect
+import invitesRouter from './api/invites.js';
 
 let app = express();
 app.use(express.json());
@@ -508,6 +509,39 @@ app.use("/api", contactUsRouter);
 app.use("/api", reportIssueRouter);
 app.use("/api", authMiddleware, friendsRouter);
 app.use("/api", deleteUserRouter);
+
+app.use("/api", reportIssueRouter);
+
+
+// delete account NEW
+app.use("/api", deleteUserRouter);
+
+// this is for the chatBot api calling
+app.use("/api/chatBot", chatBotRouter)
+
+
+// Invite routes
+app.use("/api/invites", invitesRouter);
+
+// THIS IS TO CHECK WHY CURL TEST FOR EMAIL ISNT WORKING  -- update it works
+// // quick request logger
+// app.use((req, _res, next) => {
+//   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+//   next();
+// });
+// // checks
+// app.get("/api/ping", (_req, res) => res.json({ ok: true }));
+// app.post("/api/echo", express.json(), (req, res) => res.json({ ok: true, body: req.body }));
+
+// All backend services available via this port
+app.listen(5001, () => {
+	console.log('listening on port 5001');
+});
+
+// Socket.IO server via this port.
+server.listen(7001, () => {
+  console.log('Server is running on port 7001');
+});
 
 // Current user's profile
 app.get("/api/me", authMiddleware, async (req, res) => {

@@ -78,7 +78,7 @@ function Login() {
         })
       });
     }
-    navigate('/dashboard');
+    navigate('/dashboard', { state: { showSplash: true } });
   };
 
   // Handles traditional email and password login
@@ -88,7 +88,7 @@ function Login() {
     const auth = getAuth(); 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard');
+      navigate('/dashboard', { state: { showSplash: true } });
     } catch (firebaseError) {
       console.error("Firebase login error:", firebaseError.message);
       setError("Invalid email or password. Please try again.");

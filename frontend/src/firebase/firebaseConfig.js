@@ -30,9 +30,15 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app); // 
 
+// Connect to Auth Emulator if running locally
+// if (typeof window !== "undefined" && window.location.hostname === "localhost") {
+//     console.log("Development environment: Connecting to Firebase Auth Emulator.");
+//     connectAuthEmulator(auth, 'http://127.0.0.1:9099');
+//     connectFirestoreEmulator(db, '127.0.0.1', 8080);
+// }
 // Optional: connect to local emulators when developing
-if (process.env.REACT_APP_USE_EMULATOR === "true") {
-  connectAuthEmulator(auth, "http://127.0.0.1:9099");
-  connectFirestoreEmulator(db, "127.0.0.1", 8080);
-  connectStorageEmulator(storage, "127.0.0.1", 9199); // 
-}
+// if (process.env.REACT_APP_USE_EMULATOR === "true") {
+//   connectAuthEmulator(auth, "http://127.0.0.1:9099");
+//   connectFirestoreEmulator(db, "127.0.0.1", 8080);
+//   connectStorageEmulator(storage, "127.0.0.1", 9199); // 
+// }

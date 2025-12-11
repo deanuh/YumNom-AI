@@ -185,3 +185,5 @@ the RUN CONCureNTly STUFF) "dev": "concurrently -n frontend,backend,emulators -c
 
 ## TO BE ABLE TO RUN REPORT ISSUE
 - install 'npm install nodemailer' for the report issue emails to be sent
+
+## TO RUN CHATBOT, LOOK AT BACKEND README FILE
