@@ -836,4 +836,3 @@ export async function addUserToGroup(userId, groupId) {
     throw new Error(`addUserToGroup failed: ${err.message}`);
   }
 }
-
