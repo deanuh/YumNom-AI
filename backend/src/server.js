@@ -19,6 +19,7 @@ import { getUserCityOpenCage } from "./api/opencage.js";
 import { authMiddleware } from "./auth/auth.js";
 import { ensureUserBasic } from "./firebase/dbFunctions.js";
 import { getLogo, fetchLogoData } from "./api/logo.js";
+import { syncUserEmail } from "./api/firestore.js";
 import {
   createUser,
   removeUser,
@@ -461,6 +462,9 @@ app.get("/api/images/dish", async (req, res) => {
 // Users
 app.post("/users", authMiddleware, createUser);
 app.delete("/users", authMiddleware, removeUser);
+// for email change
+app.post("/user/email/sync", authMiddleware, syncUserEmail);
+
 
 // Create/merge the user's profile if missing, then return it
 app.post("/api/me/ensure", authMiddleware, async (req, res) => {
@@ -528,10 +532,7 @@ app.use("/api/invites", invitesRouter);
 // app.get("/api/ping", (_req, res) => res.json({ ok: true }));
 // app.post("/api/echo", express.json(), (req, res) => res.json({ ok: true, body: req.body }));
 
-// All backend services available via this port
-app.listen(5001, () => {
-	console.log('listening on port 5001');
-});
+
 
 // Socket.IO server via this port.
 server.listen(7001, () => {
