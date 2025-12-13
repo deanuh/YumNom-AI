@@ -510,11 +510,6 @@ app.use("/api", reportIssueRouter);
 app.use("/api", authMiddleware, friendsRouter);
 app.use("/api", deleteUserRouter);
 
-app.use("/api", reportIssueRouter);
-
-
-// delete account NEW
-app.use("/api", deleteUserRouter);
 
 // this is for the chatBot api calling
 app.use("/api/chatBot", chatBotRouter)
@@ -565,17 +560,9 @@ app.put("/api/me", authMiddleware, async (req, res) => {
   }
 });
 
-// Invite routes
-app.use("/api/invites", invitesRouter);
-
 // All backend services available via this port
 app.listen(5001, () => {
   console.log("listening on port 5001");
-});
-
-// Socket.IO server via this port.
-server.listen(7001, () => {
-  console.log("Server is running on port 7001");
 });
 
 export default app;

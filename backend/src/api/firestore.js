@@ -29,12 +29,12 @@ export async function createUser(req, res) {
     const userId = req.uid; // <-- from authMiddleware
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const { first_name, last_name, username } = req.body;
+    const { first_name, last_name, username, email } = req.body;
     if (!first_name || !last_name || !username) {
       return res.status(400).json({ error: "Missing required fields." });
     }
 
-    const id = await addUser({ first_name, last_name, username }, userId);
+    const id = await addUser({ first_name, last_name, username, email }, userId);
     return res.status(201).json({ message: "User created", userId: id });
   } catch (error) {
     return res.status(500).json({ error: error.message });

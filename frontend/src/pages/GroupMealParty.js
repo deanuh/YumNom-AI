@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
-import axios from "axios";
+import React, { useEffect, useState, useRef } from "react";
 import "../styles/GroupMealParty.css";
-import { useNavigate, useLocation } from "react-router-dom"; // Added useLocation
+import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig"; 
 import io from 'socket.io-client'; 
 
 import HowItWorksInstructions from "../components/GroupMealParty/HowItWorksInstructions";
-import SearchRestaurant from "../components/GroupMealParty/SearchRestaurant";
+import InviteFriendList from "../components/GroupMealParty/InviteFriendList"; 
+import { fetchMyFriends } from "../userapi/friendsApi"; 
 
-// Helper function to make authenticated requests
+// Helper for auth requests
 async function fetchWithAuth(url, options = {}) {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -27,7 +27,6 @@ async function fetchWithAuth(url, options = {}) {
 function GroupMealParty() {
   const base_url = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
-  const location = useLocation(); // Hook to get current state
   const socketRef = useRef(null);
 
   const [inviteEmails, setInviteEmails] = useState("");
@@ -35,32 +34,33 @@ function GroupMealParty() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [partyMembers, setPartyMembers] = useState({}); 
-  const [isHost, setIsHost] = useState(false); 
+  
+  // Friends List State
+  const [friendsList, setFriendsList] = useState([]);
+  const [selectedFriendNames, setSelectedFriendNames] = useState([]); 
 
-  // Restaurant Search State
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
-  const [selectedRestaurant, setSelectedRestaurant] = useState(location.state?.selectedRestaurant || ""); // Init from nav state if exists
-  const [restaurantObject, setRestaurantObject] = useState(null);
-  const [restaurantOptions, setRestaurantOptions] = useState([]);
-
-  // 1. Authentication Effect (Runs once)
+  // 1. Authentication & Load Friends
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
+        // Fetch friends list (now includes emails)
+        fetchMyFriends()
+            .then(data => {
+                setFriendsList(Array.isArray(data) ? data : []);
+            })
+            .catch(err => console.error("Failed to load friends:", err));
       } else {
         setCurrentUser(null);
+        setFriendsList([]);
       }
     });
     return () => unsubscribe();
   }, []);
 
-  // 2. Socket Connection Effect (Runs only when currentUser is set)
+  // 2. Socket Connection Effect
   useEffect(() => {
     if (!currentUser) return;
-
-    // Prevent double connections
     if (socketRef.current && socketRef.current.connected) return;
 
     const setupSocket = async () => {
@@ -70,11 +70,10 @@ function GroupMealParty() {
 
             socketRef.current = io(process.env.REACT_APP_SOCKETIO_BACKEND_URL || "http://localhost:7001", {
                 auth: { token },
-                transports: ['websocket', 'polling'], // Try both methods
+                transports: ['websocket', 'polling'],
                 reconnectionAttempts: 5,
             });
 
-            // --- Listeners ---
             socketRef.current.on("connect", () => {
                 console.log("Socket Connected! ID:", socketRef.current.id);
                 socketRef.current.emit("join_room");
@@ -82,15 +81,16 @@ function GroupMealParty() {
 
             socketRef.current.on("connect_error", (err) => {
                 console.error("Socket Connection Error:", err.message);
+                setError("Connection error. Retrying...");
             });
 
             socketRef.current.on("get_members", (members) => {
-                console.log("Received Members List:", members);
+                console.log("Members:", members);
                 setPartyMembers(members);
             });
 
             socketRef.current.on("joined_room", (newMember) => {
-                console.log("New Member Joined:", newMember);
+                console.log("Joined:", newMember);
                 setPartyMembers(prev => ({
                     ...prev,
                     [newMember.userId]: {
@@ -101,9 +101,8 @@ function GroupMealParty() {
             });
 
             socketRef.current.on("navigate_to_voting", () => {
-                console.log("🚀 Host started game! Navigating...");
-                // Pass the restaurant choice if we have one
-                navigate("/RealTimeVoting", { state: { selectedRestaurant } });
+                console.log("Voting session started! Navigating...");
+                navigate("/RealTimeVoting");
             });
 
         } catch (e) {
@@ -113,66 +112,51 @@ function GroupMealParty() {
 
     setupSocket();
 
-    // Cleanup on unmount
     return () => {
         if (socketRef.current) {
-            console.log("Cleaning up socket...");
             socketRef.current.disconnect();
             socketRef.current = null;
         }
     };
-  }, [currentUser, navigate]); // Removing selectedRestaurant dependency to prevent reconnects
-
-  // --- Restaurant Search Logic ---
-  const searchRestaurant = useCallback(async () => {
-    const response = await axios.get(`${base_url}/restaurantFatSecret`, { params: { q: debouncedSearch } });
-    return Array.isArray(response.data?.food_brands?.food_brand) ? response.data.food_brands.food_brand : [];
-  }, [base_url, debouncedSearch]);
-
-  const searchLogo = useCallback(async () => {
-    const response = await axios.get(`${base_url}/logo`, { params: { q: selectedRestaurant } });
-    return response.data;
-  }, [base_url, selectedRestaurant]);
-
-  useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search), 2000);
-    return () => clearTimeout(t);
-  }, [search]);
-
-  useEffect(() => {
-    (async () => {
-      if (debouncedSearch === "") setRestaurantOptions([]);
-      else setRestaurantOptions(await searchRestaurant());
-    })();
-  }, [debouncedSearch, searchRestaurant]);
-
-  useEffect(() => {
-    if (selectedRestaurant) searchLogo().then(setRestaurantObject);
-  }, [selectedRestaurant, searchLogo]);
+  }, [currentUser, navigate]);
 
 
   // --- Actions ---
 
   const handleSendInvites = async () => {
     if (!currentUser) return setError("Please log in.");
-    if (!inviteEmails) return setError("Please enter emails.");
+    
+    // 1. Get Manual Emails
+    const manualEmails = inviteEmails.split(',').map(e => e.trim()).filter(e => e);
+
+    // 2. Get Friend Emails
+    // Find the friend object by username and extract their email
+    const friendEmails = selectedFriendNames.map(name => {
+        const friend = friendsList.find(f => f.username === name);
+        if (friend && !friend.email) console.warn(`Friend ${name} has no email saved.`);
+        return friend ? friend.email : null;
+    }).filter(email => email); 
+
+    // Combine lists
+    const finalEmails = [...new Set([...manualEmails, ...friendEmails])];
+
+    if (finalEmails.length === 0) return setError("Please select friends or enter emails.");
     
     setIsSubmitting(true);
     setError("");
 
     try {
+      // Ensure Group Exists
       try {
           await fetchWithAuth(`${base_url}/groups`, { method: 'POST' });
-          setIsHost(true); 
       } catch (e) {
-          console.log("Group likely already exists or user is in one.");
-          setIsHost(true); 
+          console.log("Group likely already exists.");
       }
 
-      const emails = inviteEmails.split(',').map(e => e.trim()).filter(e => e);
       const inviterName = currentUser.displayName || currentUser.email.split('@')[0];
 
-      for (const email of emails) {
+      // Send Invites
+      for (const email of finalEmails) {
         await fetchWithAuth(`${base_url}/api/invites/send`, {
           method: 'POST',
           body: {
@@ -184,8 +168,9 @@ function GroupMealParty() {
         });
       }
       
-      alert("Invites sent! Wait for your friends to appear in the lobby below.");
+      alert(`Invites sent to ${finalEmails.length} people! Wait for them to join.`);
       setInviteEmails(""); 
+      setSelectedFriendNames([]); 
       setIsSubmitting(false);
 
     } catch (err) {
@@ -206,10 +191,22 @@ function GroupMealParty() {
       <h2 className="title">!GROUP MEAL PARTY!</h2>
 
       <div className="party-grid">
+        {/* LEFT SIDE: Invites & Lobby */}
         <div className="left-side">
+          
           <div className="invite-emails-container">
             <h3>Invite Friends</h3>
-            <p>Enter email addresses separated by commas.</p>
+            
+            {/* Friends Dropdown */}
+            <div style={{ marginBottom: '15px' }}>
+                <InviteFriendList 
+                    friendsList={friendsList}
+                    selectedFriends={selectedFriendNames}
+                    setSelectedFriends={setSelectedFriendNames}
+                />
+            </div>
+
+            <p style={{fontSize: '0.9rem', color: '#666'}}>Or enter email addresses manually:</p>
             <textarea
               className="email-textarea"
               value={inviteEmails}
@@ -226,10 +223,11 @@ function GroupMealParty() {
             </button>
           </div>
 
+          {/* Lobby Section */}
           <div className="lobby-members" style={{marginTop: '2rem'}}>
             <h3>Lobby Members</h3>
             {Object.keys(partyMembers).length === 0 ? (
-                <p>Waiting for friends to join...</p>
+                <p>Waiting for connections...</p>
             ) : (
                 <div className="members-grid">
                     {Object.values(partyMembers).map((m, i) => (
@@ -242,44 +240,38 @@ function GroupMealParty() {
           </div>
         </div>
 
+        {/* RIGHT SIDE: Instructions */}
         <div className="right-side">
           <HowItWorksInstructions />
         </div>
       </div>
 
-      <SearchRestaurant
-        restaurantOptions={restaurantOptions}
-        search={search}
-        setSearch={setSearch}
-        setSelectedRestaurant={setSelectedRestaurant}
-      />
-      
       {error && <div className="group-meal-error">{error}</div>}
 
-      {selectedRestaurant && (
-          <div className="selected-restaurant-container" style={{textAlign:'center', marginTop:'2rem'}}>
-              <h3>Selected: {selectedRestaurant}</h3>
-              {restaurantObject && <img src={restaurantObject.logo_url} alt="Logo" style={{height: 100}}/>}
-              
-              <div style={{marginTop: '20px'}}>
-                <button 
-                    className="start-voting-btn"
-                    onClick={handleStartVoting}
-                    style={{
-                        padding: '15px 30px', 
-                        fontSize: '1.2rem', 
-                        backgroundColor: '#6d4dc3', 
-                        color: 'white', 
-                        border: 'none', 
-                        borderRadius: '30px', 
-                        cursor: 'pointer'
-                    }}
-                >
-                    Start Voting Session
-                </button>
-              </div>
-          </div>
-      )}
+      {/* START BUTTON */}
+      <div className="selected-restaurant-container" style={{textAlign:'center', marginTop:'3rem'}}>
+          <p style={{marginBottom: '1rem', color: '#666'}}>
+            Once everyone is in the lobby, press start to begin the nomination phase!
+          </p>
+          <button 
+              className="start-voting-btn"
+              onClick={handleStartVoting}
+              style={{
+                  padding: '15px 40px', 
+                  fontSize: '1.2rem', 
+                  backgroundColor: '#3a2b6a', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '30px', 
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  boxShadow: '0 4px 15px rgba(58, 43, 106, 0.4)' 
+              }}
+          >
+              Start Voting Session
+          </button>
+      </div>
+
     </div>
   );
 }

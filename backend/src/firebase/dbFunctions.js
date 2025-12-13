@@ -23,7 +23,8 @@ export async function addUser(userData, userId) {
 		await db.collection("User").doc(userId).create({
       address: null,
       profile_picture: "ban_gato.png", //placeholder image, change if we have a new one.
-      ...userData,
+      ...userData, 
+      email: userData.email || "",
       username_lower: (userData.username || "").toLowerCase(),
       friends: [],
       restriction: {},
