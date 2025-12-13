@@ -12,6 +12,8 @@ export default function AIRecommendationResult() {
   const [resolvedImg, setResolvedImg] = useState(null);
   const AI_HISTORY_KEY = "yn_ai_rec_history_v1";
   const [sendCopyToUser, setSendCopyToUser] = useState(false);
+  const [favoriteId, setFavoriteId] = useState(null);
+
 
 
    // review inputs
@@ -20,6 +22,20 @@ export default function AIRecommendationResult() {
   const [selectedTags, setSelectedTags] = useState([]);
 
   const [submitState, setSubmitState] = useState({ status: "idle", msg: "" }); // "idle" | "saving" | "success" | "error"
+
+  async function fetchWithAuth(url, options = {}) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error("You must be logged in.");
+  
+    const token = await user.getIdToken();
+    const headers = {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${token}`,
+    };
+  
+    return fetch(url, { ...options, headers });
+  }
 
   useEffect(() => {
     try {
@@ -103,6 +119,48 @@ export default function AIRecommendationResult() {
   }, [ctx]);
   
 
+  useEffect(() => {
+    let cancelled = false;
+  
+    async function checkFavorite() {
+      try {
+        const d = ctx?.data?.dish;
+        if (!d?.name) return;
+  
+        const params = new URLSearchParams({
+          type: "dishes",
+          limit: "200",
+        });
+  
+        const res = await fetchWithAuth(
+          `http://localhost:5001/favorites?${params.toString()}`
+        );
+        if (!res.ok) return;
+  
+        const data = await res.json();
+  
+        const match = (data.items || []).find(
+          (x) =>
+            (x.dishId && d.id && x.dishId === d.id) ||
+            (x.name && x.name.toLowerCase() === d.name.toLowerCase())
+        );
+  
+        if (!cancelled) {
+          setIsFavorite(!!match);
+          setFavoriteId(match?.id || null);
+        }
+      } catch {
+        // not logged in or backend unavailable
+      }
+    }
+  
+    checkFavorite();
+  
+    return () => {
+      cancelled = true;
+    };
+  }, [ctx]);
+  
   if (!ctx) {
     return (
       <div className="ai-result-page" style={{ padding: 24 }}>
@@ -355,6 +413,70 @@ export default function AIRecommendationResult() {
     window.location.href = `/restaurants?${qs.toString()}`;
   }
 
+  async function toggleFavoriteDish() {
+    const api_id = dish.id || dish.dishId || dish.itemId || dish.name?.toLowerCase().replace(/\s+/g, "_");
+
+    try {
+      // Remove favorite
+      if (isFavorite && favoriteId) {
+        const res = await fetchWithAuth(
+          `http://localhost:5001/favorites/${favoriteId}`,
+          { method: "DELETE" }
+        );
+        if (!res.ok) {
+          const text = await res.text();
+          console.error("Favorites DELETE failed:", res.status, text);
+          throw new Error(text || "Failed to remove favorite");
+        }
+        
+  
+        setIsFavorite(false);
+        setFavoriteId(null);
+        return;
+      }
+  
+      // Add favorite
+      const img =
+      resolvedImg ||
+      dish.img ||
+      dish.imageUrl ||
+      dish.photo_url ||
+      null;
+
+    const payload = {
+      type: "dishes",
+      api_id,              // ✅ REQUIRED by backend
+      name: dish.name,     // ✅ REQUIRED
+      photo_url: img,      // ✅ REQUIRED
+    };
+
+  
+      const res = await fetchWithAuth(
+        "http://localhost:5001/favorites",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+  
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Favorites POST failed:", res.status, text);
+        throw new Error(text || "Failed to add favorite");
+      }
+
+  
+      const saved = await res.json().catch(() => ({}));
+      setFavoriteId(saved?.favoriteId || null);
+      setIsFavorite(true);
+    } catch (err) {
+      console.error(err);
+      alert("Could not update favorites.");
+    }
+  }
+  
+
   return (
     <div className="ai-result-page">
       <h1 className="result-title">DISH CREATED FOR YOU!</h1>
@@ -367,7 +489,7 @@ export default function AIRecommendationResult() {
             src={isFavorite ? "/heart_dark.png" : "/heart.png"}
             alt="Favorite"
             className="heart-icon"
-            onClick={() => setIsFavorite((prev) => !prev)}
+            onClick={toggleFavoriteDish}
           />
         </div>
 
