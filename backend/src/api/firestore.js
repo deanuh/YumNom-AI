@@ -17,7 +17,8 @@ import {
 	deleteRating,
 	getRatings,
 	getRatingsForRestaurant,
-  addUserToGroup
+  addUserToGroup,
+  updateUserEmail,
 } from "../firebase/dbFunctions.js";
 import { fetchTAPlaceDetails, fetchRestaurantTANoUnsplash } from '../api/tripadvisor.js'
 import { fetchRestaurantFatSecret } from '../api/fatsecret.js'
@@ -52,6 +53,22 @@ export async function removeUser(req, res) {
     return res.status(500).json({ error: error.message });
   }
 }
+// added this for the update on users email when they change it
+export async function syncUserEmail(req, res) {
+  try {
+    const userId = req.uid;
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const { email } = req.body || {};
+    if (!email) return res.status(400).json({ error: "Missing email." });
+
+    await updateUserEmail(userId, email);
+    return res.status(200).json({ ok: true });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
 
 // ------------------- GROUPS ------------------- //
 export async function createGroup(req, res) {

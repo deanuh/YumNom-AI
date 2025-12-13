@@ -143,6 +143,33 @@ export async function deleteUser(userId) {
   }
 }
 
+// this is for when the user changes their email
+export async function updateUserEmail(userId, email) {
+  try {
+    if (!userId) throw new Error("Missing userId.");
+    if (typeof email !== "string" || !email.trim()) throw new Error("Invalid email.");
+
+    const userRef = db.collection("User").doc(userId);
+    const userDoc = await userRef.get();
+    if (!userDoc.exists) throw new Error("User does not exist.");
+
+    await userRef.set(
+      {
+        email: email.trim(),
+        email_lower: email.trim().toLowerCase(),
+        email_updated_at: FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    return true;
+  } catch (err) {
+    console.error(`updateUserEmail failed: ${err.message}`);
+    throw new Error(`updateUserEmail failed: ${err.message}`);
+  }
+}
+
+
 // -------------------- GROUPS -------------------- //
 export async function addGroup(userId) {
   let newGroupId;
