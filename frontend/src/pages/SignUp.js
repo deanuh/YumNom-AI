@@ -33,7 +33,7 @@ function SignUp() {
       // Get JWT from the newly created user
 			const JWT = await userCredential.user.getIdToken();
       // Create user in Firestore with additional info
-			await createUser(firstName, lastName, username, JWT);
+			await createUser(firstName, lastName, username, email, JWT);
 
       // Ensure /api/me/ensure exists and has full info
       await ensureMe({

@@ -5,6 +5,7 @@ export const createUser = async (
 	first_name = "",
 	last_name = "",
 	username = "",
+	email = "",
 	JWT = "",
   ) => {
 	try {
@@ -18,13 +19,15 @@ export const createUser = async (
 			data: {
 			  first_name,
 				last_name,
-				username
+				username, 
+				email
 			}
 	  };
 	  const response = await axios(options);
 	  return response.data;
 	} catch (err) {
 	  console.log(err);
+	  throw err;
 	}
 };
   

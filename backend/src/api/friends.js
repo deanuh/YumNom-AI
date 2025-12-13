@@ -10,7 +10,7 @@ const router = Router();
 // Use your existing collection name
 const usersCol = () => db.collection("User");
 
-// ---- Lookup by username (case-insensitive via username_lower) ----
+// ---- Lookup by username  ----
 router.get("/users/lookup", async (req, res) => {
   try {
     const username = String(req.query.username || "").trim().toLowerCase();
@@ -59,6 +59,7 @@ router.get("/me/friends", async (req, res) => {
         user_id: d.id,
         username: x.username || "",
         avatarUrl: x.profile_picture || "",
+        email: x.email || "",
       };
     });
     res.json(rows);

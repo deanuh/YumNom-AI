@@ -29,6 +29,7 @@ import GroupMealParty from "./pages/GroupMealParty";
 import AIRecommendationPage from "./pages/AIRecommendationPage";
 import AIRecommendationResult from "./pages/AIRecommendationResult";
 import AIRestaurantResults from "./pages/AIRestaurantResults";
+import AcceptInvite from "./pages/AcceptInvite";
 
 // Settings Pages
 import Terms from "./pages/settingsInfo/terms";
@@ -92,6 +93,7 @@ function App() {
           <Route path="/chatbot" element={<ChatBot />} />
           <Route path="/RealTimeVoting" element={<VotingPage />} />
           <Route path="/group-meal" element={<GroupMealParty />} />
+          <Route path="/party/invite" element={<AcceptInvite />} />
           <Route path="/ai-recommendation" element={<AIRecommendationPage />} />
           <Route path="/ai-result" element={<AIRecommendationResult />} />
           <Route path="/restaurants" element={<AIRestaurantResults />} />  {/* <-- add this */}

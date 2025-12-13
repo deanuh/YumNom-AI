@@ -1,7 +1,8 @@
-// backend/src/api/invites.js  (ESM)
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import transporter from '../email/transporter.js';
+import { getGroupFromUserId, addUserToGroup } from '../firebase/dbFunctions.js'; 
+import { authMiddleware } from '../auth/auth.js'; 
 
 const router = Router();
 
@@ -18,6 +19,7 @@ const router = Router();
 router.post('/send', async (req, res) => {
   try {
     const { toEmail, toName, inviterId, inviterName, inviterEmail } = req.body || {};
+    
     if (!toEmail || !inviterId || !inviterName || !inviterEmail) {
       return res.status(400).json({
         error: 'Missing required fields: toEmail, inviterId, inviterName, inviterEmail',
@@ -31,8 +33,10 @@ router.post('/send', async (req, res) => {
       { expiresIn: '48h' }
     );
 
+    // Build the link
     const joinUrl = `${process.env.APP_BASE_URL}/party/invite?token=${encodeURIComponent(token)}`;
 
+    // Email content
     const subject = `${inviterName} invited you to a YumNom group meal`;
     const text = `${inviterName} invited you to join a YumNom group meal on YumNom.\nJoin: ${joinUrl}`;
     const html = `
@@ -49,6 +53,7 @@ router.post('/send', async (req, res) => {
       </div>
     `;
 
+    // Send the email
     await transporter.sendMail({
       from: process.env.SMTP_FROM, // "YumNom AI <YumNomAI@gmail.com>"
       to: toEmail,
@@ -76,19 +81,37 @@ router.post('/send', async (req, res) => {
 
 /**
  * POST /api/invites/verify
- * Body: { token: string }
+ * This is called when the user clicks the link.
+ * * CRITICAL: It uses authMiddleware so we know who the Guest is (req.uid).
  */
-router.post('/verify', (req, res) => {
+router.post('/verify', authMiddleware, async (req, res) => {
+  const inviteeUserId = req.uid; // The guest's user ID
   const { token } = req.body || {};
+
   try {
+    // Verify the token
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    return res.json({
-      ok: true,
-      payload,
-      redirect: process.env.JOIN_REDIRECT_URL,
+    const { inviterId } = payload;
+
+    // Find the HOST'S group
+    const groupData = await getGroupFromUserId(inviterId);
+    if (!groupData) {
+      throw new Error("The host's party could not be found or has ended.");
+    }
+
+    // Add the GUEST to that group
+    // This connects the two users in the same lobby
+    await addUserToGroup(inviteeUserId, groupData.id);
+    
+    // Return success and the redirect URL (to the Lobby)
+    return res.json({ 
+      ok: true, 
+      redirect: process.env.JOIN_REDIRECT_URL // Should be http://localhost:3000/group-meal
     });
-  } catch {
-    return res.status(400).json({ ok: false, error: 'Invalid or expired token' });
+
+  } catch (err) {
+    console.error("Verification failed:", err);
+    return res.status(400).json({ ok: false, error: err.message || 'Invalid or expired token' });
   }
 });
 
