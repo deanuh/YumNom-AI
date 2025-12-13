@@ -27,6 +27,8 @@ html body{
     justify-content: space-between;
     align-items: center;
     margin: 1rem 0;
+    height: 300px;       /* fixed height */
+    overflow: hidden;    /* prevent content from stretching it */
   }
   
   .banner-button {
@@ -48,12 +50,13 @@ html body{
   
   .friends-scroll-wrapper {
     display: flex;
+    justify-content: center; /* 🔑 centers content when not overflowing */
     overflow-x: auto;
     scroll-behavior: smooth;
-    gap: 1rem;
     padding: 1rem 2rem;
     max-width: 100%;
   }
+  
 
   .friend-avatar {
     width: 80px;
@@ -80,16 +83,11 @@ html body{
   }
   
   .friends-list {
-    display: flex;
-    background-color: transparent;
-    border: none;
-    border-radius: 12px;
-    justify-content: center; 
-    padding: 1rem;
-    gap: 1rem;
+    display: inline-flex; /* 🔑 shrink to content width */
+    gap: 1.5rem;
     align-items: center;
-    overflow-x: auto;
   }
+  
 
   .friends-list-wrapper {
   flex: 1;
@@ -188,22 +186,26 @@ html body{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
-  align-items: stretch;
+  align-items: stretch;   /* keeps columns equal height */
+  /* no fixed min-height here */
 }
 
-/* how-it-works carousel card */
+
+
+
 .howit-card {
   background: var(--pill-color);
   border-radius: 12px;
   border: 1px solid var(--pill-border);
   padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: left;
   margin: 1rem 0;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 300px;      /* match banner */
+  overflow: hidden;   /* keep card from growing */
 }
+
 
 .howit-header {
   display: flex;
@@ -277,17 +279,17 @@ html body{
 }
 /* only affects the first slide */
 .howit-card.first-slide {
-  /* keep the card from growing into the next row */
-  height: clamp(220px, 28vw, 340px);
+  /* use same fixed height as other slides */
+  height: 300px;
   overflow: hidden;
 
-  /* center content nicely */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
+
 
 /* big title but bounded to the card height */
 .howit-card.first-slide .howit-header h3 {
@@ -463,4 +465,22 @@ html body{
 .dish-distance {
   font-size: 13px;
   color: #555;
+}
+
+.friend-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 90px;
+}
+
+.friend-name {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #2d246b;
+  text-align: center;
+  max-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

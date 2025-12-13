@@ -263,29 +263,46 @@ export default function AIRecommendationResult() {
     try {
       if (regenLoading) return;
       setRegenLoading(true);
+  
+      // 1) Get Firebase auth + token
+      const auth = getAuth();
+      const user = auth.currentUser;
+  
+      if (!user) {
+        alert("Session expired. Please sign in again to get a new dish.");
+        return;
+      }
+  
+      const token = await user.getIdToken();
+  
       const excludeIds = [dish.id, ...(ctx.excludeIds || [])];
+  
+      // 2) Call backend WITH Authorization header
       const res = await fetch(recUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ prompt, likes, restrictions, excludeIds }),
       });
-
+  
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
         throw new Error(errData.error || "Failed to regenerate");
       }
-
+  
       const data = await res.json();
-
+  
       // Enforce AI-only
       if (data.source !== "ai") {
         throw new Error("Blocked non-AI recommendation");
       }
-
+  
       const next = { ...ctx, data, excludeIds, ts: Date.now() };
       localStorage.setItem("ai_last_rec", JSON.stringify(next));
       setCtx(next);
-      addAiRecToHistory(next); // add to history
+      addAiRecToHistory(next);
     } catch (err) {
       console.error(err);
       alert("Something went wrong talking to backend. Keeping current dish.");
@@ -293,6 +310,7 @@ export default function AIRecommendationResult() {
       setRegenLoading(false);
     }
   }
+  
 
   // Build restaurant search query 
   function buildRestaurantQuery(dish) {
