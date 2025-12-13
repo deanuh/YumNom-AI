@@ -1,7 +1,7 @@
 // src/pages/AIRecommendationResult.js
 import React, { useEffect, useState } from "react";
 import "../styles/AIRecommendationResult.css";
-
+import { getAuth } from "firebase/auth";  
 
 export default function AIRecommendationResult() {
   const [ctx, setCtx] = useState(null); // { data:{dish,reason,source}, prompt, likes, restrictions, excludeIds? }
@@ -11,6 +11,7 @@ export default function AIRecommendationResult() {
   const [regenLoading, setRegenLoading] = useState(false);
   const [resolvedImg, setResolvedImg] = useState(null);
   const AI_HISTORY_KEY = "yn_ai_rec_history_v1";
+  const [sendCopyToUser, setSendCopyToUser] = useState(false);
 
 
    // review inputs
@@ -173,18 +174,37 @@ export default function AIRecommendationResult() {
   }
 
   async function submitRating() {
-    if (submitState.status === "saving") return;           // prevent double submit
-    if (!rating) {                                         // nudge user to pick a rating
-      setSubmitState({ status: "error", msg: "Please choose a rating before submitting." });
+    if (submitState.status === "saving") return; // prevent double submit
+    if (!rating) {
+      setSubmitState({
+        status: "error",
+        msg: "Please choose a rating before submitting.",
+      });
       setTimeout(() => setSubmitState({ status: "idle", msg: "" }), 2500);
       return;
     }
+  
     try {
-      // CHANGED: send single numeric rating (0..5 with 0.5 steps)
+      setSubmitState({ status: "saving", msg: "" });
+  
+      // 1) Get Firebase user + token FIRST
+      const auth = getAuth();
+      const user = auth.currentUser;
+  
+      if (!user) {
+        setSubmitState({
+          status: "error",
+          msg: "Please sign in to submit a review.",
+        });
+        setTimeout(() => setSubmitState({ status: "idle", msg: "" }), 2500);
+        return;
+      }
+  
+      // 2) Now it's safe to use user.email in the payload
       const payload = {
         dishId: dish.id,
         dishName: dish.name,
-        rating,                      // CHANGED
+        rating,
         prompt,
         likes,
         restrictions,
@@ -192,56 +212,97 @@ export default function AIRecommendationResult() {
         comment,
         tags: selectedTags,
         model: "gpt-4o-mini",
+        sendCopyToUser,
+        userEmail: user.email,
       };
-
+  
+      const token = await user.getIdToken();
       const r = await fetch(rateUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(payload),
       });
-
-      if (!r.ok) throw new Error("save failed");
-      
-      // success UI (auto-hide)
-      setSubmitState({ status: "success", msg: "Thanks! Your rating was submitted." }); // 
+  
+      if (!r.ok) {
+        if (r.status === 401) {
+          throw new Error("unauthorized");
+        }
+        throw new Error("save failed");
+      }
+  
+      setSubmitState({
+        status: "success",
+        msg: "Thanks! Your rating was submitted.",
+      });
       setComment("");
       setSelectedTags([]);
-      // setRating(0); // (optional) reset after submit
-      setTimeout(() => setSubmitState({ status: "idle", msg: "" }), 2500);             // 
+      setTimeout(
+        () => setSubmitState({ status: "idle", msg: "" }),
+        2500
+      );
     } catch (e) {
-      setSubmitState({ status: "error", msg: "Could not save rating right now." });    // 
-      setTimeout(() => setSubmitState({ status: "idle", msg: "" }), 2500);             // 
+      console.error("submitRating failed:", e);
+      setSubmitState({
+        status: "error",
+        msg:
+          e.message === "unauthorized"
+            ? "Session expired. Please sign in again to submit a review."
+            : "Could not save rating right now.",
+      });
+      setTimeout(() => setSubmitState({ status: "idle", msg: "" }), 2500);
     }
   }
+  
+  
 
 
   async function regenerate() {
     try {
       if (regenLoading) return;
       setRegenLoading(true);
+  
+      // 1) Get Firebase auth + token
+      const auth = getAuth();
+      const user = auth.currentUser;
+  
+      if (!user) {
+        alert("Session expired. Please sign in again to get a new dish.");
+        return;
+      }
+  
+      const token = await user.getIdToken();
+  
       const excludeIds = [dish.id, ...(ctx.excludeIds || [])];
+  
+      // 2) Call backend WITH Authorization header
       const res = await fetch(recUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ prompt, likes, restrictions, excludeIds }),
       });
-
+  
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
         throw new Error(errData.error || "Failed to regenerate");
       }
-
+  
       const data = await res.json();
-
+  
       // Enforce AI-only
       if (data.source !== "ai") {
         throw new Error("Blocked non-AI recommendation");
       }
-
+  
       const next = { ...ctx, data, excludeIds, ts: Date.now() };
       localStorage.setItem("ai_last_rec", JSON.stringify(next));
       setCtx(next);
-      addAiRecToHistory(next); // add to history
+      addAiRecToHistory(next);
     } catch (err) {
       console.error(err);
       alert("Something went wrong talking to backend. Keeping current dish.");
@@ -249,6 +310,7 @@ export default function AIRecommendationResult() {
       setRegenLoading(false);
     }
   }
+  
 
   // Build restaurant search query 
   function buildRestaurantQuery(dish) {
@@ -371,16 +433,33 @@ export default function AIRecommendationResult() {
         </div>
 
         <textarea
+          className="review-textarea"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="Optional: tell us what was great or off about this pick…"
-          rows={3}
-          className="review-textarea"
+          placeholder="Tell us what you thought about this recommendation..."
         />
+
+        <div className="review-email-copy">
+          <label className="review-email-label">
+            <input
+              type="checkbox"
+              className="review-email-checkbox"
+              checked={sendCopyToUser}
+              onChange={(e) => setSendCopyToUser(e.target.checked)}
+            />
+            <span className="review-email-text">
+              Email me a copy of this review
+              <span className="review-email-subtext">
+                We’ll send it to the email on your YumNom account.
+              </span>
+            </span>
+          </label>
+        </div>
 
         {submitState.status !== "idle" && (
           <div className={`review-banner ${submitState.status}`}>
-            {submitState.msg || (submitState.status === "saving" ? "Submitting…" : "")}
+            {submitState.msg ||
+              (submitState.status === "saving" ? "Submitting…" : "")}
           </div>
         )}
 

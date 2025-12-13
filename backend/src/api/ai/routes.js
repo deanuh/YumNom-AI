@@ -4,6 +4,7 @@ import { explainDish, generateDish, violatesRestrictions } from "./llm.js";
 import { fetchFoodImageByDish } from "../unsplash.js";
 import { saveAIRating, getDishStats } from "../../firebase/feedback.js";
 import { getUserBasic } from "../../firebase/dbFunctions.js"; // NEW import
+import { sendAiFeedbackEmail } from "../email.js";
 
 
 const router = Router();
@@ -273,17 +274,67 @@ router.post("/recommend", async (req, res) => {
 
 router.post("/rate", async (req, res) => {
   try {
-    const { dishId, rating, prompt = "", likes = [], restrictions = [], reason = "", comment = "", tags = [], dishName = "", userId = null, model = "gpt-4o-mini" } = req.body || {};
+    const {
+      dishId,
+      rating,
+      prompt = "",
+      likes = [],
+      restrictions = [],
+      reason = "",
+      comment = "",
+      tags = [],
+      dishName = "",
+      userId = null,
+      model = "gpt-4o-mini",
+      sendCopyToUser = false,          // NEW
+    } = req.body || {};
+
     if (!dishId || typeof rating !== "number") {
       return res.status(400).json({ error: "dishId and numeric rating required" });
     }
-    await saveAIRating({ dishId, dishName, rating, prompt, likes, restrictions, reason, comment, tags, userId, model });
+
+    await saveAIRating({
+      dishId,
+      dishName,
+      rating,
+      prompt,
+      likes,
+      restrictions,
+      reason,
+      comment,
+      tags,
+      userId,
+      model,
+    });
+
+    const userEmail = req.body.userEmail || null;
+
+    
+    // Fire-and-forget email
+    sendAiFeedbackEmail({
+      userEmail,
+      sendCopyToUser: !!sendCopyToUser,
+      feedback: {
+        dishName,
+        rating,
+        tags,
+        comment,
+        prompt,
+        likes,
+        restrictions,
+        reason,
+      },
+    }).catch((err) =>
+      console.error("[/api/ai/rate] email failed:", err?.message || err)
+    );
+
     res.json({ ok: true });
   } catch (e) {
     console.error("[/api/ai/rate] save failed:", e?.message || e);
     res.status(500).json({ error: "Could not save rating" });
   }
 });
+
 
 /**
  * GET /api/ai/rate/stats
