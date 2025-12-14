@@ -850,7 +850,7 @@ export async function addUserToGroup(userId, groupId) {
       const newMembers = {
         ...groupData.members,
         [userId]: {
-          profile_picture: userData.profile_picture || "ban_gato.png",
+          profile_picture: userData.profile_picture || "default_avatar.png",
           username: userData.username || "New Member"
         }
       };

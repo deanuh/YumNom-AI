@@ -141,7 +141,10 @@ function startPhase(groupId, duration, phaseName, nominations) {
   });
   //send event and end after timeout
   groupInfo[groupId].timer.main = setTimeout(() => {
-    if (!groupInfo[groupId]) return;
+    if (!groupInfo[groupId]) {
+			console.log("group not found");
+			return
+		};
     const baseVotes = Object.fromEntries(
       groupInfo[groupId].choices.map((choice) => [choice, 0])
     );
@@ -250,11 +253,14 @@ function startPhase(groupId, duration, phaseName, nominations) {
         (nextPhase === "round_two" || nextPhase === "tiebreaker") &&
         groupInfo[groupId].choices.length <= 1
       ) {
+				console.log("HI")
         nextPhase = null; // end phase early if there was a clear winner.
       }
       if (nextPhase) {
+				console.log(nextPhase);
         startPhase(groupId, voteTime, nextPhase);
       } else {
+				console.log("End phase")
         // only if nextPhase is null. meaning no more voting
         delete groupInfo[groupId].timer; //lose all timers
         groupInfo[groupId].state = "end_phase"; // unique end event, group will be deleted before sending.
@@ -271,8 +277,8 @@ function startPhase(groupId, duration, phaseName, nominations) {
           winner: groupInfo[groupId].choices[0],
         });
         // group is now officially gone
-      }
       delete groupInfo[groupId];
+      }
       return; // all nextPhase values reach this eventually.
     }, waitTime * 1000); //  (duration) ms * 1000 = (duration) sec
   }, duration * 1000);
@@ -415,13 +421,20 @@ io.on("connection", (socket) => {
       groupInfo[socket.groupId].state == "tiebreaker"
     ) {
       if (groupInfo[socket.groupId].choices.includes(vote)) {
+				console.log("vote received");
         groupInfo[socket.groupId].votes.polling[socket.uid] = vote;
         io.to(socket.groupId).emit("receive_vote", {
           user: socket.uid,
           vote,
         });
       }
+			else {
+				console.log("not in choices");
+			}
     }
+		else {
+			console.log("not in state");
+		}
   });
   socket.on("disconnect", (reason) => {
     delete users[socket.uid]; //socket is no longer valid, delete incase client rejoins.

@@ -117,8 +117,8 @@ export default function Join(props) {
         	        const member = props.partyMembers[memberKey];
         	        return (
         	        	<div key={memberKey} className="Join-party-avatar">
-        	          	<img src={`/${member.profile_picture}`} alt={member.username} />
-        	          	<div>{member.username}</div>
+        	          	<img src={member.profile_picture || "/default_avatar.png"} alt={member.username} />
+        	          	<p>{member.username}</p>
         	        	</div>
         	      );
         	      })}

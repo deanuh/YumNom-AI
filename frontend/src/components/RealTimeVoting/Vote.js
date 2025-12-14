@@ -58,8 +58,12 @@ return (
             const member = props.partyMembers[memberKey];
             return (
             <div key={memberKey} className="party-avatar">
-              <img src={`/${member.profile_picture}`} alt={member.username} />
-              <div>{member.username}</div>
+              <img src={member.profile_picture || "/default_avatar.png"} alt={member.username} />
+							<p>
+							  {member.username.length > 14 
+							    ? `${member.username.slice(0, 14)}…`
+							    : member.username}
+							</p>
             </div>
           );
           })}
