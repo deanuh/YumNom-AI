@@ -472,6 +472,9 @@ app.get("/api/images/dish", async (req, res) => {
   }
 });
 
+// this is for the chatBot api calling
+app.use("/api/chatBot", chatBotRouter)
+
 // Users
 app.post("/users", authMiddleware, createUser);
 app.delete("/users", authMiddleware, removeUser);
@@ -527,9 +530,6 @@ app.use("/api", reportIssueRouter);
 app.use("/api", authMiddleware, friendsRouter);
 app.use("/api", deleteUserRouter);
 
-
-// this is for the chatBot api calling
-app.use("/api/chatBot", chatBotRouter)
 
 
 // Invite routes
