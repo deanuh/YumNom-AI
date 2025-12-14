@@ -41,9 +41,11 @@ const UserProfilePage = () => {
         if (existing && existing.username) {
           setMe({
             ...existing,
+            username: existing.username || "",
             diet: existing.diet || { types: [], allergens: [] },
             exclusions: existing.exclusions || { ingredients: [], items: [] },
           });
+          
           return;
         }
   
@@ -54,7 +56,12 @@ const UserProfilePage = () => {
            user?.email?.split("@")[0] ||
            "user") + "";
   
-        await ensureMe({ username: suggested });
+           await ensureMe({
+            username: suggested,
+            username_lower: suggested.toLowerCase(),
+          });
+          
+          
   
         // 3) Read again after creation.
         const created = await fetchMe();
@@ -72,7 +79,10 @@ const UserProfilePage = () => {
            "user") + "";
   
         try {
-          await ensureMe({ username: suggested });
+          await ensureMe({
+            username: suggested,
+            username_lower: suggested.toLowerCase(),
+          });          
           const created = await fetchMe();
           setMe(created);
         } catch (innerErr) {
@@ -100,7 +110,13 @@ const UserProfilePage = () => {
           const next = {
             // always merge structured fields
             ...(partial.profile_picture ? { profile_picture: partial.profile_picture } : {}),
-            ...(partial.username ? { username: partial.username } : {}),
+            ...(partial.username
+              ? {
+                  username: partial.username.trim(),
+                  username_lower: partial.username.trim().toLowerCase(),
+                }
+              : {}),
+            
             ...(partial.first_name ? { first_name: partial.first_name } : {}),
             ...(partial.last_name ? { last_name: partial.last_name } : {}),
             diet: { ...(me?.diet || {}), ...(partial.diet || {}) },
@@ -113,9 +129,11 @@ const UserProfilePage = () => {
           const refreshed = await fetchMe();
           setMe({
             ...refreshed,
+            username: refreshed.username || "",
             diet: refreshed.diet || { types: [], allergens: [] },
             exclusions: refreshed.exclusions || { ingredients: [], items: [] },
           });
+
         } catch (err) {
           console.error("Failed to update profile:", err);
         }
