@@ -748,12 +748,16 @@ export async function getRatingsForRestaurant(restaurantId, restaurantData) {
 
 // --- PROFILE (basic) ---
 export async function getUserBasic(userId) {
-  const ref = db.collection("User").doc(userId);
-  const snap = await ref.get();
-  if (!snap.exists) throw new Error("User does not exist.");
-  const d = snap.data() || {};
+  const snap = await db.collection("User").doc(userId).get();
+  if (!snap.exists) return null;
+
+  const d = snap.data();
+
+  const username = d.username || "";
+
+
   return {
-    username: d.username || "",
+    username,
     first_name: d.first_name || "",
     last_name: d.last_name || "",
     profile_picture: d.profile_picture || "",
@@ -761,6 +765,7 @@ export async function getUserBasic(userId) {
     exclusions: d.exclusions || { ingredients: [], items: [] },
   };
 }
+
 // Creates the User/{uid} doc if missing, or merges provided fields.
 // Returns the full document after upsert.
 export async function ensureUserBasic(userId, defaults = {}) {
@@ -794,40 +799,63 @@ export async function ensureUserBasic(userId, defaults = {}) {
 }
 
 
-export async function updateUserBasic(
-  userId,
-  { username, first_name, last_name, profile_picture, diet, exclusions }
-) {
+export async function updateUserBasic(userId, body = {}) {
   const ref = db.collection("User").doc(userId);
   const snap = await ref.get();
   if (!snap.exists) throw new Error("User does not exist.");
 
   const payload = {};
-  if (typeof username === "string") payload.username_lower = username.toLowerCase();
-  if (typeof first_name === "string") payload.first_name = first_name;
-  if (typeof last_name === "string") payload.last_name = last_name;
-  if (typeof profile_picture === "string") payload.profile_picture = profile_picture;
+
+  // ✅ Accept username from either top-level or restriction object
+  const incomingUsername =
+    (typeof body?.restriction?.username === "string" && body.restriction.username) ||
+    (typeof body?.username === "string" && body.username) ||
+    null;
+
+  if (incomingUsername !== null) {
+    const u = incomingUsername.trim();
+    payload["username"] = u; // ✅ actually update username
+    payload["username_lower"] = u.toLowerCase(); // ✅ keep in sync
+
+    // ✅ keep restriction fields in sync too (matches your DB schema screenshots)
+    if (incomingUsername !== null) {
+      const u = incomingUsername.trim();
+      payload["username"] = u;
+      payload["username_lower"] = u.toLowerCase();
+    }
+    
+  }
+
+  // names / photo
+  if (typeof body.first_name === "string") payload.first_name = body.first_name;
+  if (typeof body.last_name === "string") payload.last_name = body.last_name;
+  if (typeof body.profile_picture === "string") payload.profile_picture = body.profile_picture;
 
   // merge structured preferences safely
-  if (diet && typeof diet === "object") {
+  if (body.diet && typeof body.diet === "object") {
     const curr = snap.data().diet || {};
     payload.diet = {
-      types: Array.isArray(diet.types) ? diet.types : (curr.types || []),
-      allergens: Array.isArray(diet.allergens) ? diet.allergens : (curr.allergens || []),
+      types: Array.isArray(body.diet.types) ? body.diet.types : (curr.types || []),
+      allergens: Array.isArray(body.diet.allergens) ? body.diet.allergens : (curr.allergens || []),
     };
   }
 
-  if (exclusions && typeof exclusions === "object") {
+  if (body.exclusions && typeof body.exclusions === "object") {
     const curr = snap.data().exclusions || {};
     payload.exclusions = {
-      ingredients: Array.isArray(exclusions.ingredients) ? exclusions.ingredients : (curr.ingredients || []),
-      items: Array.isArray(exclusions.items) ? exclusions.items : (curr.items || []),
+      ingredients: Array.isArray(body.exclusions.ingredients)
+        ? body.exclusions.ingredients
+        : (curr.ingredients || []),
+      items: Array.isArray(body.exclusions.items)
+        ? body.exclusions.items
+        : (curr.items || []),
     };
   }
 
   await ref.set(payload, { merge: true });
   return true;
 }
+
 
 // -------------------- GROUP INVITES -------------------- //
 
